@@ -67,6 +67,25 @@
 												<input type="text" class="form-control" id="pname" placeholder="Product Name" />
 											</div>
 											<div class="form-group">
+												<label class="form-label">Description*</label>
+												<textarea name="p_desc" class="form-control" rows="3" id="pdesc"></textarea>
+											</div>
+											<div class="form-group">
+												<label class="form-label">Category*</label>
+												<select name="categtory" class="form-control" id="categtory">
+													<option value="1" selected>Men</option>
+													<option value="2">Women</option>
+													<option value="3">Kids</option>
+													<option value="3">Accessories</option>
+												</select>
+											</div>
+
+											<div class="form-group">
+												<label class="form-label">Sub Category*</label>
+												<select name="categtory" class="form-control" id="subcategtory"></select>
+											</div>
+
+											<div class="form-group">
 												<label class="form-label">Unit Price*</label>
 												<input type="number" class="form-control" id="pprice" placeholder="Product Per Unit Price" />
 											</div>
@@ -98,28 +117,8 @@
 											</div>
 
 											<div class="form-group">
-												<label class="form-label">Category*</label>
-												<select name="categtory" class="form-control" id="categtory">
-													<option value="1" selected>Men</option>
-													<option value="2">Women</option>
-													<option value="3">Kids</option>
-													<option value="3">Accessories</option>
-												</select>
-											</div>
-
-											<div class="form-group">
-												<label class="form-label">Sub Category*</label>
-												<select name="categtory" class="form-control" id="subcategtory"></select>
-											</div>
-
-											<div class="form-group">
-												<label class="form-label">Description*</label>
-												<textarea name="p_desc" class="form-control" rows="3" id="pdesc"></textarea>
-											</div>
-
-											<div class="form-group">
 												<label class="form-label">Product Images*</label>
-												<input type="file" class="form-control" name="file[]" id="pimages" multiple />
+												<input type="file" class="form-control" name="file[]" accept=".jpg, .jpeg, .png" id="pimages" multiple />
 											</div>
 											<!-- <div>
 												<ul class="add-produc-imgs">

@@ -34,11 +34,11 @@
 					</ol>
 
 					<div class="row justify-content-between">
-						<div class="col-lg-8 col-md-8">
+						<div class="col-lg-12 col-md-12">
 							<div class="card card-static-2 mt-30 mb-30">
 								<div class="card-title-2">
 									<h4 style="width:100%;display: flex; justify-content: space-between;align-items: center;">
-										<p><b>All Products</b></p>
+										<p><b>Product List</b></p>
 										<p><a href="add_product.php" class="add-btn hover-btn">Add New Product</a></p>
 									</h4>
 								</div>
@@ -69,7 +69,8 @@
 													<td>120 pcs.</td>
 													<td>Vegetables &amp; Fruits</td>
 													<td class="action-btns">
-														<a href="add_product.php" class="edit-btn"><i class="fas fa-edit"></i> Edit</a>
+														<a href="add_product.php" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
+														<a href="#" class="edit-btn"><i class="fas fa-trash"></i></a>
 													</td>
 												</tr>
 
@@ -79,64 +80,6 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-lg-4 col-md-4">
-							<div class="card card-static-2 mt-30 mb-30">
-								<div class="card-title-2">
-									<h4 style="width:100%;display: flex; justify-content: space-between;align-items: center;">
-										<p><b>All Colors</b></p>
-										<p><a href="add_product.php" class="add-btn hover-btn">Add Color</a></p>
-									</h4>
-								</div>
-								<div class="card-body-table px-3">
-									<div class="table-responsive">
-										<table class="table ucp-table table-hover">
-											<thead>
-												<tr>
-													<th>Name</th>
-													<th>Value</th>
-													<th>View</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>Navi Blue</td>
-													<td>#0f0140</td>
-													<td>
-														<div class="colorview"></div>
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-								</div>
-							</div>
-
-							<div class="card card-static-2 mt-30 mb-30">
-								<div class="card-title-2">
-									<h4 style="width:100%;display: flex; justify-content: space-between;align-items: center;">
-										<p><b>All Size</b></p>
-										<p><a href="add_product.php" class="add-btn hover-btn">Add Size</a></p>
-									</h4>
-								</div>
-								<div class="card-body-table px-3">
-									<div class="table-responsive">
-										<table class="table ucp-table table-hover">
-											<thead>
-												<tr>
-													<th>Name</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>XL</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-								</div>
-							</div>
-						</div>
-
 					</div>
 				</div>
 			</main>
