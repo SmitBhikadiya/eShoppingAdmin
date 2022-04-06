@@ -1,3 +1,18 @@
+<?php
+	require("./handler/addressHandler.php");
+	$address = new AddressHandler();
+	$success = '';
+	if(isset($_POST["addCity"])){
+		$countryid = $_POST["country"];
+		$stateid = $_POST["state"];
+		$city = trim($_POST["city"]);
+		if($address->addCity($countryid, $stateid, $city)){
+			$success = "New City Added Successfully";
+		}
+		echo "...".$success;
+	}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,7 +31,7 @@
 
 <body class="sb-nav-fixed">
 	<?php
-	include_once("./includes/header.php");
+		include_once("./includes/header.php");
 	?>
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
@@ -32,6 +47,17 @@
 						<li class="breadcrumb-item"><a href="add_city.php">Address</a></li>
 						<li class="breadcrumb-item active">Add City</li>
 					</ol>
+
+					<?php
+						if($success!=''){
+							?>
+							<div class="alert alert-warning alert-dismissible fade show" role="alert">
+								<?=$success?>
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							</div>
+							<?php
+						}
+					?>
 					<div class="row">
 						<div class="col-lg-6 col-md-6">
 							<div class="card card-static-2 mb-30">
@@ -40,34 +66,35 @@
 								</div>
 								<div class="card-body-table px-3">
 									<div class="news-content-right pd-20">
-										<form id="formAddCity" action="add_city.php">
-                                            <div class="form-group">
+										<form id="formAddCity" action="add_city.php" method="POST">
+											<div class="form-group">
 												<label class="form-label">Select Country*</label>
-												<select class="form-control" id="statelist">
-                                                    <option value="1">India</option>
-                                                    <option value="2">US</option>
-                                                </select>
+												<select class="form-control" name="country" id="countrylist">
+													<option value="0">Select Country</option>
+													<?php
+														$countries = $address->getCountries();
+														foreach($countries as $country){
+															echo "<option value='".$country["id"]."'>".$country["country"]."</option>";	
+														}
+													?>
+												</select>
 											</div>
-                                            <div class="form-group">
+											<div class="form-group">
 												<label class="form-label">Select State*</label>
-												<select class="form-control" id="statelist">
-                                                    <option value="1">Gujrat</option>
-                                                    <option value="2">Maharashtra</option>
-                                                </select>
+												<select class="form-control" name="state" id="statelist">
+												</select>
 											</div>
 											<div class="form-group">
 												<label class="form-label">City Name*</label>
-												<input type="text" class="form-control" id="cityname" placeholder="City name">
+												<input type="text" class="form-control" name="city" id="cityname" placeholder="City name">
 											</div>
-                                            
-                                            
-											<button type="submit" class="save-btn hover-btn">Add City</button>
+											<button type="submit" class="save-btn hover-btn" name="addCity" value="addCity">Add City</button>
 										</form>
 									</div>
 								</div>
 							</div>
 						</div>
-                        <div class="col-lg-6 col-md-6">
+						<div class="col-lg-6 col-md-6">
 							<div class="card card-static-2 mb-30">
 								<div class="card-title-2">
 									<h4><b>City List</b></h4>
@@ -85,23 +112,30 @@
 												</tr>
 											</thead>
 											<tbody>
-
-												<tr>
-													<td>2</td>
-													<td>Ahemdabad</td>
-													<td>Gujrat</td>
-													<td>India</td>
-													<td class="action-btns">
-                                                        <a href="add_city.php?edit=1" class="edit-btn"><i class="fas fa-edit"></i></a>
-														<a href="add_city.php?delete=1" class="edit-btn"><i class="fas fa-trash"></i></a>
-													</td>
-												</tr>
+												<?php
+												$srno = 1;
+												$cities = $address->getCities();;
+												foreach ($cities as $city) {
+												?>
+													<tr>
+														<td><?= $srno++ ?></td>
+														<td><?= $city["city"] ?></td>
+														<td><?= $city["state"] ?></td>
+														<td><?= $city["country"] ?></td>
+														<td class="action-btns">
+															<a href="add_city.php?edit=<?= $city["id"] ?>" class="edit-btn"><i class="fas fa-edit"></i></a>
+															<a href="add_city.php?delete=<?= $city["id"] ?>" class="edit-btn"><i class="fas fa-trash"></i></a>
+														</td>
+													</tr>
+												<?php
+												}
+												?>
 											</tbody>
 										</table>
 									</div>
 								</div>
-                            </div>
-                        </div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</main>
@@ -114,6 +148,7 @@
 	<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<script src="js/scripts.js"></script>
 	<script src="js/validation.js"></script>
+	<script src="js/address.js"></script>
 </body>
 
 </html>

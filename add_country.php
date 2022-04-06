@@ -21,7 +21,10 @@
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
 			<?php
-			include_once("./includes/sidebar.php");
+				include_once("./includes/sidebar.php");
+				require("./handler/addressHandler.php");
+				$address = new AddressHandler();
+				$countries = $address->getCountries();
 			?>
 		</div>
 		<div id="layoutSidenav_content">
@@ -51,7 +54,7 @@
 								</div>
 							</div>
 						</div>
-                        <div class="col-lg-6 col-md-6">
+						<div class="col-lg-6 col-md-6">
 							<div class="card card-static-2 mb-30">
 								<div class="card-title-2">
 									<h4><b>Country List</b></h4>
@@ -67,21 +70,27 @@
 												</tr>
 											</thead>
 											<tbody>
-
-												<tr>
-													<td>1</td>
-													<td>India</td>
-													<td class="action-btns">
-                                                        <a href="add_country.php?edit=1" class="edit-btn"><i class="fas fa-edit"></i></a>
-														<a href="add_country.php?delete=1" class="edit-btn"><i class="fas fa-trash"></i></a>
-													</td>
-												</tr>
+												<?php
+												$srno = 1;
+												foreach ($countries as $country) {
+												?>
+													<tr>
+														<td><?= $srno ?></td>
+														<td><?= $country["country"] ?></td>
+														<td class="action-btns">
+															<a href="add_country.php?edit=<?= $country["id"] ?>" class="edit-btn"><i class="fas fa-edit"></i></a>
+															<a href="add_country.php?delete=<?= $country["id"] ?>" class="edit-btn"><i class="fas fa-trash"></i></a>
+														</td>
+													</tr>
+												<?php
+												}
+												?>
 											</tbody>
 										</table>
 									</div>
 								</div>
-                            </div>
-                        </div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</main>

@@ -21,7 +21,10 @@
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
 			<?php
-			include_once("./includes/sidebar.php");
+				include_once("./includes/sidebar.php");
+				require("./handler/addressHandler.php");
+				$address = new AddressHandler();
+				$states = $address->getStates();
 			?>
 		</div>
 		<div id="layoutSidenav_content">
@@ -41,12 +44,12 @@
 								<div class="card-body-table px-3">
 									<div class="news-content-right pd-20">
 										<form id="formAddState" action="add_state.php">
-                                            <div class="form-group">
+											<div class="form-group">
 												<label class="form-label">Select Country*</label>
 												<select class="form-control" id="statelist">
-                                                    <option value="1">India</option>
-                                                    <option value="2">US</option>
-                                                </select>
+													<option value="1">India</option>
+													<option value="2">US</option>
+												</select>
 											</div>
 											<div class="form-group">
 												<label class="form-label">State Name*</label>
@@ -58,7 +61,7 @@
 								</div>
 							</div>
 						</div>
-                        <div class="col-lg-6 col-md-6">
+						<div class="col-lg-6 col-md-6">
 							<div class="card card-static-2 mb-30">
 								<div class="card-title-2">
 									<h4><b>State List</b></h4>
@@ -75,22 +78,28 @@
 												</tr>
 											</thead>
 											<tbody>
-
-												<tr>
-													<td>2</td>
-													<td>Gujrat</td>
-													<td>India</td>
-													<td class="action-btns">
-                                                        <a href="add_state.php?edit=1" class="edit-btn"><i class="fas fa-edit"></i></a>
-														<a href="add_state.php?delete=1" class="edit-btn"><i class="fas fa-trash"></i></a>
-													</td>
-												</tr>
+												<?php
+												$srno = 1;
+												foreach ($states as $state) {
+												?>
+													<tr>
+														<td><?= $srno++ ?></td>
+														<td><?= $state["state"] ?></td>
+														<td><?= $state["country"] ?></td>
+														<td class="action-btns">
+															<a href="add_state.php?edit=<?= $state["id"] ?>" class="edit-btn"><i class="fas fa-edit"></i></a>
+															<a href="add_state.php?delete=<?= $state["id"] ?>" class="edit-btn"><i class="fas fa-trash"></i></a>
+														</td>
+													</tr>
+												<?php
+												}
+												?>
 											</tbody>
 										</table>
 									</div>
 								</div>
-                            </div>
-                        </div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</main>

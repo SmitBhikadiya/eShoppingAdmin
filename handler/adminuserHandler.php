@@ -1,5 +1,5 @@
 <?php
-
+    session_start();
     require_once("./handler/dbHandler.php");
 
     class AdminUser extends DBConnection{
