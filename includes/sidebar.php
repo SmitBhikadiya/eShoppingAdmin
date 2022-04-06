@@ -14,6 +14,8 @@
                 <nav class="sb-sidenav-menu-nested nav">
                     <a class="nav-link sub_nav_link" href="products.php">All Products</a>
                     <a class="nav-link sub_nav_link" href="add_product.php">Add Product</a>
+                    <a class="nav-link sub_nav_link" href="product_color.php">Colors</a>
+                    <a class="nav-link sub_nav_link" href="product_size.php">Sizes</a>
                 </nav>
             </div>
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCategories" aria-expanded="false" aria-controls="collapseCategories">
@@ -23,8 +25,8 @@
             </a>
             <div class="collapse" id="collapseCategories" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
                 <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link sub_nav_link" href="category.php">All Categories</a>
-                    <a class="nav-link sub_nav_link" href="add_category.php">Add Category</a>
+                    <a class="nav-link sub_nav_link" href="category.php">Categories</a>
+                    <a class="nav-link sub_nav_link" href="sub_category.php">Sub Category</a>
                 </nav>
             </div>
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrders" aria-expanded="false" aria-controls="collapseOrders">
@@ -46,7 +48,7 @@
             </a>
             <div class="collapse" id="collapseServiser" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
                 <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link sub_nav_link" href="customers.php">User List</a>
+                    <a class="nav-link sub_nav_link" href="customers.php">Customer List</a>
                 </nav>
             </div>
 
@@ -57,13 +59,13 @@
             </a>
             <div class="collapse" id="collapseAddress" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
                 <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link sub_nav_link" href="add_city.php">Add City</a>
+                    <a class="nav-link sub_nav_link" href="cities.php">City List</a>
                 </nav>
                 <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link sub_nav_link" href="add_state.php">Add State</a>
+                    <a class="nav-link sub_nav_link" href="states.php">State List</a>
                 </nav>
                 <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link sub_nav_link" href="add_country.php">Add Country</a>
+                    <a class="nav-link sub_nav_link" href="countries.php">Country List</a>
                 </nav>
             </div>
         </div>

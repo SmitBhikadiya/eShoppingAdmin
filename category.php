@@ -18,6 +18,34 @@
 	<?php
 	include_once("./includes/header.php");
 	?>
+
+
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="formAddCategory" action="add_category.php">
+						<div class="form-group">
+							<label class="form-label">Name*</label>
+							<input type="text" class="form-control" id="category" placeholder="Category Name">
+						</div>
+						<div class="form-group">
+							<label class="form-label">Description*</label>
+							<textarea name="description" id="description" class="form-control" rows="3" placeholder="Enter a description"></textarea>
+						</div>
+						<button type="submit" style="width:100%" class="save-btn hover-btn">Add Category</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
 			<?php
@@ -35,12 +63,12 @@
 
 					<div class="row justify-content-between">
 
-						<div class="col-lg-6 col-md-6">
+						<div class="col-lg-12 col-md-12">
 							<div class="card card-static-2 mt-30 mb-30">
 								<div class="card-title-2">
 									<h4 style="width:100%;display: flex; justify-content: space-between;align-items: center;">
 										<p><b>Categories</b></p>
-										<p><a href="add_category.php" class="add-btn hover-btn">Add New</a></p>
+										<p><a href="add_category.php" class="add-btn hover-btn" data-toggle="modal" data-target="#exampleModal">Add New</a></p>
 									</h4>
 								</div>
 								<div class="card-body-table px-3">
@@ -50,6 +78,9 @@
 												<tr>
 													<th style="width:60px">ID</th>
 													<th>Category</th>
+													<th>Description</th>
+													<th>Created date</th>
+													<th>Updated date</th>
 													<th>Action</th>
 												</tr>
 											</thead>
@@ -58,44 +89,12 @@
 												<tr>
 													<td>2</td>
 													<td>Men</td>
+													<td>This category is for men products</td>
+													<td>23/01/2022</td>
+													<td>23/01/2022</td>
 													<td class="action-btns">
-														<a href="add_category.php" class="edit-btn"><i class="fas fa-edit"></i> Edit</a>
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="col-lg-6 col-md-6">
-							<div class="card card-static-2 mt-30 mb-30">
-								<div class="card-title-2">
-									<h4 style="width:100%;display: flex; justify-content: space-between;align-items: center;">
-										<p><b>Sub Categories</b></p>
-										<p><a href="add_sub_category.php" class="add-btn hover-btn">Add New</a></p>
-									</h4>
-								</div>
-								<div class="card-body-table px-3">
-									<div class="table-responsive">
-										<table class="table ucp-table table-hover">
-											<thead>
-												<tr>
-													<th style="width:60px">ID</th>
-													<th>Sub Category</th>
-													<th>Category</th>
-													<th>Action</th>
-												</tr>
-											</thead>
-											<tbody>
-
-												<tr>
-													<td>2</td>
-													<td>Tshirts</td>
-													<td>Men</td>
-													<td class="action-btns">
-														<a href="add_sub_category.php" class="edit-btn"><i class="fas fa-edit"></i> Edit</a>
+														<a data-toggle="modal" data-target="#exampleModal" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
+														<a style="cursor: pointer;" class="edit-btn"><i class="fas fa-trash"></i></a>
 													</td>
 												</tr>
 											</tbody>
@@ -108,13 +107,14 @@
 				</div>
 			</main>
 			<?php
-				include_once("./includes/footer.php");
+			include_once("./includes/footer.php");
 			?>
 		</div>
 	</div>
 	<script src="js/jquery-3.4.1.min.js"></script>
 	<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<script src="js/scripts.js"></script>
+	<script src="js/validation.js"></script>
 </body>
 <!-- Mirrored from gambolthemes.net/html-items/gambo_admin/category.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 03 Feb 2021 16:40:06 GMT -->
 

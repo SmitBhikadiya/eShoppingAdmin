@@ -18,13 +18,40 @@
 	<?php
 	include_once("./includes/header.php");
 	?>
+
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Add Country</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="card-body-table px-3">
+						<form id="formAddCountry" action="add_country.php">
+							<div class="form-group">
+								<label class="form-label">Country Name*</label>
+								<input type="text" class="form-control" id="countryname" placeholder="Country name">
+							</div>
+							<button type="submit" style="width: 100%;" class="save-btn hover-btn">Add Country</button>
+						</form>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
 			<?php
-				include_once("./includes/sidebar.php");
-				require("./handler/addressHandler.php");
-				$address = new AddressHandler();
-				$countries = $address->getCountries();
+			include_once("./includes/sidebar.php");
+			require("./handler/addressHandler.php");
+			$address = new AddressHandler();
+			$countries = $address->getCountries();
 			?>
 		</div>
 		<div id="layoutSidenav_content">
@@ -33,31 +60,16 @@
 					<h2 class="mt-30 page-title">Country</h2>
 					<ol class="breadcrumb mb-30">
 						<li class="breadcrumb-item"><a href="add_city.php">Address</a></li>
-						<li class="breadcrumb-item active">Add Country</li>
+						<li class="breadcrumb-item active">Country</li>
 					</ol>
 					<div class="row">
-						<div class="col-lg-6 col-md-6">
+						<div class="col-lg-12 col-md-12">
 							<div class="card card-static-2 mb-30">
 								<div class="card-title-2">
-									<h4><b>Add Country</b></h4>
-								</div>
-								<div class="card-body-table px-3">
-									<div class="news-content-right pd-20">
-										<form id="formAddCountry" action="add_country.php">
-											<div class="form-group">
-												<label class="form-label">Country Name*</label>
-												<input type="text" class="form-control" id="countryname" placeholder="Country name">
-											</div>
-											<button type="submit" class="save-btn hover-btn">Add Country</button>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-6 col-md-6">
-							<div class="card card-static-2 mb-30">
-								<div class="card-title-2">
-									<h4><b>Country List</b></h4>
+									<h4 style="width:100%;display: flex; justify-content: space-between;align-items: center;">
+										<p><b>Country List</b></p>
+										<p><a href="#" class="add-btn hover-btn" data-toggle="modal" data-target="#exampleModal">Add Country</a></p>
+									</h4>
 								</div>
 								<div class="card-body-table px-3">
 									<div class="table-responsive">
@@ -66,6 +78,8 @@
 												<tr>
 													<th style="width:60px">ID</th>
 													<th>Country</th>
+													<th>Created Date</th>
+													<th>Modified Date</th>
 													<th>Action</th>
 												</tr>
 											</thead>
@@ -77,8 +91,10 @@
 													<tr>
 														<td><?= $srno ?></td>
 														<td><?= $country["country"] ?></td>
+														<td><?= $country["createdDate"] ?></td>
+														<td><?= $country["modifiedDate"] ?></td>
 														<td class="action-btns">
-															<a href="add_country.php?edit=<?= $country["id"] ?>" class="edit-btn"><i class="fas fa-edit"></i></a>
+															<a data-toggle="modal" data-target="#exampleModal"" class=" edit-btn"><i class="fas fa-edit"></i></a>
 															<a href="add_country.php?delete=<?= $country["id"] ?>" class="edit-btn"><i class="fas fa-trash"></i></a>
 														</td>
 													</tr>

@@ -33,6 +33,7 @@
 	<?php
 	include_once("./includes/header.php");
 	?>
+
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
 			<?php
@@ -42,7 +43,7 @@
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid">
-					<h2 class="mt-30 page-title">Products</h2>
+					<h2 class="mt-30 page-title">Add Products</h2>
 					<ol class="breadcrumb mb-30">
 						<li class="breadcrumb-item">
 							<a href="index.php">Dashboard</a>
@@ -53,7 +54,7 @@
 						<li class="breadcrumb-item active">Add Product</li>
 					</ol>
 					<div class="row">
-						<div class="col-lg-8 col-md-8">
+						<div class="col-lg-10 col-md-10">
 							<div class="card card-static-2 mb-30">
 								<div class="card-title-2">
 									<h4><b>Add New Product</b></h4>
@@ -139,48 +140,6 @@
 											</button>
 										</form>
 									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-4 col-md-4">
-							<div class="card card-static-2 mb-30">
-								<div class="card-title-2">
-									<h4><b>Add Color</b></h4>
-								</div>
-								<div class="card-body-table px-3">
-									<form action="add_product.php" id="formAddProductColor">
-										<div class="news-content-right pd-20">
-											<div class="form-group">
-												<label class="form-label">Color name*</label>
-												<input type="text" id="addcolor" class="form-control" placeholder="Product Name" />
-											</div>
-											<div class="form-group">
-												<label class="form-label">Color Value*</label>
-												<input type="color" class="form-control" placeholder="Product Name" />
-											</div>
-											<button class="save-btn hover-btn" type="submit">
-												Add Color
-											</button>
-										</div>
-									</form>
-								</div>
-							</div>
-							<div class="card card-static-2 mb-30">
-								<div class="card-title-2">
-									<h4><b>Add Size</b></h4>
-								</div>
-								<div class="card-body-table px-3">
-									<form action="#" id="formAddProductSize">
-										<div class="news-content-right pd-20">
-											<div class="form-group">
-												<label class="form-label">Enter Size*</label>
-												<input type="text" id="addsize" class="form-control" placeholder="enter size" />
-											</div>
-											<button class="save-btn hover-btn" type="submit">
-												Add Size
-											</button>
-										</div>
-									</form>
 								</div>
 							</div>
 						</div>

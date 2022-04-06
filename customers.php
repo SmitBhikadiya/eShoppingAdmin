@@ -16,8 +16,61 @@
 
 <body class="sb-nav-fixed">
 	<?php
-	include_once("./includes/header.php");
+		include_once("./includes/header.php");
 	?>
+
+
+	<!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Customer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-body-table px-3">
+					<div class="card card-static-2 mb-30">
+								<div class="card-body-table">
+									<div class="shopowner-content-left text-center pd-20">
+										<div class="customer_img">
+											<img src="images/avatar/img-1.jpg" alt="">
+										</div>
+										<div class="shopowner-dt-left mt-4">
+											<h4>Sam Curran</h4>
+											<span>Customer</span>
+										</div>
+										<div class="shopowner-dts">
+											<div class="shopowner-dt-list">
+												<span class="left-dt">Full Name</span>
+												<span class="right-dt">Sam Curran</span>
+											</div>
+											<div class="shopowner-dt-list">
+												<span class="left-dt">Email</span>
+												<span class="right-dt">sam@gmail.com</span>
+											</div>
+											<div class="shopowner-dt-list">
+												<span class="left-dt">Phone</span>
+												<span class="right-dt">+918437176189</span>
+											</div>
+											<div class="shopowner-dt-list">
+												<span class="left-dt">Address</span>
+												<span class="right-dt">Ludhiana, Punjab</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
 			<?php
@@ -51,33 +104,24 @@
 												<tr>
 													<th style="width:60px">ID</th>
 													<th>UserName</th>
-													<th>FirstName</th>
-													<th>LastName</th>
-													<th>Gender</th>
 													<th>Email</th>
-													<th>Mobile No.</th>
-													<th>Phone</th>
-													<!-- <th>Action</th> -->
+													<th>Created Date</th>
+													<th>Modified Date</th>
+													<th>Action</th>
 												</tr>
 											</thead>
 											<tbody>
 												<tr>
 													<td>1</td>
-													<td><a href="view_customer.php?id=1">Sam123</a></td>
-													<td>Sam</td>
-													<td>Curran</td>
-													<td>Male</td>
+													<td>Sam123</a></td>
 													<td>sam@gmail.com</td>
-													<td>+911234567890</td>
-													<td>-</td>
-
-													<!-- <td class="action-btns">
-															<a href="view_customer.html" class="view-shop-btn" title="View"><i class="fas fa-eye"></i></a>
-															
-															<a href="#" class="delete-btn" title="Edit"><i class="fas fa-trash-alt"></i></a>
-														</td> -->
+													<td>22/02/2022</td>
+													<td>28/02/2022</td>
+													<td class="action-btns">
+														<a data-toggle="modal" data-target="#exampleModal" class="view-shop-btn" title="View"><i class="fas fa-eye"></i></a>
+														<a href="#" class="delete-btn" title="Edit"><i class="fas fa-trash-alt"></i></a>
+													</td>
 												</tr>
-
 											</tbody>
 										</table>
 									</div>
