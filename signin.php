@@ -1,28 +1,13 @@
 ﻿<?php
-session_start();
-require_once("./handler/adminuser.php");
-
-
+require_once("./handler/adminuserHandler.php");
 
 $error = '';
 if (isset($_POST["signin"])) {
     $email = $_POST["email"];
     $password = $_POST["password"];
     $adminuser = new AdminUser();
-    $error = $adminuser->findUser($email, $password);
+    $error = $adminuser->signIn($email, $password);
     if ($error=='') {
-        
-        // check user checked remember or not and then set cookie
-        if (isset($_POST["remember"])) {
-            $adminuser->setUserCookie($email, $password);
-        }else{
-            $adminuser->unsetUserCookie();
-        }
-
-        // set seesion 
-        $_SESSION["adminlogin"] = $email;
-
-        // redirect to login page
         header("Location: index.php");
     }
 }

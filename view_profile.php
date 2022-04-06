@@ -41,25 +41,16 @@
 											<img src="images/avatar/img-1.jpg" alt="">
 										</div>
 										<div class="shopowner-dt-left">
-											<h4>Gambo Supermarket</h4>
-											<span>Admin</span>
+											<h4>Admin Profile</h4>
 										</div>
 										<div class="shopowner-dts">
 											<div class="shopowner-dt-list">
-												<span class="left-dt">Full Name</span>
-												<span class="right-dt">Admin</span>
+												<span class="left-dt">User Name</span>
+												<span class="right-dt"><?=$_SESSION['adminlogin']['username']?></span>
 											</div>
 											<div class="shopowner-dt-list">
 												<span class="left-dt">Email</span>
-												<span class="right-dt"><a href="https://gambolthemes.net/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4621272b24292a7f727506212b272f2a6825292b">[email&#160;protected]</a></span>
-											</div>
-											<div class="shopowner-dt-list">
-												<span class="left-dt">Phone</span>
-												<span class="right-dt">+918437176189</span>
-											</div>
-											<div class="shopowner-dt-list">
-												<span class="left-dt">Address</span>
-												<span class="right-dt">Ludhiana, Punjab</span>
+												<span class="right-dt"><?=$_SESSION['adminlogin']['email']?></span>
 											</div>
 										</div>
 									</div>
