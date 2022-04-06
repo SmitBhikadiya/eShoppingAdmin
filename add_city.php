@@ -1,13 +1,18 @@
 <?php
 	require("./handler/addressHandler.php");
 	$address = new AddressHandler();
-	$success = '';
+	$msg = '';
+	$error = true;
 	if(isset($_POST["addCity"])){
 		$countryid = $_POST["country"];
 		$stateid = $_POST["state"];
-		$city = trim($_POST["city"]);
-		if($address->addCity($countryid, $stateid, $city)){
-			$success = "New City Added Successfully";
+		$city = strtolower(trim($_POST["city"]));
+		$result = $address->addCity($countryid, $stateid, $city);
+		if($result==""){
+			$error = false;
+			$msg = "New City Added Successfully";
+		}else{
+			$msg = $result;
 		}
 		echo "...".$success;
 	}
@@ -49,10 +54,10 @@
 					</ol>
 
 					<?php
-						if($success!=''){
+						if($msg!=''){
 							?>
-							<div class="alert alert-warning alert-dismissible fade show" role="alert">
-								<?=$success?>
+							<div class="alert alert-<?=($error)?'danger':'success'?> alert-dismissible fade show" role="alert">
+								<?=$msg?>
 								<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 							</div>
 							<?php
@@ -104,7 +109,7 @@
 										<table class="table ucp-table table-hover">
 											<thead>
 												<tr>
-													<th style="width:60px">ID</th>
+													<th style="width:60px">SrNo.</th>
 													<th>City</th>
 													<th>State</th>
 													<th>Country</th>

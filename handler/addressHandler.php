@@ -4,7 +4,7 @@
     class AddressHandler extends DBConnection{
         
         function getCities(){
-            $sql = "SELECT cities.*, states.state, countries.country FROM cities JOIN states ON cities.stateId=states.id JOIN countries ON countries.id=cities.countryId";
+            $sql = "SELECT cities.*, states.state, countries.country FROM cities JOIN states ON cities.stateId=states.id JOIN countries ON countries.id=cities.countryId ORDER BY cities.id DESC";
             $result = $this->getConnection()->query($sql);
             $records = [];
             if($result->num_rows > 0){
@@ -57,9 +57,17 @@
         }
 
         function addCity($countryid, $stateid, $city){
-            $sql = "INSERT INTO cities (city, stateId, countryId, createdDate) VALUES ('$city', $stateid, $countryid, now())";
-            $result = $this->getConnection()->query($sql);
-            return ($result) ? true:false;
+            $error = "";
+            if(!$this->isCityExits($countryid, $stateid, $city)){
+                $sql = "INSERT INTO cities (city, stateId, countryId, createdDate) VALUES ('$city', $stateid, $countryid, now())";
+                $result = $this->getConnection()->query($sql);
+                if(!$result){
+                    $error = "Somthing went wrong with the sql";
+                }
+            }else{
+                $error = "Entered City already exits!!";
+            }
+            return $error;
         }
         function addState(){}
         function addCountry(){}
@@ -67,5 +75,14 @@
         function updateCity(){}
         function updateState(){}
         function updateCountry(){}
+
+        function isCityExits($countryid, $stateid, $city){
+            $sql = "SELECT * FROM cities WHERE countryId=$countryid AND stateId=$stateid AND city='$city'";
+            $result = $this->getConnection()->query($sql);
+            if($result->num_rows > 0){
+                return true;
+            }
+            return false;
+        }
     }
 ?>
