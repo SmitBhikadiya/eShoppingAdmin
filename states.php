@@ -91,7 +91,7 @@
 														<td><?= $state["modifiedDate"] ?></td>
 														<td class="action-btns">
 															<a href="add_state.php?edit=<?= $state["id"]?>" class="edit-btn"><i class="fas fa-edit"></i></a>
-															<a href="add_state.php?delete=<?= $state["id"] ?>" class="edit-btn"><i class="fas fa-trash"></i></a>
+															<a href="./handler/requestHandler.php?dState=<?=$state["id"]?>" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
 														</td>
 													</tr>
 												<?php

@@ -1,10 +1,11 @@
 ﻿<?php
-require_once("./handler/adminuserHandler.php");
-$error = '';
-if(isset($_SESSION["error"])){
-    $error = $_SESSION["error"];
-    unset($_SESSION["error"]);
-}
+    session_start();
+    require_once("./handler/adminuserHandler.php");
+    $error = '';
+    if(isset($_SESSION["error"])){
+        $error = $_SESSION["error"];
+        unset($_SESSION["error"]);
+    }
 ?>
 
 <!DOCTYPE html>

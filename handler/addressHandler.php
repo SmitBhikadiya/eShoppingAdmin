@@ -173,6 +173,31 @@ class AddressHandler extends DBConnection
         return $error;
     }
 
+    function deleteCity($id){
+        $sql = "UPDATE cities SET status=1, modifiedDate=now() WHERE id=$id";
+        $result = $this->getConnection()->query($sql);
+        if ($result) {
+            return true;
+        }
+        return false;
+    }
+    function deleteState($id){
+        $sql = "UPDATE states SET status=1, modifiedDate=now() WHERE id=$id";
+        $result = $this->getConnection()->query($sql);
+        if ($result) {
+            return true;
+        }
+        return false;
+    }
+    function deleteCountry($id){
+        $sql = "UPDATE countries SET status=1, modifiedDate=now() WHERE id=$id";
+        $result = $this->getConnection()->query($sql);
+        if ($result) {
+            return true;
+        }
+        return false;
+    }
+
     function isCityExits($countryid, $stateid, $city)
     {
         $sql = "SELECT * FROM cities WHERE countryId=$countryid AND stateId=$stateid AND city='$city' AND cities.status = 0";

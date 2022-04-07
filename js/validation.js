@@ -1,4 +1,11 @@
 $(document).ready(function(){
+
+    $(".deleteRow").on("click", function(e){
+        if(!confirm("Are you sure??")){
+            e.preventDefault();
+        }
+    })
+
     $("#formSignin").on("submit", function(e){
         window.isValid = true;
         $('.error').remove();

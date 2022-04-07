@@ -99,3 +99,33 @@
         }
         header("Location: ../countries.php");
     }
+
+    if(isset($_GET["dCity"])){
+        $id = (int) $_GET["dCity"];
+        if($address->deleteCity($id)){
+            $_SESSION["result"] =["msg"=>"City Deleted Successfully", "error"=>false];
+        }else{
+            $_SESSION["result"] =["msg"=>"Somthing went wrong!!!", "error"=>true];
+        }
+        header("Location: ../cities.php");
+    }
+    if(isset($_GET["dState"])){
+        $id = (int) $_GET["dState"];
+        if($address->deleteState($id)){
+            $_SESSION["result"] =["msg"=>"State Deleted Successfully", "error"=>false];
+        }else{
+            $_SESSION["result"] =["msg"=>"Somthing went wrong!!!", "error"=>true];
+        }
+        header("Location: ../states.php");
+    }
+    if(isset($_GET["dCountry"])){
+        $id = (int) $_GET["dCountry"];
+        if($address->deleteCountry($id)){
+            $_SESSION["result"] =["msg"=>"Country Deleted Successfully", "error"=>false];
+        }else{
+            $_SESSION["result"] =["msg"=>"Somthing went wrong!!!", "error"=>true];
+        }  
+        header("Location: ../countries.php");
+    }
+
+

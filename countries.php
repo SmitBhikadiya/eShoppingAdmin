@@ -1,4 +1,3 @@
-
 <?php
 	session_start();
 	require("./handler/addressHandler.php");
@@ -91,7 +90,7 @@
 														<td><?= $country["modifiedDate"] ?></td>
 														<td class="action-btns">
 															<a href="add_country.php?edit=<?= $country["id"]?>" class=" edit-btn"><i class="fas fa-edit"></i></a>
-															<a href="add_country.php?delete=<?= $country["id"] ?>" class="edit-btn"><i class="fas fa-trash"></i></a>
+															<a href="./handler/requestHandler.php?dCountry=<?=$country["id"]?>" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
 														</td>
 													</tr>
 												<?php
