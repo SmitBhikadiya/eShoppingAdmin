@@ -1,15 +1,9 @@
 ﻿<?php
 require_once("./handler/adminuserHandler.php");
-
 $error = '';
-if (isset($_POST["signin"])) {
-    $email = $_POST["email"];
-    $password = $_POST["password"];
-    $adminuser = new AdminUser();
-    $error = $adminuser->signIn($email, $password);
-    if ($error=='') {
-        header("Location: index.php");
-    }
+if(isset($_SESSION["error"])){
+    $error = $_SESSION["error"];
+    unset($_SESSION["error"]);
 }
 ?>
 
@@ -41,7 +35,7 @@ if (isset($_POST["signin"])) {
                                     <h3 class="text-center font-weight-light my-4">Sign In</h3>
                                 </div>
                                 <div class="card-body">
-                                    <form id="formSignin" action="signin.php" method="POST">
+                                    <form id="formSignin" action="./handler/requestHandler.php" method="POST">
                                         <?php 
                                             if($error!=''){
                                             ?>

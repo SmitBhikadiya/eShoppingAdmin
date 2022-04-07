@@ -19,36 +19,6 @@
     include_once("./includes/header.php");
     ?>
 
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add Size</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="card-body-table px-3">
-                        <form action="#" id="formAddProductSize">
-                            <div class="news-content-right pd-20">
-                                <div class="form-group">
-                                    <label class="form-label">Enter Size*</label>
-                                    <input type="text" id="addsize" class="form-control" placeholder="enter size" />
-                                </div>
-                                <button class="save-btn hover-btn" style="width: 100%;" type="submit">
-                                    Add Size
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
             <?php
@@ -71,7 +41,7 @@
                                 <div class="card-title-2">
                                     <h4 style="width:100%;display: flex; justify-content: space-between;align-items: center;">
                                         <p><b>All Size</b></p>
-                                        <p><a href="add_product.php" class="add-btn hover-btn" data-toggle="modal" data-target="#exampleModal">Add Size</a></p>
+                                        <p><a href="add_size.php" class="add-btn hover-btn">Add Size</a></p>
                                     </h4>
                                 </div>
                                 <div class="card-body-table px-3">
@@ -93,7 +63,7 @@
                                                     <td>12/02/2022</td>
                                                     <td>12/03/2022</td>
                                                     <td class="action-btns">
-                                                        <a data-toggle="modal" data-target="#exampleModal" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
+                                                        <a href="add_size.php" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
                                                         <a style="cursor: pointer;" class="edit-btn"><i class="fas fa-trash"></i></a>
                                                     </td>
                                                 </tr>

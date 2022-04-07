@@ -1,3 +1,16 @@
+<?php
+	session_start();
+	require("./handler/addressHandler.php");
+	$address = new AddressHandler();
+	$states = $address->getStates();
+	$msg = '';
+	$error = false;
+	if(isset($_SESSION["result"])){
+		$error = $_SESSION["result"]["error"];
+		$msg = $_SESSION["result"]["msg"];
+		unset($_SESSION["result"]);
+	}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,63 +32,37 @@
 	include_once("./includes/header.php");
 	?>
 
-	<!-- Modal -->
-	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Add State</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="card-body-table px-3">
-						<form id="formAddState" action="add_state.php">
-							<div class="form-group">
-								<label class="form-label">Select Country*</label>
-								<select class="form-control" id="statelist">
-									<option value="1">India</option>
-									<option value="2">US</option>
-								</select>
-							</div>
-							<div class="form-group">
-								<label class="form-label">State Name*</label>
-								<input type="text" class="form-control" id="statename" placeholder="State name">
-							</div>
-							<button type="submit" style="width: 100%;" class="save-btn hover-btn">Add State</button>
-						</form>
-					</div>
-				</div>
-
-			</div>
-		</div>
-	</div>
-
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
 			<?php
 			include_once("./includes/sidebar.php");
-			require("./handler/addressHandler.php");
-			$address = new AddressHandler();
-			$states = $address->getStates();
 			?>
 		</div>
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid">
 					<h2 class="mt-30 page-title">State</h2>
-					<ol class="breadcrumb mb-30">
-						<li class="breadcrumb-item"><a href="add_city.php">Address</a></li>
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
 						<li class="breadcrumb-item active">State</li>
 					</ol>
+					<?php
+					if ($msg != '') {
+					?>
+						<div class="alert alert-<?= ($error) ? 'danger' : 'success' ?> alert-dismissible fade show" role="alert">
+							<?= $msg ?>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+					<?php
+					}
+					?>
 					<div class="row">
 						<div class="col-lg-12 col-md-12">
 							<div class="card card-static-2 mb-30">
 								<div class="card-title-2">
 									<h4 style="width:100%;display: flex; justify-content: space-between;align-items: center;">
 										<p><b>State List</b></p>
-										<p><a href="#" class="add-btn hover-btn" data-toggle="modal" data-target="#exampleModal">Add State</a></p>
+										<p><a href="add_state.php" class="add-btn hover-btn">Add State</a></p>
 									</h4>
 								</div>
 								<div class="card-body-table px-3">
@@ -103,7 +90,7 @@
 														<td><?= $state["createdDate"] ?></td>
 														<td><?= $state["modifiedDate"] ?></td>
 														<td class="action-btns">
-															<a data-toggle="modal" data-target="#exampleModal" class="edit-btn"><i class="fas fa-edit"></i></a>
+															<a href="add_state.php?edit=<?= $state["id"]?>" class="edit-btn"><i class="fas fa-edit"></i></a>
 															<a href="add_state.php?delete=<?= $state["id"] ?>" class="edit-btn"><i class="fas fa-trash"></i></a>
 														</td>
 													</tr>

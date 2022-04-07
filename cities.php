@@ -1,22 +1,16 @@
 <?php
-require("./handler/addressHandler.php");
-$address = new AddressHandler();
-$cities = $address->getCities();
-$countries = $address->getCountries();
-$msg = '';
-$error = true;
-if (isset($_POST["addCity"])) {
-	$countryid = $_POST["country"];
-	$stateid = $_POST["state"];
-	$city = strtolower(trim($_POST["city"]));
-	$result = $address->addCity($countryid, $stateid, $city);
-	if ($result == "") {
-		$error = false;
-		$msg = "New City Added Successfully";
-	} else {
-		$msg = $result;
+	session_start();
+	require("./handler/addressHandler.php");
+	$address = new AddressHandler();
+	$cities = $address->getCities();
+	$countries = $address->getCountries();
+	$msg = '';
+	$error = false;
+	if(isset($_SESSION["result"])){
+		$error = $_SESSION["result"]["error"];
+		$msg = $_SESSION["result"]["msg"];
+		unset($_SESSION["result"]);
 	}
-}
 ?>
 
 <!DOCTYPE html>
@@ -40,48 +34,6 @@ if (isset($_POST["addCity"])) {
 	include_once("./includes/header.php");
 	?>
 
-	<!-- Modal -->
-	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Add City</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="card-body-table px-3">
-						<form id="formAddCity" action="add_city.php" method="POST">
-							<div class="form-group">
-								<label class="form-label">Select Country*</label>
-								<select class="form-control" name="country" id="countrylist">
-									<option value="0">Select Country</option>
-									<?php
-									foreach ($countries as $country) {
-										echo "<option value='" . $country["id"] . "'>" . $country["country"] . "</option>";
-									}
-									?>
-								</select>
-							</div>
-							<div class="form-group">
-								<label class="form-label">Select State*</label>
-								<select class="form-control" name="state" id="statelist">
-								</select>
-							</div>
-							<div class="form-group">
-								<label class="form-label">City Name*</label>
-								<input type="text" class="form-control" name="city" id="cityname" placeholder="City name">
-							</div>
-							<button type="submit" class="save-btn hover-btn" name="addCity" value="addCity">Add City</button>
-						</form>
-					</div>
-				</div>
-
-			</div>
-		</div>
-	</div>
-
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
 			<?php
@@ -92,8 +44,8 @@ if (isset($_POST["addCity"])) {
 			<main>
 				<div class="container-fluid">
 					<h2 class="mt-30 page-title">City</h2>
-					<ol class="breadcrumb mb-30">
-						<li class="breadcrumb-item"><a href="add_city.php">Address</a></li>
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
 						<li class="breadcrumb-item active">City</li>
 					</ol>
 
@@ -113,7 +65,7 @@ if (isset($_POST["addCity"])) {
 								<div class="card-title-2">
 									<h4 style="width:100%;display: flex; justify-content: space-between;align-items: center;">
 										<p><b>Cities</b></p>
-										<p><a href="#" class="add-btn hover-btn" data-toggle="modal" data-target="#exampleModal">Add City</a></p>
+										<p><a href="add_city.php" class="add-btn hover-btn">Add City</a></p>
 									</h4>
 								</div>
 								<div class="card-body-table px-3">
@@ -143,7 +95,7 @@ if (isset($_POST["addCity"])) {
 														<td><?= $city["createdDate"] ?></td>
 														<td><?= $city["modifiedDate"] ?></td>
 														<td class="action-btns">
-															<a data-toggle="modal" data-target="#exampleModal" class="edit-btn"><i class="fas fa-edit"></i></a>
+															<a href="add_city.php?edit=<?=$city["id"]?>" class="edit-btn"><i class="fas fa-edit"></i></a>
 															<a href="add_city.php?delete=<?= $city["id"] ?>" class="edit-btn"><i class="fas fa-trash"></i></a>
 														</td>
 													</tr>
@@ -168,7 +120,6 @@ if (isset($_POST["addCity"])) {
 	<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<script src="js/scripts.js"></script>
 	<script src="js/validation.js"></script>
-	<script src="js/address.js"></script>
 </body>
 
 </html>

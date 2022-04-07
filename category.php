@@ -19,33 +19,6 @@
 	include_once("./includes/header.php");
 	?>
 
-
-	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<form id="formAddCategory" action="add_category.php">
-						<div class="form-group">
-							<label class="form-label">Name*</label>
-							<input type="text" class="form-control" id="category" placeholder="Category Name">
-						</div>
-						<div class="form-group">
-							<label class="form-label">Description*</label>
-							<textarea name="description" id="description" class="form-control" rows="3" placeholder="Enter a description"></textarea>
-						</div>
-						<button type="submit" style="width:100%" class="save-btn hover-btn">Add Category</button>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
 			<?php
@@ -55,10 +28,10 @@
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid">
-					<h2 class="mt-30 page-title">Categories</h2>
+					<h2 class="mt-30 page-title">Category</h2>
 					<ol class="breadcrumb mb-30">
 						<li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-						<li class="breadcrumb-item active">Categories</li>
+						<li class="breadcrumb-item active">Category</li>
 					</ol>
 
 					<div class="row justify-content-between">
@@ -67,8 +40,8 @@
 							<div class="card card-static-2 mt-30 mb-30">
 								<div class="card-title-2">
 									<h4 style="width:100%;display: flex; justify-content: space-between;align-items: center;">
-										<p><b>Categories</b></p>
-										<p><a href="add_category.php" class="add-btn hover-btn" data-toggle="modal" data-target="#exampleModal">Add New</a></p>
+										<p><b>Category</b></p>
+										<p><a href="add_category.php" class="add-btn hover-btn">Add New</a></p>
 									</h4>
 								</div>
 								<div class="card-body-table px-3">
@@ -93,7 +66,7 @@
 													<td>23/01/2022</td>
 													<td>23/01/2022</td>
 													<td class="action-btns">
-														<a data-toggle="modal" data-target="#exampleModal" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
+														<a href="add_category.php" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
 														<a style="cursor: pointer;" class="edit-btn"><i class="fas fa-trash"></i></a>
 													</td>
 												</tr>

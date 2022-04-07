@@ -19,40 +19,6 @@
     include_once("./includes/header.php");
     ?>
 
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add Color</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="add_product.php" id="formAddProductColor">
-                        <div class="card-body-table px-3">
-                            <div class="news-content-right pd-20">
-                                <div class="form-group">
-                                    <label class="form-label">Color name*</label>
-                                    <input type="text" id="addcolor" class="form-control" placeholder="Product Name" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Color Value*</label>
-                                    <input type="color" class="form-control" placeholder="Product Name" />
-                                </div>
-                                <button class="save-btn hover-btn" style="width: 100%;" type="submit">
-                                    Add Color
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
             <?php
@@ -75,7 +41,7 @@
                                 <div class="card-title-2">
                                     <h4 style="width:100%;display: flex; justify-content: space-between;align-items: center;">
                                         <p><b>All Colors</b></p>
-                                        <p><a href="add_product.php" class="add-btn hover-btn" data-toggle="modal" data-target="#exampleModal">Add Color</a></p>
+                                        <p><a href="add_color.php" class="add-btn hover-btn">Add Color</a></p>
                                     </h4>
                                 </div>
                                 <div class="card-body-table px-3">
@@ -101,7 +67,7 @@
                                                         <div class="colorview"></div>
                                                     </td>
                                                     <td class="action-btns">
-                                                        <a data-toggle="modal" data-target="#exampleModal" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
+                                                        <a href="add_color.php" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
                                                         <a style="cursor: pointer;" class="edit-btn"><i class="fas fa-trash"></i></a>
                                                     </td>
                                                 </tr>
@@ -110,31 +76,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- <div class="card card-static-2 mt-30 mb-30">
-								<div class="card-title-2">
-									<h4 style="width:100%;display: flex; justify-content: space-between;align-items: center;">
-										<p><b>All Size</b></p>
-										<p><a href="add_product.php" class="add-btn hover-btn">Add Size</a></p>
-									</h4>
-								</div>
-								<div class="card-body-table px-3">
-									<div class="table-responsive">
-										<table class="table ucp-table table-hover">
-											<thead>
-												<tr>
-													<th>Name</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>XL</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-								</div>
-							</div> -->
                         </div>
                     </div>
                 </div>
