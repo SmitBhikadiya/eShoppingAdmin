@@ -1,16 +1,16 @@
 <?php
-	session_start();
-	require("./handler/addressHandler.php");
-	$address = new AddressHandler();
-	$cities = $address->getCities();
-	$countries = $address->getCountries();
-	$msg = '';
-	$error = false;
-	if(isset($_SESSION["result"])){
-		$error = $_SESSION["result"]["error"];
-		$msg = $_SESSION["result"]["msg"];
-		unset($_SESSION["result"]);
-	}
+session_start();
+require("./handler/addressHandler.php");
+$address = new AddressHandler();
+$cities = $address->getCities();
+$countries = $address->getCountries();
+$msg = '';
+$error = false;
+if (isset($_SESSION["result"])) {
+	$error = $_SESSION["result"]["error"];
+	$msg = $_SESSION["result"]["msg"];
+	unset($_SESSION["result"]);
+}
 ?>
 
 <!DOCTYPE html>
@@ -33,6 +33,20 @@
 	<?php
 	include_once("./includes/header.php");
 	?>
+
+	<!-- <div class="modal fade" id="confirmModal" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body" style="padding:10px;">
+					<h4 class="text-center"></h4>
+					<div class="text-center">
+						<a class="btn btn-danger btn-yes">yes</a>
+						<a class="btn btn-default btn-no">no</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> -->
 
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
@@ -95,8 +109,8 @@
 														<td><?= $city["createdDate"] ?></td>
 														<td><?= $city["modifiedDate"] ?></td>
 														<td class="action-btns">
-															<a href="add_city.php?edit=<?=$city["id"]?>" class="edit-btn"><i class="fas fa-edit"></i></a>
-															<a href="./handler/requestHandler.php?dCity=<?=$city["id"]?>" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
+															<a href="add_city.php?edit=<?= $city["id"] ?>" class="edit-btn"><i class="fas fa-edit"></i></a>
+															<a href="./handler/requestHandler.php?dCity=<?= $city["id"] ?>" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
 														</td>
 													</tr>
 												<?php

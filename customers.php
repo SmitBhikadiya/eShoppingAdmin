@@ -89,12 +89,12 @@
 						<li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
 						<li class="breadcrumb-item active">Customers</li>
 					</ol>
-					<nav class="navbar navbar-light  justify-content-end">
+					<!-- <nav class="navbar navbar-light  justify-content-end">
 						<form class="form-inline">
 							<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
 							<button class="status-btn hover-btn my-2 my-sm-0" type="submit">Search</button>
 						</form>
-					</nav>
+					</nav> -->
 					<div class="row">
 						<div class="col-lg-12 col-md-12">
 							<div class="card card-static-2 mb-30">
