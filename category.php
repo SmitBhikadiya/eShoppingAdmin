@@ -96,7 +96,7 @@ if (isset($_SESSION["result"])) {
 															<td><?= $cat["modifiedDate"] ?></td>
 															<td class="action-btns">
 																<a href="add_category.php?edit=<?= $cat["id"] ?>" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
-																<a href="./handler/requestHandler.php?dCategory=<?= $cat["id"] ?>" style="cursor: pointer;" class="edit-btn"><i class="fas fa-trash"></i></a>
+																<a href="./handler/requestHandler.php?dCategory=<?= $cat["id"] ?>" style="cursor: pointer;" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
 															</td>
 														</tr>
 												<?php

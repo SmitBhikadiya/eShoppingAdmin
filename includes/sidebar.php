@@ -28,7 +28,7 @@
                     <a class="nav-link sub_nav_link" href="sub_category.php">Sub Category</a>
                 </nav>
             </div>
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrders" aria-expanded="false" aria-controls="collapseOrders">
+            <!-- <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrders" aria-expanded="false" aria-controls="collapseOrders">
                 <div class="sb-nav-link-icon"><i class="fas fa-cart-arrow-down	"></i></div>
                 Orders
                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
@@ -50,7 +50,7 @@
                     <a class="nav-link sub_nav_link" href="customers.php">Customer List</a>
                 </nav>
             </div>
-
+ -->
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAddress" aria-expanded="false" aria-controls="collapseAddress">
                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                 Address

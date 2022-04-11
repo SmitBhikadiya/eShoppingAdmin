@@ -90,7 +90,7 @@
                                                 <?php
                                                 foreach ($countries as $country) {
                                                     $selected = '';
-                                                    if($result["countryId"]==$country["id"]){
+                                                    if(isset($result) && $result["countryId"]==$country["id"]){
                                                         $selected = "selected";
                                                     }
                                                     echo "<option value='" . $country["id"] . "' $selected>" . $country["country"] . "</option>";

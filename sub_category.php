@@ -78,6 +78,8 @@ if (isset($_SESSION["result"])) {
                                                     <th>Sub Category</th>
                                                     <th>Description</th>
                                                     <th>Category</th>
+                                                    <th>Created Date</th>
+                                                    <th>Modified Date</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -90,11 +92,13 @@ if (isset($_SESSION["result"])) {
                                                         <tr>
                                                             <td><?= $srno++ ?></td>
                                                             <td><?= $cat["subCatName"] ?></td>
-                                                            <td><?= $cat["subCateDesc"] ?></td>
+                                                            <td><?= $cat["subCatDesc"] ?></td>
                                                             <td><?= $cat["catName"] ?></td>
+                                                            <td><?= $cat["createdDate"] ?></td>
+                                                            <td><?= $cat["modifiedDate"] ?></td>
                                                             <td class="action-btns">
                                                                 <a href="add_sub_category.php?edit=<?= $cat["id"] ?>" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
-                                                                <a href="./handler/requestHandler.php?dSubCategory=<?= $cat["id"] ?>" style="cursor: pointer;" class="edit-btn"><i class="fas fa-trash"></i></a>
+                                                                <a href="./handler/requestHandler.php?dSubCategory=<?= $cat["id"] ?>" style="cursor: pointer;" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
                                                             </td>
                                                         </tr>
                                                 <?php
@@ -120,6 +124,7 @@ if (isset($_SESSION["result"])) {
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="js/scripts.js"></script>
+    <script src="js/validation.js"></script>
 </body>
 <!-- Mirrored from gambolthemes.net/html-items/gambo_admin/category.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 03 Feb 2021 16:40:06 GMT -->
 

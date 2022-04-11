@@ -59,6 +59,7 @@
                         <li class="breadcrumb-item"><a href="countries.php">Country</a></li>
                         <li class="breadcrumb-item active"><?=$btn?> Country</li>
                     </ol>
+
                     <?php
 					if ($msg != '') {
 					?>
@@ -69,6 +70,7 @@
 					<?php
 					}
 					?>
+                    
                     <div class="row justify-content-between">
                         <div class="col-lg-5 col-md-5">
                             <div class="card card-static-2 mb-30">

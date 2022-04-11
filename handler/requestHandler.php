@@ -2,9 +2,11 @@
     session_start();
     require_once("addressHandler.php");
     require_once("adminuserHandler.php");
+    require_once("categoryHandler.php");
 
     $address = new AddressHandler();
     $adminuser = new AdminUser();
+    $category = new CategoryHandler();
     $error = '';
     $success = '';
 
@@ -27,11 +29,82 @@
     /*############# Request: CATEGORY, SUB CATEGORY #############*/
 
     /*------------- Add Category -------------*/
+    if (isset($_POST["AddCategory"])) {
+        $catname = strtolower(trim($_POST["catname"]));
+        $catdesc = strtolower(trim($_POST["catdesc"]));
+        $error = $category->addCategory($catname, $catdesc);
+        if ($error == "") {
+            $_SESSION["result"] =["msg"=>"New Category '$catname' Added Successfully", "error"=>false];
+        } else {
+            $_SESSION["result"] = ["msg"=>$error, "error"=>true];
+        }
+        header("Location: ../add_category.php");
+    }
     /*------------- Add Sub Category -------------*/
+    if (isset($_POST["AddSubCategory"])) {
+        $catid = $_POST["category"];
+        $catname = strtolower(trim($_POST["subcatname"]));
+        $catdesc = strtolower(trim($_POST["subcatdesc"]));
+        $error = $category->addSubCategory($catname, $catdesc, $catid);
+        if ($error == "") {
+            $_SESSION["result"] =["msg"=>"New Sub Category '$catname' Added Successfully", "error"=>false];
+        } else {
+            $_SESSION["result"] = ["msg"=>$error, "error"=>true];
+        }
+        header("Location: ../add_sub_category.php");
+    }
+
     /*------------- Update Category -------------*/
+    if(isset($_POST["EditCategory"])){
+        $catid = $_POST["categoryid"];
+        $catname = strtolower(trim($_POST["catname"]));
+        $catdesc = strtolower(trim($_POST["catdesc"]));
+        $error = $category->updateCategory($catid, $catname, $catdesc);
+        if ($error == "") {
+            $_SESSION["result"] =["msg"=>"Category '$catname' Updated Successfully", "error"=>false];
+        } else {
+            $_SESSION["result"] = ["msg"=>$error, "error"=>true];
+        }
+        header("Location: ../category.php");  
+    }
+
     /*------------- Update Sub Category -------------*/
+    if(isset($_POST["EditSubCategory"])){
+        $subcatid = $_POST["subcatid"];
+        $catid = $_POST["category"];
+        $catname = strtolower(trim($_POST["subcatname"]));
+        $catdesc = strtolower(trim($_POST["subcatdesc"]));
+        $error = $category->updateSubCategory($subcatid, $catname, $catdesc, $catid);
+        if ($error == "") {
+            $_SESSION["result"] =["msg"=>"Sub Category '$catname' Updated Successfully", "error"=>false];
+        } else {
+            $_SESSION["result"] = ["msg"=>$error, "error"=>true];
+        }
+        header("Location: ../sub_category.php");   
+    }
+
     /*------------- Delete Category -------------*/
+    if(isset($_GET["dCategory"])){
+        $id = (int) $_GET["dCategory"];
+        if($category->deleteCategory($id)){
+            $_SESSION["result"] =["msg"=>"Deleted Successfully", "error"=>false];
+        }else{
+            $_SESSION["result"] =["msg"=>"Somthing went wrong!!!", "error"=>true];
+        }
+        header("Location: ../category.php");
+    }
+
+
     /*------------- Delete Sub Category -------------*/
+    if(isset($_GET["dSubCategory"])){
+        $id = (int) $_GET["dSubCategory"];
+        if($category->deleteSubCategory($id)){
+            $_SESSION["result"] =["msg"=>"Deleted Successfully", "error"=>false];
+        }else{
+            $_SESSION["result"] =["msg"=>"Somthing went wrong!!!", "error"=>true];
+        }
+        header("Location: ../sub_category.php");
+    }
 
     /*####################### END ######################*/
     
@@ -45,7 +118,7 @@
         $city = strtolower(trim($_POST["city"]));
         $error = $address->addCity($countryid, $stateid, $city);
         if ($error == "") {
-            $_SESSION["result"] =["msg"=>"New City Added Successfully", "error"=>false];
+            $_SESSION["result"] =["msg"=>"'$city' city Added Successfully", "error"=>false];
         } else {
             $_SESSION["result"] = ["msg"=>$error, "error"=>true];
         }
@@ -58,7 +131,7 @@
         $state = strtolower(trim($_POST["state"]));
         $error = $address->addState($countryid, $state);
         if ($error == "") {
-            $_SESSION["result"] =["msg"=>"New State Added Successfully", "error"=>false];
+            $_SESSION["result"] =["msg"=>"'$state' state Added Successfully", "error"=>false];
         } else {
             $_SESSION["result"] = ["msg"=>$error, "error"=>true];
         }
@@ -70,7 +143,7 @@
         $country = strtolower(trim($_POST["country"]));
         $error = $address->addCountry($country);
         if ($error == "") {
-            $_SESSION["result"] =["msg"=>"New Country Added Successfully", "error"=>false];
+            $_SESSION["result"] =["msg"=>"'$country' country Added Successfully", "error"=>false];
         } else {
             $_SESSION["result"] = ["msg"=>$error, "error"=>true];
         }
@@ -85,7 +158,7 @@
         $city = strtolower(trim($_POST["city"]));
         $error = $address->updateCity($countryid, $stateid, $cityid, $city);
         if ($error == "") {
-            $_SESSION["result"] =["msg"=>"City Updated Successfully", "error"=>false];
+            $_SESSION["result"] =["msg"=>"'$city' city Updated Successfully", "error"=>false];
         } else {
             $_SESSION["result"] = ["msg"=>$error, "error"=>true];
         }
@@ -99,7 +172,7 @@
         $state = strtolower(trim($_POST["state"]));
         $error = $address->updateState($countryid, $stateid, $state);
         if ($error == "") {
-            $_SESSION["result"] =["msg"=>"State Updated Successfully", "error"=>false];
+            $_SESSION["result"] =["msg"=>"'$state' state Updated Successfully", "error"=>false];
         } else {
             $_SESSION["result"] = ["msg"=>$error, "error"=>true];
         }
@@ -112,7 +185,7 @@
         $countryid = $_POST["countryid"];
         $error = $address->updateCountry($countryid, $country);
         if ($error == "") {
-            $_SESSION["result"] =["msg"=>"Country Updated Successfully", "error"=>false];
+            $_SESSION["result"] =["msg"=>"'$country' country Updated Successfully", "error"=>false];
         } else {
             $_SESSION["result"] = ["msg"=>$error, "error"=>true];
         }
@@ -123,7 +196,7 @@
     if(isset($_GET["dCity"])){
         $id = (int) $_GET["dCity"];
         if($address->deleteCity($id)){
-            $_SESSION["result"] =["msg"=>"City Deleted Successfully", "error"=>false];
+            $_SESSION["result"] =["msg"=>"Deleted Successfully", "error"=>false];
         }else{
             $_SESSION["result"] =["msg"=>"Somthing went wrong!!!", "error"=>true];
         }
@@ -134,7 +207,7 @@
     if(isset($_GET["dState"])){
         $id = (int) $_GET["dState"];
         if($address->deleteState($id)){
-            $_SESSION["result"] =["msg"=>"State Deleted Successfully", "error"=>false];
+            $_SESSION["result"] =["msg"=>"Deleted Successfully", "error"=>false];
         }else{
             $_SESSION["result"] =["msg"=>"Somthing went wrong!!!", "error"=>true];
         }
@@ -145,7 +218,7 @@
     if(isset($_GET["dCountry"])){
         $id = (int) $_GET["dCountry"];
         if($address->deleteCountry($id)){
-            $_SESSION["result"] =["msg"=>"Country Deleted Successfully", "error"=>false];
+            $_SESSION["result"] =["msg"=>"Deleted Successfully", "error"=>false];
         }else{
             $_SESSION["result"] =["msg"=>"Somthing went wrong!!!", "error"=>true];
         }  
