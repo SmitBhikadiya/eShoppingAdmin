@@ -31,7 +31,7 @@ class CategoryHandler extends DBConnection
     function getCatById($id){
         $records = [];
         $catid = (int) $id;
-        $sql = "SELECT * FROM category WHERE id=$catid AND category.status = 0";
+        $sql = "SELECT * FROM category WHERE id=$catid AND status = 0";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result && $result->num_rows > 0) {

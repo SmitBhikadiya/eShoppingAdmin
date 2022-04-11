@@ -60,6 +60,7 @@ if (isset($_SESSION["result"])) {
                         <li class="breadcrumb-item"><a href="states.php">State</a></li>
                         <li class="breadcrumb-item active"><?=$btn?> State</li>
                     </ol>
+
                     <?php
                     if ($msg != '') {
                     ?>
@@ -70,6 +71,7 @@ if (isset($_SESSION["result"])) {
                     <?php
                     }
                     ?>
+                    
                     <div class="row justify-content-between">
                         <div class="col-lg-5 col-md-5">
                             <div class="card card-static-2 mb-30">

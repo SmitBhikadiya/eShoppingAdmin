@@ -1,5 +1,15 @@
 <?php
     session_start();
+    require("./handler/productHandler.php");
+    $obj = new ProductHandler();
+    $colors = $obj->getColors();
+    $msg = '';
+    $error = false;
+    if (isset($_SESSION["result"])) {
+    	$error = $_SESSION["result"]["error"];
+    	$msg = $_SESSION["result"]["msg"];
+    	unset($_SESSION["result"]);
+    } 
 ?>
 
 <!DOCTYPE html>
@@ -39,6 +49,18 @@
                         </li>
                         <li class="breadcrumb-item active">Product Color</li>
                     </ol>
+
+                    <?php
+					if ($msg != '') {
+					?>
+						<div class="alert alert-<?= ($error) ? 'danger' : 'success' ?> alert-dismissible fade show" role="alert">
+							<?= $msg ?>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+					<?php
+					}
+					?>
+
                     <div class="row justify-content-between">
                         <div class="col-lg-12 col-md-12">
                             <div class="card card-static-2 mt-30 mb-30">
@@ -53,6 +75,7 @@
                                         <table class="table ucp-table table-hover">
                                             <thead>
                                                 <tr>
+                                                    <th>Sr No.</th>
                                                     <th>Name</th>
                                                     <th>Value</th>
                                                     <th>Created Date</th>
@@ -62,19 +85,31 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                            <?php
+												if (count($colors) > 0) {
+													$srno = 1;
+													foreach ($colors as $color) {
+												?>
                                                 <tr>
-                                                    <td>Navy Blue</td>
-                                                    <td>#0f0140</td>
-                                                    <td>12/02/2022</td>
-                                                    <td>12/02/2022</td>
+                                                    <th><?=$srno++?></th>
+                                                    <td><?=$color["colorName"]?></td>
+                                                    <td><?=$color["colorCode"]?></td>
+                                                    <td><?=$color["createdDate"]?></td>
+                                                    <td><?=$color["modifiedDate"]?></td>
                                                     <td>
-                                                        <div class="colorview"></div>
+                                                        <div class="colorview" style="background-color: <?=$color["colorCode"]?>;"></div>
                                                     </td>
                                                     <td class="action-btns">
-                                                        <a href="add_color.php" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
-                                                        <a style="cursor: pointer;" class="edit-btn"><i class="fas fa-trash"></i></a>
+                                                        <a href="add_color.php?edit=<?=$color["id"]?>" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
+                                                        <a href="./handler/requestHandler.php?dColor=<?=$color["id"]?>" style="cursor: pointer;" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
                                                     </td>
                                                 </tr>
+                                                <?php
+                                                    }
+                                                } else {
+                                                    echo "<tr><td colspan=6>No Record Found!!</td></tr>";
+                                                }
+                                                ?>
                                             </tbody>
                                         </table>
                                     </div>

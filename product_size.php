@@ -1,5 +1,15 @@
 <?php
-    session_start();
+session_start();
+require("./handler/productHandler.php");
+$obj = new ProductHandler();
+$sizes = $obj->getSizes();
+$msg = '';
+$error = false;
+if (isset($_SESSION["result"])) {
+    $error = $_SESSION["result"]["error"];
+    $msg = $_SESSION["result"]["msg"];
+    unset($_SESSION["result"]);
+}
 ?>
 
 <!DOCTYPE html>
@@ -39,6 +49,18 @@
                         </li>
                         <li class="breadcrumb-item active">Product Sizes</li>
                     </ol>
+
+                    <?php
+                    if ($msg != '') {
+                    ?>
+                        <div class="alert alert-<?= ($error) ? 'danger' : 'success' ?> alert-dismissible fade show" role="alert">
+                            <?= $msg ?>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                    <?php
+                    }
+                    ?>
+
                     <div class="row justify-content-between">
                         <div class="col-lg-12 col-md-12">
                             <div class="card card-static-2 mt-30 mb-30">
@@ -61,16 +83,27 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>XL</td>
-                                                    <td>12/02/2022</td>
-                                                    <td>12/03/2022</td>
-                                                    <td class="action-btns">
-                                                        <a href="add_size.php" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
-                                                        <a style="cursor: pointer;" class="edit-btn"><i class="fas fa-trash"></i></a>
-                                                    </td>
-                                                </tr>
+                                                <?php
+                                                if (count($sizes) > 0) {
+                                                    $srno = 1;
+                                                    foreach ($sizes as $size) {
+                                                ?>
+                                                        <tr>
+                                                            <td><?= $srno++ ?></td>
+                                                            <td><?= $size["size"] ?></td>
+                                                            <td><?= $size["createdDate"] ?></td>
+                                                            <td><?= $size["modifiedDate"] ?></td>
+                                                            <td class="action-btns">
+                                                                <a href="add_size.php?edit=<?= $size["id"] ?>" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
+                                                                <a href="./handler/requestHandler.php?dSize=<?= $size["id"] ?>" style="cursor: pointer;" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                <?php
+                                                    }
+                                                } else {
+                                                    echo "<tr><td colspan=6>No Record Found!!</td></tr>";
+                                                }
+                                                ?>
                                             </tbody>
                                         </table>
                                     </div>
