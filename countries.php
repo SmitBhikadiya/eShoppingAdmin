@@ -1,15 +1,15 @@
 <?php
-	session_start();
-	require("./handler/addressHandler.php");
-	$address = new AddressHandler();
-	$countries = $address->getCountries();
-	$msg = '';
-	$error = false;
-	if(isset($_SESSION["result"])){
-		$error = $_SESSION["result"]["error"];
-		$msg = $_SESSION["result"]["msg"];
-		unset($_SESSION["result"]);
-	}
+session_start();
+require("./handler/addressHandler.php");
+$address = new AddressHandler();
+$countries = $address->getCountries();
+$msg = '';
+$error = false;
+if (isset($_SESSION["result"])) {
+	$error = $_SESSION["result"]["error"];
+	$msg = $_SESSION["result"]["msg"];
+	unset($_SESSION["result"]);
+}
 ?>
 
 <!DOCTYPE html>
@@ -30,7 +30,7 @@
 
 <body class="sb-nav-fixed">
 	<?php
-		include_once("./includes/header.php");
+	include_once("./includes/header.php");
 	?>
 
 	<div id="layoutSidenav">
@@ -80,20 +80,24 @@
 											</thead>
 											<tbody>
 												<?php
-												$srno = 1;
-												foreach ($countries as $country) {
+												if (count($countries) > 0) {
+													$srno = 1;
+													foreach ($countries as $country) {
 												?>
-													<tr>
-														<td><?= $srno ?></td>
-														<td><?= $country["country"] ?></td>
-														<td><?= $country["createdDate"] ?></td>
-														<td><?= $country["modifiedDate"] ?></td>
-														<td class="action-btns">
-															<a href="add_country.php?edit=<?= $country["id"]?>" class=" edit-btn"><i class="fas fa-edit"></i></a>
-															<a href="./handler/requestHandler.php?dCountry=<?=$country["id"]?>" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
-														</td>
-													</tr>
+														<tr>
+															<td><?= $srno ?></td>
+															<td><?= $country["country"] ?></td>
+															<td><?= $country["createdDate"] ?></td>
+															<td><?= $country["modifiedDate"] ?></td>
+															<td class="action-btns">
+																<a href="add_country.php?edit=<?= $country["id"] ?>" class=" edit-btn"><i class="fas fa-edit"></i></a>
+																<a href="./handler/requestHandler.php?dCountry=<?= $country["id"] ?>" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
+															</td>
+														</tr>
 												<?php
+													}
+												} else {
+													echo "<tr><td colspan=3>No Record Found!!</td></tr>";
 												}
 												?>
 											</tbody>

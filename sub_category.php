@@ -1,5 +1,15 @@
 <?php
-    session_start();
+session_start();
+require("./handler/categoryHandler.php");
+$obj = new CategoryHandler();
+$categories = $obj->getSubCategory();
+$msg = '';
+$error = false;
+if (isset($_SESSION["result"])) {
+    $error = $_SESSION["result"]["error"];
+    $msg = $_SESSION["result"]["msg"];
+    unset($_SESSION["result"]);
+}
 ?>
 
 <!DOCTYPE html>
@@ -38,6 +48,17 @@
                         <li class="breadcrumb-item active">Sub Category</li>
                     </ol>
 
+                    <?php
+                    if ($msg != '') {
+                    ?>
+                        <div class="alert alert-<?= ($error) ? 'danger' : 'success' ?> alert-dismissible fade show" role="alert">
+                            <?= $msg ?>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                    <?php
+                    }
+                    ?>
+
                     <div class="row justify-content-between">
 
                         <div class="col-lg-12 col-md-12">
@@ -61,17 +82,27 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-
-                                                <tr>
-                                                    <td>2</td>
-                                                    <td>Tshirts</td>
-                                                    <td>Build using Special Fabric, 99% dustproof</td>
-                                                    <td>Men</td>
-                                                    <td class="action-btns">
-                                                        <a href="add_sub_category.php" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
-                                                        <a style="cursor: pointer;" class="edit-btn"><i class="fas fa-trash"></i></a>
-                                                    </td>
-                                                </tr>
+                                                <?php
+                                                if (count($categories) > 0) {
+                                                    $srno = 1;
+                                                    foreach ($categories as $cat) {
+                                                ?>
+                                                        <tr>
+                                                            <td><?= $srno++ ?></td>
+                                                            <td><?= $cat["subCatName"] ?></td>
+                                                            <td><?= $cat["subCateDesc"] ?></td>
+                                                            <td><?= $cat["catName"] ?></td>
+                                                            <td class="action-btns">
+                                                                <a href="add_sub_category.php?edit=<?= $cat["id"] ?>" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
+                                                                <a href="./handler/requestHandler.php?dSubCategory=<?= $cat["id"] ?>" style="cursor: pointer;" class="edit-btn"><i class="fas fa-trash"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                <?php
+                                                    }
+                                                } else {
+                                                    echo "<tr><td colspan=5>No Record Found!!</td></tr>";
+                                                }
+                                                ?>
                                             </tbody>
                                         </table>
                                     </div>

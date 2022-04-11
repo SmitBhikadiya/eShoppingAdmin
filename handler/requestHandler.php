@@ -8,11 +8,10 @@
     $error = '';
     $success = '';
 
-    if(isset($_POST["countryid"])){
-        $records = $address->getStatesByCountryId($_POST["countryid"]);
-        echo json_encode(["states"=>$records]);
-    }
 
+    /*############# Request: ADMIN SIGNIN ############*/
+
+    /*------------- Admin User Signin -------------*/
     if (isset($_POST["signin"])) {
         $email = $_POST["email"];
         $password = $_POST["password"];
@@ -25,6 +24,21 @@
         }
     }
 
+    /*############# Request: CATEGORY, SUB CATEGORY #############*/
+
+    /*------------- Add Category -------------*/
+    /*------------- Add Sub Category -------------*/
+    /*------------- Update Category -------------*/
+    /*------------- Update Sub Category -------------*/
+    /*------------- Delete Category -------------*/
+    /*------------- Delete Sub Category -------------*/
+
+    /*####################### END ######################*/
+    
+
+    /*############# Request: CITY, STATE, COUNTRY #############*/
+
+    /*------------- Add City -------------*/
     if (isset($_POST["AddCity"])) {
         $countryid = $_POST["country"];
         $stateid = $_POST["state"];
@@ -38,6 +52,7 @@
         header("Location: ../add_city.php");
     }
 
+    /*------------- Add State -------------*/
     if (isset($_POST["AddState"])) {
         $countryid = $_POST["country"];
         $state = strtolower(trim($_POST["state"]));
@@ -50,6 +65,7 @@
         header("Location: ../add_state.php");
     }
 
+    /*------------- Add Country -------------*/
     if (isset($_POST["AddCountry"])) {
         $country = strtolower(trim($_POST["country"]));
         $error = $address->addCountry($country);
@@ -61,6 +77,7 @@
         header("Location: ../add_country.php");
     }
 
+    /*------------- Update City -------------*/
     if(isset($_POST["EditCity"])){
         $countryid = $_POST["country"];
         $stateid = $_POST["state"];
@@ -75,6 +92,7 @@
         header("Location: ../cities.php");
     }
 
+    /*------------- Update State -------------*/
     if(isset($_POST["EditState"])){
         $countryid = $_POST["country"];
         $stateid = $_POST["stateid"];
@@ -88,6 +106,7 @@
         header("Location: ../states.php");
     }
 
+    /*------------- Update Country -------------*/
     if(isset($_POST["EditCountry"])){
         $country = strtolower(trim($_POST["country"]));
         $countryid = $_POST["countryid"];
@@ -100,6 +119,7 @@
         header("Location: ../countries.php");
     }
 
+    /*------------- Delete City -------------*/
     if(isset($_GET["dCity"])){
         $id = (int) $_GET["dCity"];
         if($address->deleteCity($id)){
@@ -109,6 +129,8 @@
         }
         header("Location: ../cities.php");
     }
+
+    /*------------- Delete State -------------*/
     if(isset($_GET["dState"])){
         $id = (int) $_GET["dState"];
         if($address->deleteState($id)){
@@ -118,6 +140,8 @@
         }
         header("Location: ../states.php");
     }
+
+    /*------------- Delete Country -------------*/
     if(isset($_GET["dCountry"])){
         $id = (int) $_GET["dCountry"];
         if($address->deleteCountry($id)){
@@ -127,5 +151,13 @@
         }  
         header("Location: ../countries.php");
     }
+
+    /*------------- Get State List By Country Id -------------*/
+    if(isset($_POST["countryid"])){
+        $records = $address->getStatesByCountryId($_POST["countryid"]);
+        echo json_encode(["states"=>$records]);
+    }
+
+    /*##################### END #####################*/
 
 

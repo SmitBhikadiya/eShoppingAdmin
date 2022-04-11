@@ -1,5 +1,15 @@
 <?php
-    session_start();
+session_start();
+require("./handler/categoryHandler.php");
+$obj = new CategoryHandler();
+$categories = $obj->getCategory();
+$msg = '';
+$error = false;
+if (isset($_SESSION["result"])) {
+	$error = $_SESSION["result"]["error"];
+	$msg = $_SESSION["result"]["msg"];
+	unset($_SESSION["result"]);
+}
 ?>
 
 <!DOCTYPE html>
@@ -38,6 +48,17 @@
 						<li class="breadcrumb-item active">Category</li>
 					</ol>
 
+					<?php
+					if ($msg != '') {
+					?>
+						<div class="alert alert-<?= ($error) ? 'danger' : 'success' ?> alert-dismissible fade show" role="alert">
+							<?= $msg ?>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+					<?php
+					}
+					?>
+
 					<div class="row justify-content-between">
 
 						<div class="col-lg-12 col-md-12">
@@ -62,18 +83,28 @@
 												</tr>
 											</thead>
 											<tbody>
-
-												<tr>
-													<td>2</td>
-													<td>Men</td>
-													<td>This category is for men products</td>
-													<td>23/01/2022</td>
-													<td>23/01/2022</td>
-													<td class="action-btns">
-														<a href="add_category.php" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
-														<a style="cursor: pointer;" class="edit-btn"><i class="fas fa-trash"></i></a>
-													</td>
-												</tr>
+												<?php
+												if (count($categories) > 0) {
+													$srno = 1;
+													foreach ($categories as $cat) {
+												?>
+														<tr>
+															<td><?= $srno++ ?></td>
+															<td><?= $cat["catName"] ?></td>
+															<td><?= $cat["catDesc"] ?></td>
+															<td><?= $cat["createdDate"] ?></td>
+															<td><?= $cat["modifiedDate"] ?></td>
+															<td class="action-btns">
+																<a href="add_category.php?edit=<?= $cat["id"] ?>" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
+																<a href="./handler/requestHandler.php?dCategory=<?= $cat["id"] ?>" style="cursor: pointer;" class="edit-btn"><i class="fas fa-trash"></i></a>
+															</td>
+														</tr>
+												<?php
+													}
+												} else {
+													echo "<tr><td colspan=6>No Record Found!!</td></tr>";
+												}
+												?>
 											</tbody>
 										</table>
 									</div>

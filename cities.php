@@ -73,6 +73,7 @@ if (isset($_SESSION["result"])) {
 					<?php
 					}
 					?>
+
 					<div class="row">
 						<div class="col-lg-12 col-md-12">
 							<div class="card card-static-2 mb-30">
@@ -98,22 +99,26 @@ if (isset($_SESSION["result"])) {
 											</thead>
 											<tbody>
 												<?php
-												$srno = 1;
-												foreach ($cities as $city) {
+												if (count($cities)) {
+													$srno = 1;
+													foreach ($cities as $city) {
 												?>
-													<tr>
-														<td><?= $srno++ ?></td>
-														<td><?= $city["city"] ?></td>
-														<td><?= $city["state"] ?></td>
-														<td><?= $city["country"] ?></td>
-														<td><?= $city["createdDate"] ?></td>
-														<td><?= $city["modifiedDate"] ?></td>
-														<td class="action-btns">
-															<a href="add_city.php?edit=<?= $city["id"] ?>" class="edit-btn"><i class="fas fa-edit"></i></a>
-															<a href="./handler/requestHandler.php?dCity=<?= $city["id"] ?>" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
-														</td>
-													</tr>
+														<tr>
+															<td><?= $srno++ ?></td>
+															<td><?= $city["city"] ?></td>
+															<td><?= $city["state"] ?></td>
+															<td><?= $city["country"] ?></td>
+															<td><?= $city["createdDate"] ?></td>
+															<td><?= $city["modifiedDate"] ?></td>
+															<td class="action-btns">
+																<a href="add_city.php?edit=<?= $city["id"] ?>" class="edit-btn"><i class="fas fa-edit"></i></a>
+																<a href="./handler/requestHandler.php?dCity=<?= $city["id"] ?>" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
+															</td>
+														</tr>
 												<?php
+													}
+												} else {
+													echo "<tr><td colspan=3>No Record Found!!</td></tr>";
 												}
 												?>
 											</tbody>

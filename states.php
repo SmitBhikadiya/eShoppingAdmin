@@ -1,15 +1,15 @@
 <?php
-	session_start();
-	require("./handler/addressHandler.php");
-	$address = new AddressHandler();
-	$states = $address->getStates();
-	$msg = '';
-	$error = false;
-	if(isset($_SESSION["result"])){
-		$error = $_SESSION["result"]["error"];
-		$msg = $_SESSION["result"]["msg"];
-		unset($_SESSION["result"]);
-	}
+session_start();
+require("./handler/addressHandler.php");
+$address = new AddressHandler();
+$states = $address->getStates();
+$msg = '';
+$error = false;
+if (isset($_SESSION["result"])) {
+	$error = $_SESSION["result"]["error"];
+	$msg = $_SESSION["result"]["msg"];
+	unset($_SESSION["result"]);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,6 +46,7 @@
 						<li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
 						<li class="breadcrumb-item active">State</li>
 					</ol>
+
 					<?php
 					if ($msg != '') {
 					?>
@@ -56,6 +57,7 @@
 					<?php
 					}
 					?>
+
 					<div class="row">
 						<div class="col-lg-12 col-md-12">
 							<div class="card card-static-2 mb-30">
@@ -80,21 +82,25 @@
 											</thead>
 											<tbody>
 												<?php
-												$srno = 1;
-												foreach ($states as $state) {
+												if (count($states) > 0) {
+													$srno = 1;
+													foreach ($states as $state) {
 												?>
-													<tr>
-														<td><?= $srno++ ?></td>
-														<td><?= $state["state"] ?></td>
-														<td><?= $state["country"] ?></td>
-														<td><?= $state["createdDate"] ?></td>
-														<td><?= $state["modifiedDate"] ?></td>
-														<td class="action-btns">
-															<a href="add_state.php?edit=<?= $state["id"]?>" class="edit-btn"><i class="fas fa-edit"></i></a>
-															<a href="./handler/requestHandler.php?dState=<?=$state["id"]?>" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
-														</td>
-													</tr>
+														<tr>
+															<td><?= $srno++ ?></td>
+															<td><?= $state["state"] ?></td>
+															<td><?= $state["country"] ?></td>
+															<td><?= $state["createdDate"] ?></td>
+															<td><?= $state["modifiedDate"] ?></td>
+															<td class="action-btns">
+																<a href="add_state.php?edit=<?= $state["id"] ?>" class="edit-btn"><i class="fas fa-edit"></i></a>
+																<a href="./handler/requestHandler.php?dState=<?= $state["id"] ?>" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
+															</td>
+														</tr>
 												<?php
+													}
+												} else {
+													echo "<tr><td colspan=3>No Record Found!!</td></tr>";
 												}
 												?>
 											</tbody>
