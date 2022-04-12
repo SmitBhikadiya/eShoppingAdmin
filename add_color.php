@@ -80,9 +80,9 @@ if (isset($_SESSION["result"])) {
                                 </div>
                                 <div class="card-body-table px-3">
                                     <form action="./handler/requestHandler.php" id="formAddProductColor" method="POST">
+                                        <input type="hidden" name="colorid" value="<?= isset($result) ? $result["id"] : '' ?>">
                                         <div class="card-body-table px-3">
                                             <div class="news-content-right pd-20">
-                                                <input type="hidden" name="colorid" value="<?= isset($result) ? $result["id"] : '' ?>">
                                                 <div class="form-group">
                                                     <label class="form-label">Color name*</label>
                                                     <input type="text" id="addcolor" name="color" class="form-control" placeholder="Product Name" value="<?= isset($result) ? $result["colorName"] : "" ?>" />

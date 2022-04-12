@@ -31,6 +31,35 @@
     /********************* END **********************/
 
     /************ Request: Product, Color, Size *************/
+    if(isset($_POST["AddProduct"])){
+        $name = strtolower(trim($_POST["name"]));
+        $desc = strtolower(trim($_POST["desc"]));
+        $catid = $_POST["category"];
+        $subcatid = $_POST["subcategory"];
+        $price = $_POST["price"];
+        $qty = $_POST["qty"];
+        $colorids = $_POST["colors"];
+        $sizeids = $_POST["sizes"];
+        $files = $_FILES["file"];
+        $images = []; 
+        
+        // upload files to local directory
+        $targetDir = "../images/product/";
+        for($i=0; $i<count($files["name"]); $i++){
+            $target = $targetDir.basename($files["name"][$i]);
+            if(move_uploaded_file($files["tmp_name"][$i], $target)){
+                array_push($images, basename($files["name"][$i]));
+            }
+        }
+
+        $error = $productH->addProduct($name, $desc, $catid, $subcatid,$price, $qty, $colorids, $sizeids, $images);
+        if ($error == "") {
+            $_SESSION["result"] =["msg"=>"New Product '$name' Added Successfully", "error"=>false];
+        } else {
+            $_SESSION["result"] = ["msg"=>$error, "error"=>true];
+        }
+        header("Location: ../products.php");
+    }
     if(isset($_POST["AddColor"])){
         $color = strtolower(trim($_POST["color"]));
         $value = strtolower(trim($_POST["value"]));
@@ -174,6 +203,12 @@
             $_SESSION["result"] =["msg"=>"Somthing went wrong!!!", "error"=>true];
         }
         header("Location: ../sub_category.php");
+    }
+
+    /*------------- Get Sub Category List By category Id -------------*/
+    if(isset($_POST["categoryId"])){
+        $records = $categoryH->getSubCategoryByCategoryId($_POST["categoryId"]);
+        echo json_encode(["categories"=>$records]);
     }
 
     /********************* END **********************/

@@ -1,5 +1,15 @@
 <?php
-    session_start();
+session_start();
+require("./handler/productHandler.php");
+$obj = new ProductHandler();
+$products = $obj->getProducts();
+$msg = '';
+$error = false;
+if (isset($_SESSION["result"])) {
+	$error = $_SESSION["result"]["error"];
+	$msg = $_SESSION["result"]["msg"];
+	unset($_SESSION["result"]);
+}
 ?>
 
 <!DOCTYPE html>
@@ -19,8 +29,8 @@
 </head>
 
 <body class="sb-nav-fixed">
-<?php 
-		include_once("./includes/header.php");
+	<?php
+	include_once("./includes/header.php");
 	?>
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
@@ -36,6 +46,17 @@
 						<li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
 						<li class="breadcrumb-item active">Products</li>
 					</ol>
+
+					<?php
+                    if ($msg != '') {
+                    ?>
+                        <div class="alert alert-<?= ($error) ? 'danger' : 'success' ?> alert-dismissible fade show" role="alert">
+                            <?= $msg ?>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                    <?php
+                    }
+                    ?>
 
 					<div class="row justify-content-between">
 						<div class="col-lg-12 col-md-12">
@@ -61,23 +82,35 @@
 												</tr>
 											</thead>
 											<tbody>
+											<?php
+												if (count($products) > 0) {
+													$srno = 1;
+													foreach ($products as $product) {
+														$images = explode(",", $product["productImages"]);
+												?>
 												<tr>
-													<td>1</td>
+													<td><?=$srno?></td>
 													<td>
 														<div class="cate-img-5">
-															<img src="images/product/img-1.jpg" alt="">
+															<img width="100" height="60" src="images/product/<?=$images[1]?>" alt="">
 														</div>
 													</td>
-													<td>Product Name Here</td>
-													<td>$12.00</td>
-													<td>120 pcs.</td>
-													<td>Vegetables &amp; Fruits</td>
+													<td><?=$product["productName"]?></td>
+													<td><?=$product["productPrice"]?></td>
+													<td><?=$product["totalQuantity"]?></td>
+													<td><?=$product["catName"]?></td>
 													<td class="action-btns">
-														<a href="add_product.php" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
-														<a href="#" class="edit-btn"><i class="fas fa-trash"></i></a>
+														<a href="view_product.php?view=<?=$product["id"]?>" class="view-shop-btn" title="View"><i class="fas fa-eye"></i></a>
+														<a href="add_product.php?edit=<?=$product["id"]?>" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
+														<a href="./handler/requestHandler.php?dProduct=<?=$product["id"]?>" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
 													</td>
 												</tr>
-
+												<?php
+                                                    }
+                                                } else {
+                                                    echo "<tr><td colspan=7>No Record Found!!</td></tr>";
+                                                }
+                                                ?>
 											</tbody>
 										</table>
 									</div>
@@ -88,7 +121,7 @@
 				</div>
 			</main>
 			<?php
-				include_once("./includes/footer.php");
+			include_once("./includes/footer.php");
 			?>
 		</div>
 	</div>

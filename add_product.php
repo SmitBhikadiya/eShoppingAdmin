@@ -1,5 +1,27 @@
 <?php
-    session_start();
+session_start();
+require("./handler/productHandler.php");
+require("./handler/categoryHandler.php");
+$productH = new ProductHandler();
+$categoryH = new CategoryHandler();
+$msg = '';
+$error = false;
+$btn = "Add";
+
+if (isset($_GET["edit"])) {
+	// $result = product$obj->getColorById($_GET["edit"]);
+	// if (count($result) < 1) {
+	//     $_SESSION["result"] = ["msg" => "Invalid Request", "error" => true];
+	//     header("Location: product_color.php");
+	// }
+	$btn = "Edit";
+}
+
+if (isset($_SESSION["result"])) {
+	$error = $_SESSION["result"]["error"];
+	$msg = $_SESSION["result"]["msg"];
+	unset($_SESSION["result"]);
+}
 ?>
 
 <!DOCTYPE html>
@@ -47,7 +69,7 @@
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid">
-					<h2 class="mt-30 page-title">Add Products</h2>
+					<h2 class="mt-30 page-title"><?= $btn ?> Products</h2>
 					<ol class="breadcrumb mb-30">
 						<li class="breadcrumb-item">
 							<a href="index.php">Dashboard</a>
@@ -55,52 +77,72 @@
 						<li class="breadcrumb-item">
 							<a href="products.php">Products</a>
 						</li>
-						<li class="breadcrumb-item active">Add Product</li>
+						<li class="breadcrumb-item active"><?= $btn ?> Product</li>
 					</ol>
+
+					<?php
+					if ($msg != '') {
+					?>
+						<div class="alert alert-<?= ($error) ? 'danger' : 'success' ?> alert-dismissible fade show" role="alert">
+							<?= $msg ?>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+					<?php
+					}
+					?>
+
 					<div class="row">
 						<div class="col-lg-10 col-md-10">
 							<div class="card card-static-2 mb-30">
 								<div class="card-title-2">
-									<h4><b>Add New Product</b></h4>
+									<h4><b><?= $btn ?> New Product</b></h4>
 								</div>
 								<div class="card-body-table px-3">
 									<div class="news-content-right pd-20">
-										<form action="add_product.php" id="formAddNewProduct">
+										<form action="./handler/requestHandler.php" id="formAddNewProduct" method="POST" enctype="multipart/form-data">
+											<input type="hidden" name="productid" value="<?= isset($result) ? $result["id"] : '' ?>">
 											<div class="form-group">
 												<label class="form-label">Name*</label>
-												<input type="text" class="form-control" id="pname" placeholder="Product Name" />
+												<input type="text" name="name" class="form-control" id="pname" placeholder="Product Name" />
 											</div>
 											<div class="form-group">
 												<label class="form-label">Description*</label>
-												<textarea name="p_desc" class="form-control" rows="3" id="pdesc"></textarea>
+												<textarea name="desc" class="form-control" rows="3" id="pdesc"></textarea>
 											</div>
 											<div class="form-group">
 												<label class="form-label">Category*</label>
-												<select name="categtory" class="form-control" id="categtory">
-													<option value="1" selected>Men</option>
-													<option value="2">Women</option>
-													<option value="3">Kids</option>
-													<option value="3">Accessories</option>
+												<select name="category" class="form-control" id="categtory">
+													<option value="0">Select Category</option>
+													<?php
+													$categories = $categoryH->getCategory();
+													foreach ($categories as $cat) {
+														$selected = '';
+														if (isset($result) && $result["categoryId"] == $cat["id"]) {
+															$selected = "selected";
+														}
+														echo "<option value='" . $cat["id"] . "' $selected>" . $cat["catName"] . "</option>";
+													}
+													?>
 												</select>
 											</div>
 
 											<div class="form-group">
 												<label class="form-label">Sub Category*</label>
-												<select name="categtory" class="form-control" id="subcategtory"></select>
+												<select name="subcategory" class="form-control" id="subcategtory"></select>
 											</div>
 
 											<div class="form-group">
 												<label class="form-label">Unit Price*</label>
-												<input type="number" class="form-control" id="pprice" placeholder="Product Per Unit Price" />
+												<input type="number" name="price" class="form-control" id="pprice" placeholder="Product Per Unit Price" />
 											</div>
 											<div class="form-group">
 												<label class="form-label">Total Quantity*</label>
-												<input type="number" class="form-control" id="pqty" placeholder="Product Availabel Quantity" />
+												<input type="number" name="qty" class="form-control" id="pqty" placeholder="Product Availabel Quantity" />
 											</div>
 
 											<div class="form-group">
 												<label for="productcolor">Select Product Color</label>
-												<select multiple class="form-control" id="productcolor">
+												<select multiple name="colors[]" class="form-control" id="productcolor">
 													<option value="1">Magenta</option>
 													<option value="2">Pink</option>
 													<option value="3">Red</option>
@@ -111,7 +153,7 @@
 
 											<div class="form-group">
 												<label for="productsize">Select Product Size</label>
-												<select multiple class="form-control" id="productsize">
+												<select multiple name="sizes[]" class="form-control" id="productsize">
 													<option value="1">XXS</option>
 													<option value="2">XS</option>
 													<option value="3">S</option>
@@ -124,22 +166,8 @@
 												<label class="form-label">Product Images*</label>
 												<input type="file" class="form-control" name="file[]" accept=".jpg, .jpeg, .png" id="pimages" multiple />
 											</div>
-											<!-- <div>
-												<ul class="add-produc-imgs">
-													<li>
-														<div class="add-cate-img-1">
-															<img src="images/product/big-1.jpg" alt="" />
-														</div>
-													</li>
-													<li>
-														<div class="add-cate-img-1">
-															<img src="images/product/big-2.jpg" alt="" />
-														</div>
-													</li>
-												</ul>
-											</div> -->
-											<button class="save-btn hover-btn" type="submit">
-												Add New Product
+											<button class="save-btn hover-btn" type="submit" name="<?= $btn ?>Product" value="<?= $btn ?>Product">
+												<?= $btn ?> New Product
 											</button>
 										</form>
 									</div>

@@ -30,3 +30,22 @@ $(document).ready(function(){
         $(".alert").remove();
     }, 5000)
 });
+
+$(document).on("change", "#categtory", function(){
+  var id = $(this).val();
+  $.ajax({
+      type: "POST",
+      dataType: "json",
+      data: {categoryId: id},
+      url: './handler/requestHandler.php', 
+      success: function(res){
+          let options = '';
+          res.categories.forEach(cat => {
+              options+=`
+                  <option value='${cat["id"]}'>${cat["subCatName"]}</option>
+              `;
+          });
+          $("#subcategtory").html(options);
+      }
+  });
+});

@@ -54,6 +54,19 @@ class CategoryHandler extends DBConnection
         }
         return $records;
     }
+    function getSubCategoryByCategoryId($id){
+        $sql = "SELECT subcategory.*, category.catName FROM subcategory JOIN category ON category.id=subcategory.categoryId WHERE subcategory.categoryId=$id AND category.status = 0 AND subcategory.status = 0";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
 
     function addCategory($catname, $catdesc){
         $error = "";

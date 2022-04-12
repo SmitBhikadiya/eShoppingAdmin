@@ -30,7 +30,7 @@ class ProductHandler extends DBConnection
         return $records;
     }
     function getProducts(){
-        $sql = "SELECT * FROM products WHERE status=0 ORDER BY id DESC";
+        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE products.status=0 AND category.status=0 ORDER BY products.id DESC";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {
@@ -108,10 +108,22 @@ class ProductHandler extends DBConnection
         }
         return $error;
     }
-    function addProduct($name, $desc, $catid, $subcatid, $price, $qty, $colors, $sizes, $images){
-        // step1 : Add images and get ids 
-        
-        // step2: Add product
+    function addProduct($name, $desc, $catid, $subcatid, $price, $qty, $colors, $sizes, $imagesArr){
+        $images = implode(',', $imagesArr);
+        $colorIds = implode(',', $colors);
+        $sizeIds = implode(',', $sizes);
+        $error = "";
+        if (!$this->isProductExits($name, $catid, $subcatid)) {
+            $sql = "INSERT INTO products (productName, productDesc, productPrice, productSizeIds, productColorIds, productImages, totalQuantity, categoryId, subCategoryId, createdDate) 
+                    VALUES ('$name', '$desc', $price, '$sizeIds', '$colorIds', '$images', $qty, $catid, $subcatid , now())";
+            $result = $this->getConnection()->query($sql);
+            if (!$result) {
+                $error = "Somthing went wrong with the $sql";
+            }
+        } else {
+            $error = "'$name' is already exits in the selected category!!";
+        }
+        return $error;
     }
 
     function updateColor($id, $color, $value){
@@ -160,6 +172,14 @@ class ProductHandler extends DBConnection
     }
     function isSizeExits($size){
         $sql = "SELECT * FROM productsize WHERE size='$size' AND status = 0";
+        $result = $this->getConnection()->query($sql);
+        if ($result->num_rows > 0) {
+            return true;
+        }
+        return false;
+    }
+    function isProductExits($name, $catid, $subcatid){
+        $sql = "SELECT * FROM products WHERE productName='$name' AND categoryId=$catid AND subCategoryId=$subcatid AND status = 0";
         $result = $this->getConnection()->query($sql);
         if ($result->num_rows > 0) {
             return true;
