@@ -1,10 +1,12 @@
 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
     <div class="sb-sidenav-menu">
         <div class="nav">
+            
             <a class="nav-link active" href="index.php">
                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                 Dashboard
             </a>
+
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProducts" aria-expanded="false" aria-controls="collapseProducts">
                 <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>
                 Products
@@ -17,6 +19,7 @@
                     <a class="nav-link sub_nav_link" href="product_size.php">Sizes</a>
                 </nav>
             </div>
+
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCategories" aria-expanded="false" aria-controls="collapseCategories">
                 <div class="sb-nav-link-icon"><i class="fas fa-list"></i></div>
                 Categories
@@ -28,6 +31,7 @@
                     <a class="nav-link sub_nav_link" href="sub_category.php">Sub Category</a>
                 </nav>
             </div>
+
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrders" aria-expanded="false" aria-controls="collapseOrders">
                 <div class="sb-nav-link-icon"><i class="fas fa-cart-arrow-down	"></i></div>
                 Orders
@@ -39,6 +43,7 @@
                     <a class="nav-link sub_nav_link" href="completed_orders.php">Completed Orders</a>
                 </nav>
             </div>
+            
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseServiser" aria-expanded="false" aria-controls="collapseServiser">
                 <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                 Users
