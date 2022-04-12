@@ -28,7 +28,7 @@
                     <a class="nav-link sub_nav_link" href="sub_category.php">Sub Category</a>
                 </nav>
             </div>
-            <!-- <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrders" aria-expanded="false" aria-controls="collapseOrders">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrders" aria-expanded="false" aria-controls="collapseOrders">
                 <div class="sb-nav-link-icon"><i class="fas fa-cart-arrow-down	"></i></div>
                 Orders
                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
@@ -39,7 +39,6 @@
                     <a class="nav-link sub_nav_link" href="completed_orders.php">Completed Orders</a>
                 </nav>
             </div>
-
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseServiser" aria-expanded="false" aria-controls="collapseServiser">
                 <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                 Users
@@ -47,10 +46,10 @@
             </a>
             <div class="collapse" id="collapseServiser" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
                 <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link sub_nav_link" href="customers.php">Customer List</a>
+                    <a class="nav-link sub_nav_link" href="customers.php">Customers</a>
                 </nav>
             </div>
- -->
+
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAddress" aria-expanded="false" aria-controls="collapseAddress">
                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                 Address

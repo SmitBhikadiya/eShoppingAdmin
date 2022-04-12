@@ -4,11 +4,13 @@
     require_once("adminuserHandler.php");
     require_once("categoryHandler.php");
     require_once("productHandler.php");
+    require_once("customerHandler.php");
 
     $addressH = new AddressHandler();
     $adminuserH = new AdminUser();
     $categoryH = new CategoryHandler();
     $productH = new ProductHandler();
+    $customerH = new CustomerHandler();
     $error = '';
     $success = '';
 
@@ -29,6 +31,20 @@
     }
 
     /********************* END **********************/
+
+    /************** Request: Customer ***************/
+    if(isset($_GET["dCustomer"])){
+        $id = (int) $_GET["dCustomer"];
+        if($customerH->deleteCustomer($id)){
+            $_SESSION["result"] =["msg"=>"Deleted Successfully", "error"=>false];
+        }else{
+            $_SESSION["result"] =["msg"=>"Somthing went wrong!!!", "error"=>true];
+        }
+        header("Location: ../customers.php");
+    }
+
+    /********************* END **********************/
+
 
     /************ Request: Product, Color, Size *************/
     if(isset($_POST["AddProduct"])){
