@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 11, 2022 at 06:24 AM
+-- Generation Time: Apr 12, 2022 at 11:31 AM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 7.4.20
 
@@ -59,6 +59,14 @@ CREATE TABLE `category` (
   `status` tinyint(2) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `category`
+--
+
+INSERT INTO `category` (`id`, `catName`, `catDesc`, `modifiedDate`, `createdDate`, `status`) VALUES
+(1, 'men', 'brand new and used clothes for men', '2022-04-11 12:09:11', '2022-04-11 10:47:02', 0),
+(2, 'women', 'testing', '2022-04-11 14:06:47', '2022-04-11 12:21:29', 0);
+
 -- --------------------------------------------------------
 
 --
@@ -83,8 +91,9 @@ INSERT INTO `cities` (`id`, `city`, `stateId`, `countryId`, `modifiedDate`, `cre
 (1, 'rajkot city', 1, 1, '2022-04-07 13:11:58', '2022-04-07 11:11:03', 0),
 (2, 'scrumcaps', 3, 2, '2022-04-07 13:09:14', '2022-04-07 11:11:25', 0),
 (3, 'mumbai', 2, 1, '2022-04-07 12:38:06', '2022-04-07 11:45:30', 0),
-(4, 'hrandses', 3, 2, '2022-04-11 09:07:09', '2022-04-07 13:12:15', 0),
-(5, 'new pune', 2, 1, '2022-04-11 09:10:45', '2022-04-11 09:10:18', 0);
+(4, 'hrandses', 3, 2, '2022-04-11 12:23:12', '2022-04-07 13:12:15', 1),
+(5, 'new pune', 2, 1, '2022-04-11 09:10:45', '2022-04-11 09:10:18', 0),
+(6, 'vadodara', 1, 1, NULL, '2022-04-11 12:23:47', 0);
 
 -- --------------------------------------------------------
 
@@ -106,7 +115,8 @@ CREATE TABLE `countries` (
 
 INSERT INTO `countries` (`id`, `country`, `modifiedDate`, `createdDate`, `status`) VALUES
 (1, 'india', '2022-04-07 13:01:35', '2022-04-07 11:08:30', 0),
-(2, 'brazill', '2022-04-07 13:11:42', '2022-04-07 11:08:33', 0);
+(2, 'brazill', '2022-04-07 13:11:42', '2022-04-07 11:08:33', 0),
+(3, 'us', NULL, '2022-04-11 12:24:12', 0);
 
 -- --------------------------------------------------------
 
@@ -123,20 +133,16 @@ CREATE TABLE `productcolor` (
   `status` tinyint(2) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `productimages`
+-- Dumping data for table `productcolor`
 --
 
-CREATE TABLE `productimages` (
-  `id` int(11) NOT NULL,
-  `productId` int(11) NOT NULL,
-  `imageURL` varchar(150) NOT NULL,
-  `modifiedDate` datetime DEFAULT NULL,
-  `createdDate` datetime DEFAULT NULL,
-  `status` tinyint(2) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO `productcolor` (`id`, `colorName`, `colorCode`, `modifiedDate`, `createdDate`, `status`) VALUES
+(1, 'navy blue', '#031159', '2022-04-11 15:38:31', '2022-04-11 15:37:59', 0),
+(2, 'red', '#ff0000', NULL, '2022-04-11 15:38:46', 0),
+(4, 'yellow', '#fbff1f', '2022-04-12 11:39:49', '2022-04-11 15:39:22', 0),
+(5, 'green', '#1fbd00', '2022-04-12 11:39:37', '2022-04-12 11:39:24', 0),
+(6, 'black', '#000000', NULL, '2022-04-12 14:38:55', 0);
 
 -- --------------------------------------------------------
 
@@ -167,7 +173,7 @@ CREATE TABLE `products` (
   `productPrice` int(11) NOT NULL,
   `productSizeIds` varchar(100) NOT NULL,
   `productColorIds` varchar(100) NOT NULL,
-  `productImageIds` varchar(100) NOT NULL,
+  `productImages` text NOT NULL,
   `totalQuantity` int(11) NOT NULL,
   `categoryId` int(11) NOT NULL,
   `subCategoryId` int(11) NOT NULL,
@@ -175,6 +181,16 @@ CREATE TABLE `products` (
   `createdDate` datetime DEFAULT NULL,
   `status` tinyint(2) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `products`
+--
+
+INSERT INTO `products` (`id`, `productName`, `productDesc`, `productPrice`, `productSizeIds`, `productColorIds`, `productImages`, `totalQuantity`, `categoryId`, `subCategoryId`, `modifiedDate`, `createdDate`, `status`) VALUES
+(1, 't-shirt', 'full sleeve t-shirt', 293, '4,2,1', '2,1', 'blackandwhite.jpg,fullsleevetshirt.jpg', 10, 1, 1, NULL, '2022-04-12 10:59:15', 0),
+(2, 'polo t-shirt', 'for testing', 597, '4,2', '6,2', 'product_1649754439569.png,product_1649754439247.png', 11, 1, 1, '2022-04-12 14:39:22', '2022-04-12 11:38:45', 0),
+(3, 'blacky shine', 'this is for testing', 898, '4,2', '1', 'product_1649747082428.png', 45, 1, 2, '2022-04-12 14:37:02', '2022-04-12 12:34:42', 0),
+(4, 'abc', 'for testing', 1299, '4,2', '1', 'product_1649754686373.png,product_1649754686824.png', 13, 1, 2, '2022-04-12 14:59:53', '2022-04-12 14:40:36', 1);
 
 -- --------------------------------------------------------
 
@@ -189,6 +205,15 @@ CREATE TABLE `productsize` (
   `createdDate` datetime DEFAULT NULL,
   `status` tinyint(2) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `productsize`
+--
+
+INSERT INTO `productsize` (`id`, `size`, `modifiedDate`, `createdDate`, `status`) VALUES
+(1, 'xll', '2022-04-11 15:36:12', '2022-04-11 15:05:01', 0),
+(2, 'l', '2022-04-11 15:37:38', '2022-04-11 15:37:31', 0),
+(5, 'xxxll', '2022-04-12 09:34:49', '2022-04-12 09:34:25', 0);
 
 -- --------------------------------------------------------
 
@@ -211,7 +236,7 @@ CREATE TABLE `states` (
 
 INSERT INTO `states` (`id`, `state`, `countryId`, `modifiedDate`, `createdDate`, `status`) VALUES
 (1, 'gujarat', 1, '2022-04-11 09:07:56', '2022-04-07 11:08:43', 0),
-(2, 'maharashtra', 1, NULL, '2022-04-07 11:08:47', 0),
+(2, 'maharashtra', 1, '2022-04-11 12:24:01', '2022-04-07 11:08:47', 1),
 (3, 'olivia', 2, '2022-04-11 09:08:10', '2022-04-07 11:08:57', 0);
 
 -- --------------------------------------------------------
@@ -229,6 +254,14 @@ CREATE TABLE `subcategory` (
   `createdDate` datetime DEFAULT NULL,
   `status` tinyint(2) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `subcategory`
+--
+
+INSERT INTO `subcategory` (`id`, `categoryId`, `subCatName`, `subCatDesc`, `modifiedDate`, `createdDate`, `status`) VALUES
+(1, 1, 't-shirt', 'made by using 100% quality fabric', '2022-04-11 14:21:09', '2022-04-11 11:06:03', 0),
+(2, 1, 'jeans', '80% fire proof', '2022-04-11 12:01:46', '2022-04-11 11:52:36', 0);
 
 -- --------------------------------------------------------
 
@@ -308,13 +341,6 @@ ALTER TABLE `productcolor`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `productimages`
---
-ALTER TABLE `productimages`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `product` (`productId`);
-
---
 -- Indexes for table `productreview`
 --
 ALTER TABLE `productreview`
@@ -378,31 +404,25 @@ ALTER TABLE `adminuser`
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `cities`
 --
 ALTER TABLE `cities`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `countries`
 --
 ALTER TABLE `countries`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `productcolor`
 --
 ALTER TABLE `productcolor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `productimages`
---
-ALTER TABLE `productimages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `productreview`
@@ -414,13 +434,13 @@ ALTER TABLE `productreview`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `productsize`
 --
 ALTER TABLE `productsize`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `states`
@@ -432,7 +452,7 @@ ALTER TABLE `states`
 -- AUTO_INCREMENT for table `subcategory`
 --
 ALTER TABLE `subcategory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `useraddress`
@@ -456,12 +476,6 @@ ALTER TABLE `users`
 ALTER TABLE `cities`
   ADD CONSTRAINT `countryid` FOREIGN KEY (`countryId`) REFERENCES `countries` (`id`),
   ADD CONSTRAINT `stateid` FOREIGN KEY (`stateId`) REFERENCES `states` (`id`);
-
---
--- Constraints for table `productimages`
---
-ALTER TABLE `productimages`
-  ADD CONSTRAINT `product` FOREIGN KEY (`productId`) REFERENCES `products` (`id`);
 
 --
 -- Constraints for table `products`

@@ -71,11 +71,39 @@ class ProductHandler extends DBConnection
     function getProductById($id){
         $records = [];
         $productid = (int) $id;
-        $sql = "SELECT * FROM products WHERE id=$productid AND status = 0";
+        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE products.id=$productid AND products.status=0 AND category.status=0 AND subcategory.status=0";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result && $result->num_rows > 0) {
             $records = $result->fetch_assoc();
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+    function getSizeByIds($ids=[]){
+        $records = [];
+        $sql = "SELECT * FROM productsize WHERE id IN $ids AND status = 0";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            while($row = $result->fetch_assoc()){
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+    function getColorByIds($ids=[]){
+        $records = [];
+        $sql = "SELECT * FROM productcolor WHERE id IN $ids AND status = 0";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            while($row = $result->fetch_assoc()){
+                array_push($records, $row);
+            }
         } else {
             $records = [];
         }
@@ -126,6 +154,19 @@ class ProductHandler extends DBConnection
         return $error;
     }
 
+    function updateProduct($prdid, $name, $desc, $catid, $subcatid,$price, $qty, $colorsArr, $sizesArr, $imagesArr){
+        $images = implode(',', $imagesArr);
+        $colorIds = implode(',', $colorsArr);
+        $sizeIds = implode(',', $sizesArr);
+        $error = "";
+        $sql = "UPDATE products SET productName='$name', productDesc='$desc', productPrice=$price, productSizeIds='$sizeIds', productColorIds='$colorIds', productImages='$images', totalQuantity=$qty, categoryId=$catid, subCategoryId=$subcatid, modifiedDate=now() 
+                WHERE id=$prdid";
+        $result = $this->getConnection()->query($sql);
+        if (!$result) {
+            $error = "Somthing went wrong with the $sql";
+        }
+        return $error;
+    }
     function updateColor($id, $color, $value){
         $error = "";
         $sql = "UPDATE productcolor SET colorName='$color', colorCode='$value', modifiedDate=now() WHERE id=$id";
@@ -145,6 +186,14 @@ class ProductHandler extends DBConnection
         return $error;
     }
 
+    function deleteProduct($id){
+        $sql = "UPDATE products SET status=1, modifiedDate=now() WHERE id=$id";
+        $result = $this->getConnection()->query($sql);
+        if ($result) {
+            return true;
+        }
+        return false;
+    }
     function deleteColor($id){
         $sql = "UPDATE productcolor SET status=1, modifiedDate=now() WHERE id=$id";
         $result = $this->getConnection()->query($sql);

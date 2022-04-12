@@ -38,16 +38,19 @@ $(document).ready(function(){
     });
 
     $("#formAddNewProduct").on("submit", function(e){
+        let action = $("#pimages").data("action");
         window.isValid = true;
         $('.error').remove();
         $('.alert').remove();
         isFieldEmpty("#pname");
         isFieldEmpty("#pprice");
         isFieldEmpty("#pqty");
+        isOptionSelected("#categtory");
+        isOptionSelected("#subcategtory");
         isMulOptionSelected("#productcolor");
         isMulOptionSelected("#productsize");
         isFieldEmpty("#pdesc");
-        isImagesSelected("#pimages",['png', 'jpg', 'jpeg'])
+        isImagesSelected("#pimages",['png', 'jpg', 'jpeg'], action)
         if(!window.isValid){
             e.preventDefault();
         }
@@ -103,6 +106,15 @@ $(document).ready(function(){
         }
     });
 
+    function isOptionSelected(id){
+        var value = $(id).val();
+        if(value==0 || value==undefined || value==null){
+            $(id).after("<span class='error'>*Select at least one option!!</span>");
+            window.isValid = false;
+            return;
+        }
+    }
+
     function isFieldEmpty(id){
         var val = $(id).val();
         if(val.length < 1){
@@ -120,9 +132,9 @@ $(document).ready(function(){
         }
     }
 
-    function isImagesSelected(id, format=[]){
+    function isImagesSelected(id, format, action){
         files_ = $(id).get(0).files;
-        if(files_.length===0){
+        if(files_.length===0 && action!="Edit"){
             $(id).after("<span class='error'>*Please select product image</span>");
             window.isValid = false;
             return;

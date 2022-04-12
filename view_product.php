@@ -1,15 +1,20 @@
 <?php
 session_start();
-require("./handler/productHandler.php");
+require_once("./handler/productHandler.php");
 
-if(!isset($_GET["view"])){
-    $_SESSION["result"] =["msg"=>"Invalid Request", "error"=>true];
+if (!isset($_GET["view"])) {
+    $_SESSION["result"] = ["msg" => "Invalid Request", "error" => true];
     header("Location: ./products.php");
+} else {
+    $obj = new ProductHandler();
+    $id = (int) $_GET["view"];
+    $product = $obj->getProductById($id);
+    if (count($product) < 1) {
+        $_SESSION["result"] = ["msg" => "Invalid Request", "error" => true];
+        header("Location: ./products.php");
+    }
 }
 
-$obj = new ProductHandler();
-$id = (int) $_GET["view"];
-$products = $obj->getProductById($id);
 
 $msg = '';
 $error = false;
@@ -50,10 +55,11 @@ if (isset($_SESSION["result"])) {
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid">
-                    <h2 class="mt-30 page-title">Products</h2>
+                    <h2 class="mt-30 page-title">Product View</h2>
                     <ol class="breadcrumb mb-30">
                         <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Products</li>
+                        <li class="breadcrumb-item"><a href="products.php">Products</a></li>
+                        <li class="breadcrumb-item active">Product View</li>
                     </ol>
 
                     <?php
@@ -72,33 +78,85 @@ if (isset($_SESSION["result"])) {
                             <div class="card card-static-2 mb-30">
                                 <div class="card-body-table">
                                     <div class="shopowner-content-left text-center pd-20">
-                                        <div class="shop_img">
-                                            <img src="images/product/img-1.jpg" alt="">
-                                        </div>
+
                                         <div class="row">
-                                            <div class="col-md-3 col-lg-3"></div>
                                             <div class="shopowner-dts col-md-6 col-lg-6">
-                                                <div class="shopowner-dt-list">
-                                                    <span class="left-dt">Name*</span>
-                                                    <span class="right-dt">KOBO</span>
+                                                <div class="d-flex justify-content-center my-3">
+                                                    <?php
+                                                    $images = explode(",", $product["productImages"]);
+                                                    foreach ($images as $image) {
+                                                    ?>
+                                                        <div class="shop_img d-flex mx-1">
+                                                            <img src="images/product/<?= $image ?>" alt="">
+                                                        </div>
+                                                    <?php
+                                                    }
+                                                    ?>
                                                 </div>
                                                 <div class="shopowner-dt-list">
-                                                    <span class="left-dt">Category*</span>
-                                                    <span class="right-dt">KOBO</span>
+                                                    <span class="left-dt">Product Name*</span>
+                                                    <span class="right-dt"><?= $product["productName"] ?></span>
+                                                </div>
+                                                <div class="shopowner-dt-list">
+                                                    <span class="left-dt">Product Description*</span>
+                                                    <span class="right-dt"><?= $product["productDesc"] ?></span>
                                                 </div>
                                                 <div class="shopowner-dt-list">
                                                     <span class="left-dt">Price*</span>
-                                                    <span class="right-dt">$15</span>
+                                                    <span class="right-dt">$<?= $product["productPrice"] ?></span>
                                                 </div>
                                                 <div class="shopowner-dt-list">
-                                                    <span class="left-dt">Discount Price*</span>
-                                                    <span class="right-dt">$15</span>
+                                                    <span class="left-dt">Quantity*</span>
+                                                    <span class="right-dt"><?= $product["totalQuantity"] ?></span>
                                                 </div>
                                                 <div class="shopowner-dt-list">
-                                                    <span class="left-dt">Status*</span>
-                                                    <span class="right-dt">Available (in stock)</span>
+                                                    <span class="left-dt">Sizes*</span>
+                                                    <span class="right-dt">
+                                                        <?php
+                                                        $sizes =  $obj->getSizeByIds("(" . $product["productSizeIds"] . ")");
+                                                        foreach ($sizes as $size) {
+                                                            echo strtoupper($size["size"]) . ", ";
+                                                        }
+                                                        ?>
+                                                    </span>
                                                 </div>
-                                                <div class="col-md-3 col-lg-3"></div>
+                                                <div class="shopowner-dt-list">
+                                                    <span class="left-dt">Colors*</span>
+                                                    <span class="right-dt d-flex justify-content-end">
+                                                        <?php
+                                                            $colors =  $obj->getColorByIds("(" . $product["productColorIds"] . ")");
+                                                            foreach ($colors as $color) { 
+                                                        ?>
+                                                            <div class="colorview mx-1" style="background-color: <?= $color["colorCode"] ?>;"></div>
+                                                        <?php
+                                                            }
+                                                        ?>
+                                                    </span>
+                                                </div>
+                                                <div class="shopowner-dt-list">
+                                                    <span class="left-dt">Category*</span>
+                                                    <span class="right-dt">
+                                                        <?= $product["catName"] ?>
+                                                    </span>
+                                                </div>
+                                                <div class="shopowner-dt-list">
+                                                    <span class="left-dt">Sub Category*</span>
+                                                    <span class="right-dt">
+                                                        <?= $product["subCatName"] ?>
+                                                    </span>
+                                                </div>
+                                                <div class="shopowner-dt-list">
+                                                    <span class="left-dt">Modified Date*</span>
+                                                    <span class="right-dt">
+                                                        <?= $product["modifiedDate"] ?>
+                                                    </span>
+                                                </div>
+                                                <div class="shopowner-dt-list">
+                                                    <span class="left-dt">Created Date*</span>
+                                                    <span class="right-dt">
+                                                        <?= $product["createdDate"] ?>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
 

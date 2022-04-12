@@ -92,7 +92,7 @@ if (isset($_SESSION["result"])) {
 													<td><?=$srno?></td>
 													<td>
 														<div class="cate-img-5">
-															<img width="100" height="60" src="images/product/<?=$images[1]?>" alt="">
+															<img width="100" height="60" src="images/product/<?=$images[0]?>" alt="">
 														</div>
 													</td>
 													<td><?=$product["productName"]?></td>
@@ -128,6 +128,7 @@ if (isset($_SESSION["result"])) {
 	<script src="js/jquery-3.4.1.min.js"></script>
 	<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<script src="js/scripts.js"></script>
+	<script src="js/validation.js"></script>
 </body>
 
 </html>

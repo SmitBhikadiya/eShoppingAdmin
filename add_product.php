@@ -9,11 +9,11 @@ $error = false;
 $btn = "Add";
 
 if (isset($_GET["edit"])) {
-	// $result = product$obj->getColorById($_GET["edit"]);
-	// if (count($result) < 1) {
-	//     $_SESSION["result"] = ["msg" => "Invalid Request", "error" => true];
-	//     header("Location: product_color.php");
-	// }
+	$result = $productH->getProductById($_GET["edit"]);
+	if (count($result) < 1) {
+		$_SESSION["result"] = ["msg" => "Invalid Request", "error" => true];
+		header("Location: products.php");
+	}
 	$btn = "Edit";
 }
 
@@ -92,7 +92,7 @@ if (isset($_SESSION["result"])) {
 					?>
 
 					<div class="row">
-						<div class="col-lg-10 col-md-10">
+						<div class="col-lg-8 col-md-8">
 							<div class="card card-static-2 mb-30">
 								<div class="card-title-2">
 									<h4><b><?= $btn ?> New Product</b></h4>
@@ -103,11 +103,11 @@ if (isset($_SESSION["result"])) {
 											<input type="hidden" name="productid" value="<?= isset($result) ? $result["id"] : '' ?>">
 											<div class="form-group">
 												<label class="form-label">Name*</label>
-												<input type="text" name="name" class="form-control" id="pname" placeholder="Product Name" />
+												<input type="text" name="name" class="form-control" id="pname" placeholder="Product Name" value="<?= (isset($result)) ? $result["productName"] : '' ?>" />
 											</div>
 											<div class="form-group">
 												<label class="form-label">Description*</label>
-												<textarea name="desc" class="form-control" rows="3" id="pdesc"></textarea>
+												<textarea name="desc" class="form-control" rows="3" id="pdesc"><?= (isset($result)) ? $result["productDesc"] : '' ?></textarea>
 											</div>
 											<div class="form-group">
 												<label class="form-label">Category*</label>
@@ -128,43 +128,91 @@ if (isset($_SESSION["result"])) {
 
 											<div class="form-group">
 												<label class="form-label">Sub Category*</label>
-												<select name="subcategory" class="form-control" id="subcategtory"></select>
+												<select name="subcategory" class="form-control" id="subcategtory">
+													<option value="0">Select Sub Category</option>
+													<?php
+													if (isset($result)) {
+														$subcats = $categoryH->getSubCategoryByCategoryId($result["categoryId"]);
+														foreach ($subcats as $subcat) {
+															$selected = '';
+															if ($subcat["id"] == $result["subCategoryId"]) {
+																$selected = "selected";
+															}
+															echo "<option value='" . $subcat["id"] . "' $selected>" . $subcat["subCatName"] . "</option>";
+														}
+													}
+													?>
+												</select>
 											</div>
 
 											<div class="form-group">
 												<label class="form-label">Unit Price*</label>
-												<input type="number" name="price" class="form-control" id="pprice" placeholder="Product Per Unit Price" />
+												<input type="number" name="price" class="form-control" id="pprice" placeholder="Product Per Unit Price" value="<?= (isset($result)) ? $result["productPrice"] : '' ?>" />
 											</div>
 											<div class="form-group">
 												<label class="form-label">Total Quantity*</label>
-												<input type="number" name="qty" class="form-control" id="pqty" placeholder="Product Availabel Quantity" />
+												<input type="number" name="qty" class="form-control" id="pqty" placeholder="Product Availabel Quantity" value="<?= (isset($result)) ? $result["totalQuantity"] : '' ?>" />
 											</div>
 
 											<div class="form-group">
 												<label for="productcolor">Select Product Color</label>
 												<select multiple name="colors[]" class="form-control" id="productcolor">
-													<option value="1">Magenta</option>
-													<option value="2">Pink</option>
-													<option value="3">Red</option>
-													<option value="4">Lavender</option>
-													<option value="5">Blue</option>
+													<?php
+													$colors = $productH->getColors();
+													$i = 0;
+													$colorIds = explode(",", (isset($result)) ? $result["productColorIds"] : '');
+													//print_r($colorIds);
+													foreach ($colors as $color) {
+														$selected = '';
+														if (isset($result) && in_array($color["id"], $colorIds)) {
+															$selected = "selected";
+														}
+														echo "<option value='" . $color["id"] . "' $selected>" . $color["colorName"] . "</option>";
+														$i++;
+													}
+													?>
 												</select>
 											</div>
 
 											<div class="form-group">
 												<label for="productsize">Select Product Size</label>
 												<select multiple name="sizes[]" class="form-control" id="productsize">
-													<option value="1">XXS</option>
-													<option value="2">XS</option>
-													<option value="3">S</option>
-													<option value="4">XL</option>
-													<option value="5">XXL</option>
+													<?php
+													$sizes = $productH->getSizes();
+													$i = 0;
+													$sizeIds = explode(",", (isset($result)) ? $result["productSizeIds"] : '');
+													foreach ($sizes as $size) {
+														$selected = '';
+														if (isset($result) && in_array($size["id"], $sizeIds)) {
+															$selected = "selected";
+														}
+														echo "<option value='" . $size["id"] . "' $selected>" . $size["size"] . "</option>";
+														$i++;
+													}
+													?>
 												</select>
 											</div>
 
 											<div class="form-group">
 												<label class="form-label">Product Images*</label>
-												<input type="file" class="form-control" name="file[]" accept=".jpg, .jpeg, .png" id="pimages" multiple />
+												<input type="hidden" name="oldimages" value="<?=isset($result) ? $result["productImages"] : ""?>">
+												<input type="file" class="form-control" name="file[]" accept=".jpg, .jpeg, .png" id="pimages" data-action="<?=$btn?>" multiple />
+												<ul class="add-produc-imgs">
+													<?php
+													if (isset($result)) {
+														$images = explode(",", $result["productImages"]);
+														foreach ($images as $image) {
+													?>
+															<li>
+																<div class="add-cate-img-1">
+																	<img width='70' height='70' src="./images/product/<?=$image?>" alt="" />
+																</div>
+															</li>
+													<?php
+														}
+													}
+													?>
+												</ul>
 											</div>
 											<button class="save-btn hover-btn" type="submit" name="<?= $btn ?>Product" value="<?= $btn ?>Product">
 												<?= $btn ?> New Product
@@ -220,6 +268,26 @@ if (isset($_SESSION["result"])) {
 				zIndex: 10,
 			});
 		})();
+
+		$(document).ready(function() {
+			$("#pimages").on("change", function(e) {
+				files_ = $(this).get(0).files;
+				var html = '';
+				var relPath = '';
+				if (files_.length === 0) {
+					html += ``;
+				}
+				for (i = 0; i < files_.length; i++) {
+					relPath = (URL || webkitURL).createObjectURL(files_[i]);
+					html += `<li>
+						<div class="add-cate-img-1">
+							<img width='70' height='70' src="${relPath}" alt="" />
+						</div>
+					</li>`;
+				}
+				$(".add-produc-imgs").html(html);
+			});
+		});
 	</script>
 </body>
 

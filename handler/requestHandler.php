@@ -46,9 +46,10 @@
         // upload files to local directory
         $targetDir = "../images/product/";
         for($i=0; $i<count($files["name"]); $i++){
-            $target = $targetDir.basename($files["name"][$i]);
+            $imgname = "product_".time().rand(0,1000).'.png';
+            $target = $targetDir.$imgname;
             if(move_uploaded_file($files["tmp_name"][$i], $target)){
-                array_push($images, basename($files["name"][$i]));
+                array_push($images, $imgname);
             }
         }
 
@@ -58,6 +59,7 @@
         } else {
             $_SESSION["result"] = ["msg"=>$error, "error"=>true];
         }
+
         header("Location: ../products.php");
     }
     if(isset($_POST["AddColor"])){
@@ -82,6 +84,48 @@
         header("Location: ../product_size.php");
     }
 
+    if(isset($_POST["EditProduct"])){
+        $name = strtolower(trim($_POST["name"]));
+        $desc = strtolower(trim($_POST["desc"]));
+        $catid = $_POST["category"];
+        $subcatid = $_POST["subcategory"];
+        $price = $_POST["price"];
+        $qty = $_POST["qty"];
+        $colorids = $_POST["colors"];
+        $sizeids = $_POST["sizes"];
+        $files = $_FILES["file"];
+        $oldfiles = $_POST["oldimages"];
+        $prdid = $_POST["productid"];
+        $images = [];
+        $targetDir = "../images/product/";
+
+        // remove oldimages if new images are selected
+        if($files["name"][0] != ""){
+            foreach(explode(",", $oldfiles) as $image){
+                unlink($targetDir.$image);
+            }
+            // upload files to local directory
+            for($i=0; $i<count($files["name"]); $i++){
+                $imgname = "product_".time().rand(0,1000).'.png';
+                $target = $targetDir.$imgname;
+                if(move_uploaded_file($files["tmp_name"][$i], $target)){
+                    array_push($images, $imgname);
+                }
+            }
+        }else{
+            $images = explode(",", $oldfiles);
+        }
+
+        $error = $productH->updateProduct($prdid, $name, $desc, $catid, $subcatid,$price, $qty, $colorids, $sizeids, $images);
+        if ($error == "") {
+            $_SESSION["result"] =["msg"=>"Product '$name' Updated Successfully", "error"=>false];
+        } else {
+            $_SESSION["result"] = ["msg"=>$error, "error"=>true];
+        }
+
+        header("Location: ../products.php");
+
+    }
     if(isset($_POST["EditColor"])){
         $colorid = (int) $_POST["colorid"];
         $color = strtolower(trim($_POST["color"]));
@@ -106,6 +150,15 @@
         header("Location: ../product_size.php");  
     }
 
+    if(isset($_GET["dProduct"])){
+        $id = (int) $_GET["dProduct"];
+        if($productH->deleteProduct($id)){
+            $_SESSION["result"] =["msg"=>"Deleted Successfully", "error"=>false];
+        }else{
+            $_SESSION["result"] =["msg"=>"Somthing went wrong!!!", "error"=>true];
+        }
+        header("Location: ../products.php");
+    }
     if(isset($_GET["dColor"])){
         $id = (int) $_GET["dColor"];
         if($productH->deleteColor($id)){
