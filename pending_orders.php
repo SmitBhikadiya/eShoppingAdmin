@@ -2,7 +2,7 @@
 session_start();
 require("./handler/orderHandler.php");
 $obj = new OrderHandler();
-$orders = $obj->getOrders();
+$orders = $obj->getPendingOrders();
 $msg = '';
 $error = false;
 if (isset($_SESSION["result"])) {
