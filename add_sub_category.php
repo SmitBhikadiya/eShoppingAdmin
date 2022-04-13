@@ -2,7 +2,7 @@
     session_start();
     require("./handler/categoryHandler.php");
 	$cat_obj = new CategoryHandler();
-    $categories = $cat_obj->getCategory();
+    $categories = $cat_obj->getAllCategory();
 	$msg = '';
 	$error = false;
     $btn = "Add";

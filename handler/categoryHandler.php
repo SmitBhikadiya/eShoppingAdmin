@@ -2,7 +2,27 @@
 require_once("dbHandler.php");
 class CategoryHandler extends DBConnection
 {
-    function getCategory(){
+
+    function TotalCategory($search){
+        $search_ = ($search=='') ? 1 : "catName LIKE '%".$search."%'";
+        $sql = "SELECT COUNT(*) AS total FROM category WHERE $search_ AND status=0 ORDER BY id DESC";
+        $result = $this->getConnection()->query($sql);
+        if($result && $result->num_rows > 0){
+            return $result->fetch_assoc()["total"];
+        } 
+        return 0;
+    }
+    function TotalSubCategory($search){
+        $search_ = ($search=='') ? 1 : "subCatName LIKE '%".$search."%'";
+        $sql = "SELECT COUNT(*) AS total FROM subcategory JOIN category ON category.id=subcategory.categoryId WHERE $search_ AND category.status=0 AND subcategory.status=0";
+        $result = $this->getConnection()->query($sql);
+        if($result && $result->num_rows > 0){
+            return $result->fetch_assoc()["total"];
+        } 
+        return 0;
+    }
+
+    function getAllCategory(){
         $sql = "SELECT * FROM category WHERE status=0 ORDER BY id DESC";
         $result = $this->getConnection()->query($sql);
         $records = [];
@@ -15,8 +35,23 @@ class CategoryHandler extends DBConnection
         }
         return $records;
     }
-    function getSubCategory(){
-        $sql = "SELECT subcategory.*, category.catName FROM subcategory JOIN category ON category.id=subcategory.categoryId WHERE category.status=0 AND subcategory.status=0 ORDER BY subcategory.id DESC";
+    function getCategory($search, $page, $show){
+        $search_ = ($search=='') ? 1 : "catName LIKE '%".$search."%'";
+        $sql = "SELECT * FROM category WHERE $search_ AND status=0 ORDER BY id DESC LIMIT $page, $show";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+    function getSubCategory($search, $page, $show){
+        $search_ = ($search=='') ? 1 : "subCatName LIKE '%".$search."%'";
+        $sql = "SELECT subcategory.*, category.catName FROM subcategory JOIN category ON category.id=subcategory.categoryId WHERE $search_ AND category.status=0 AND subcategory.status=0 ORDER BY subcategory.id DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {

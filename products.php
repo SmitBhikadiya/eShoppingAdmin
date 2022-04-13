@@ -5,15 +5,15 @@ $obj = new ProductHandler();
 
 // for pagination
 $currntPage = 1;
-$showRecords = 2;
+$showRecords = 5;
 $search = '';
 if (isset($_GET["page"])) {
 	$currntPage = $_GET["page"];
 	$showRecords = isset($_GET["show"]) ? $_GET["show"] : $showRecords;
 	$search = isset($_GET["search"]) ? $_GET["search"] : $search;
 }
-$totalRecords = $obj->TotalProducts($search);
 
+$totalRecords = $obj->TotalProducts($search);
 $products = $obj->getProducts($search,(($currntPage - 1) * $showRecords), $showRecords);
 
 $msg = '';
@@ -138,7 +138,7 @@ if (isset($_SESSION["result"])) {
 												show&nbsp;
 												<select style="height: 35px; width:60px; border:1px solid #0056b3; color:#0056b3; border-radius:4px" name="" id="show-record">
 													<?php
-													foreach ([2, 5, 10] as $rec) {
+													foreach ([5, 10, 25, 50] as $rec) {
 														$selected = '';
 														if ($rec == $showRecords) {
 															$selected = "selected";
