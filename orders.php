@@ -74,7 +74,7 @@ if (isset($_SESSION["result"])) {
 					<nav class="navbar navbar-light bg-light justify-content-between">
 						<div></div>
 						<div class="form-inline">
-							<input class="form-control mr-sm-2" type="search" placeholder="Search By user" aria-label="Search" value="<?= $search ?>">
+							<input class="form-control mr-sm-2" type="search" placeholder="Search By Client" aria-label="Search" value="<?= $search ?>">
 							<button class="status-btn hover-btn my-2 my-sm-0" id="searchRec" type="submit">Search</button>
 						</div>
 					</nav>

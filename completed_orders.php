@@ -54,12 +54,12 @@ if (isset($_SESSION["result"])) {
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid">
-                    <h2 class="mt-30 page-title">Completed Orders</h2>
+                    <h2 class="mt-30 page-title">Order History</h2>
 
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="orders.php">Orders</a></li>
-                        <li class="breadcrumb-item active">Completed Orders</li>
+                        <li class="breadcrumb-item active">Order History</li>
                     </ol>
 
                     <?php
@@ -76,7 +76,7 @@ if (isset($_SESSION["result"])) {
                     <nav class="navbar navbar-light bg-light justify-content-between">
                         <div></div>
                         <div class="form-inline">
-                            <input class="form-control mr-sm-2" type="search" placeholder="Search By User" aria-label="Search" value="<?= $search ?>">
+                            <input class="form-control mr-sm-2" type="search" placeholder="Search By Client" aria-label="Search" value="<?= $search ?>">
                             <button class="status-btn hover-btn my-2 my-sm-0" id="searchRec" type="submit">Search</button>
                         </div>
                     </nav>
@@ -86,7 +86,7 @@ if (isset($_SESSION["result"])) {
                         <div class="col-lg-12 col-md-12">
                             <div class="card card-static-2 mb-30">
                                 <div class="card-title-2">
-                                    <h4><b>All Completed Orders</b></h4>
+                                    <h4><b>History List</b></h4>
                                 </div>
                                 <div class="card-body-table px-3">
                                     <div class="table-responsive">

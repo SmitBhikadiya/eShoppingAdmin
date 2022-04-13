@@ -114,7 +114,7 @@ if (isset($_SESSION["result"])) {
 												<select name="category" class="form-control" id="categtory">
 													<option value="0">Select Category</option>
 													<?php
-													$categories = $categoryH->getCategory();
+													$categories = $categoryH->getAllCategory();
 													foreach ($categories as $cat) {
 														$selected = '';
 														if (isset($result) && $result["categoryId"] == $cat["id"]) {
@@ -158,7 +158,7 @@ if (isset($_SESSION["result"])) {
 												<label for="productcolor">Select Product Color</label>
 												<select multiple name="colors[]" class="form-control" id="productcolor">
 													<?php
-													$colors = $productH->getColors();
+													$colors = $productH->getAllColor();
 													$i = 0;
 													$colorIds = explode(",", (isset($result)) ? $result["productColorIds"] : '');
 													//print_r($colorIds);
@@ -178,7 +178,7 @@ if (isset($_SESSION["result"])) {
 												<label for="productsize">Select Product Size</label>
 												<select multiple name="sizes[]" class="form-control" id="productsize">
 													<?php
-													$sizes = $productH->getSizes();
+													$sizes = $productH->getAllSize();
 													$i = 0;
 													$sizeIds = explode(",", (isset($result)) ? $result["productSizeIds"] : '');
 													foreach ($sizes as $size) {

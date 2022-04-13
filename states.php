@@ -1,8 +1,21 @@
 <?php
 session_start();
 require("./handler/addressHandler.php");
-$address = new AddressHandler();
-$states = $address->getStates();
+$obj = new AddressHandler();
+
+// for pagination
+$currntPage = 1;
+$showRecords = 5;
+$search = '';
+if (isset($_GET["page"])) {
+	$currntPage = $_GET["page"];
+	$showRecords = isset($_GET["show"]) ? $_GET["show"] : $showRecords;
+	$search = isset($_GET["search"]) ? $_GET["search"] : $search;
+}
+
+$totalRecords = $obj->TotalStates($search);
+$states = $obj->getStates($search, (($currntPage - 1) * $showRecords), $showRecords);
+
 $msg = '';
 $error = false;
 if (isset($_SESSION["result"])) {
@@ -58,13 +71,20 @@ if (isset($_SESSION["result"])) {
 					}
 					?>
 
+					<nav class="navbar navbar-light bg-light justify-content-between">
+						<a href="add_state.php" class="add-btn hover-btn">Add New</a>
+						<div class="form-inline">
+							<input class="form-control mr-sm-2" type="search" placeholder="Search By Name" aria-label="Search" value="<?= $search ?>">
+							<button class="status-btn hover-btn my-2 my-sm-0" id="searchRec" type="submit">Search</button>
+						</div>
+					</nav>
+
 					<div class="row">
 						<div class="col-lg-12 col-md-12">
 							<div class="card card-static-2 mb-30">
 								<div class="card-title-2">
 									<h4 style="width:100%;display: flex; justify-content: space-between;align-items: center;">
 										<p><b>State List</b></p>
-										<p><a href="add_state.php" class="add-btn hover-btn">Add State</a></p>
 									</h4>
 								</div>
 								<div class="card-body-table px-3">
@@ -87,7 +107,7 @@ if (isset($_SESSION["result"])) {
 													foreach ($states as $state) {
 												?>
 														<tr>
-															<td><?= $srno++ ?></td>
+															<td><?= $state["id"] ?></td>
 															<td><?= $state["state"] ?></td>
 															<td><?= $state["country"] ?></td>
 															<td><?= $state["createdDate"] ?></td>
@@ -105,6 +125,55 @@ if (isset($_SESSION["result"])) {
 												?>
 											</tbody>
 										</table>
+										<div class="div-pagination mt-3 d-flex justify-content-between">
+											<div class="page-select">
+												show&nbsp;
+												<select style="height: 35px; width:60px; border:1px solid #0056b3; color:#0056b3; border-radius:4px" name="" id="show-record">
+													<?php
+													foreach ([5, 10, 25, 50] as $rec) {
+														$selected = '';
+														if ($rec == $showRecords) {
+															$selected = "selected";
+														}
+														echo "<option value='$rec' $selected>$rec</option>";
+													}
+													?>
+
+												</select>&nbsp;&nbsp;entries, Total Records: <span id="totalrecords"><?= $totalRecords ?></span>
+											</div>
+											<div>
+												<nav aria-label="Page navigation example">
+													<ul class="pagination">
+														<li class="page-item">
+															<a class="page-link" aria-label="Previous" data-action="left">
+																<span aria-hidden="true">&laquo;</span>
+																<span class="sr-only">Previous</span>
+															</a>
+														</li>
+														<?php
+														for ($i = $currntPage; $i <= $currntPage + 2; $i++) {
+															$active = "";
+															$disabled = '';
+															if ($i == $currntPage) {
+																$active = "active";
+															}
+															if (ceil($totalRecords / $showRecords) < $i) {
+																$disabled = "disabled";
+															}
+															echo '<li class="page-item ' . $active . '"><a class="page-link ' . $disabled . '">' . $i . '</a></li>';
+														}
+														?>
+
+														<li class="page-item">
+															<a class="page-link" aria-label="Next" data-action="right">
+																<span aria-hidden="true">&raquo;</span>
+																<span class="sr-only">Next</span>
+															</a>
+														</li>
+													</ul>
+												</nav>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>

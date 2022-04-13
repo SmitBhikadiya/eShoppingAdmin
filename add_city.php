@@ -2,7 +2,7 @@
 	session_start();
 	require("./handler/addressHandler.php");
 	$address = new AddressHandler();
-	$countries = $address->getCountries();
+	$countries = $address->getAllCountry();
     $states = [];
 	$msg = '';
 	$error = false;

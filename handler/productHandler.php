@@ -31,6 +31,32 @@ class ProductHandler extends DBConnection
         return 0;
     }
 
+    function getAllColor(){
+        $sql = "SELECT * FROM productcolor WHERE status=0 ORDER BY id DESC";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+    function getAllSize(){
+        $sql = "SELECT * FROM productsize WHERE status=0 ORDER BY id DESC";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
     function getColors($search, $page, $show){
         $search_ = ($search=='') ? 1 : "colorName LIKE '%".$search."%'";
         $sql = "SELECT * FROM productcolor WHERE $search_ AND status=0 ORDER BY id DESC LIMIT $page, $show";
