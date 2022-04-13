@@ -45,6 +45,7 @@ if (isset($_SESSION["result"])) {
 
                     <ol class="breadcrumb mb-30">
                         <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="orders.php">Orders</a></li>
                         <li class="breadcrumb-item active">Completed Orders</li>
                     </ol>
 
@@ -102,7 +103,7 @@ if (isset($_SESSION["result"])) {
                                                             <td>$<?=$order["totalPrice"]?></td>
                                                             <td><?=($order["orderStatus"]==1)? "Completed" : "Cancelled"?></td>
                                                             <td class="action-btns">
-                                                            <a href="view_order.php?view=<?=$order["id"]?>" class="view-shop-btn" title="View"><i class="fas fa-eye"></i></a>
+                                                                <a href="view_order.php?view=<?=$order["id"]?>" class="view-shop-btn" title="View"><i class="fas fa-eye"></i></a>
                                                             </td>
                                                         </tr>
                                                 <?php

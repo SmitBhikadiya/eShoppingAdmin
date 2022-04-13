@@ -53,11 +53,11 @@ if (isset($_SESSION["result"])) {
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid">
-					<h2 class="mt-30 page-title">Order View</h2>
+					<h2 class="mt-30 page-title">View Order</h2>
 					<ol class="breadcrumb mb-30">
 						<li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-						<li class="breadcrumb-item"><a href="pending_orders.php">Orders</a></li>
-						<li class="breadcrumb-item active">Order View</li>
+						<li class="breadcrumb-item"><a href="orders.php">Orders</a></li>
+						<li class="breadcrumb-item active">View Order</li>
 					</ol>
 
 					<?php

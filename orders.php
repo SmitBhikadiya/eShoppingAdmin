@@ -2,10 +2,7 @@
 session_start();
 require("./handler/orderHandler.php");
 $obj = new OrderHandler();
-$orders = $obj->getRecentOrders(5);
-$totalPending = $obj->totalPending();
-$totalCompleted = $obj->totalCompleted();
-$totalCancelled = $obj->totalCancelled();
+$orders = $obj->getAllOrders();
 $msg = '';
 $error = false;
 if (isset($_SESSION["result"])) {
@@ -22,9 +19,9 @@ if (isset($_SESSION["result"])) {
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="description-APthemes" content="AP MARTAP MART">
-	<meta name="author-APthemes" content="AP MART">
-	<title>eShopper - Admin</title>
+	<meta name="description-gambolthemes" content="">
+	<meta name="author-gambolthemes" content="">
+	<title>eShopping - Admin</title>
 	<link href="css/styles.css" rel="stylesheet">
 	<link href="css/admin-style.css" rel="stylesheet">
 	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -44,55 +41,32 @@ if (isset($_SESSION["result"])) {
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid">
-					<h2 class="mt-30 page-title">Dashboard</h2>
+					<h2 class="mt-30 page-title">Orders</h2>
 					<ol class="breadcrumb mb-30">
-						<li class="breadcrumb-item active">Dashboard</li>
+						<li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
+						<li class="breadcrumb-item active">Orders</li>
 					</ol>
-					<div class="row d-flex justify-content-around">
-						<div class="col-xl-3 col-md-6">
-							<div class="dashboard-report-card purple">
-								<div class="card-content">
-									<span class="card-title">Order Pending</span>
-									<span class="card-count"><?= $totalPending ?></span>
-								</div>
-								<div class="card-media">
-									<i class="fab fa-rev"></i>
-								</div>
-							</div>
-						</div>
-						<div class="col-xl-3 col-md-6">
-							<div class="dashboard-report-card success">
-								<div class="card-content">
-									<span class="card-title">ORDER Delivered</span>
-									<span class="card-count"><?= $totalCompleted ?></span>
-								</div>
-								<div class="card-media">
-									<i class="fas fa-check"></i>
-								</div>
-							</div>
-						</div>
-						<div class="col-xl-3 col-md-6">
-							<div class="dashboard-report-card red">
-								<div class="card-content">
-									<span class="card-title">Order Cancel</span>
-									<span class="card-count"><?= $totalCancelled ?></span>
-								</div>
-								<div class="card-media">
-									<i class="far fa-times-circle"></i>
-								</div>
-							</div>
-						</div>
 
+					<?php
+					if ($msg != '') {
+					?>
+						<div class="alert alert-<?= ($error) ? 'danger' : 'success' ?> alert-dismissible fade show" role="alert">
+							<?= $msg ?>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+					<?php
+					}
+					?>
 
+					<div class="row justify-content-center">
 
-						<div class="col-xl-12 col-md-12">
+						<div class="col-lg-12 col-md-12">
 							<div class="card card-static-2 mb-30">
 								<div class="card-title-2">
-									<h4><b>Recent Orders</b></h4>
-									<a href="orders.php" class="view-btn hover-btn">View All</a>
+									<h4><b>Orders</b></h4>
 								</div>
 								<div class="card-body-table px-3">
-									<div class="table-responsive">
+                                <div class="table-responsive">
 										<table class="table ucp-table table-hover">
 											<thead>
 											<tr>
@@ -164,12 +138,7 @@ if (isset($_SESSION["result"])) {
 	</div>
 	<script src="js/jquery-3.4.1.min.js"></script>
 	<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-	<script src="vendor/chart/highcharts.js"></script>
-	<script src="vendor/chart/exporting.js"></script>
-	<script src="vendor/chart/export-data.js"></script>
-	<script src="vendor/chart/accessibility.js"></script>
 	<script src="js/scripts.js"></script>
-	<script src="js/chart.js"></script>
 </body>
 
 </html>

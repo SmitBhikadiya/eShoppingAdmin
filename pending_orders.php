@@ -44,19 +44,20 @@ if (isset($_SESSION["result"])) {
 					<h2 class="mt-30 page-title">Pending Orders</h2>
 					<ol class="breadcrumb mb-30">
 						<li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
+						<li class="breadcrumb-item"><a href="orders.php">Orders</a></li>
 						<li class="breadcrumb-item active">Pending Orders</li>
 					</ol>
-					
+
 					<?php
-                    if ($msg != '') {
-                    ?>
-                        <div class="alert alert-<?= ($error) ? 'danger' : 'success' ?> alert-dismissible fade show" role="alert">
-                            <?= $msg ?>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        </div>
-                    <?php
-                    }
-                    ?>
+					if ($msg != '') {
+					?>
+						<div class="alert alert-<?= ($error) ? 'danger' : 'success' ?> alert-dismissible fade show" role="alert">
+							<?= $msg ?>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+					<?php
+					}
+					?>
 
 					<div class="row justify-content-center">
 
@@ -80,33 +81,33 @@ if (isset($_SESSION["result"])) {
 												</tr>
 											</thead>
 											<tbody>
-											<?php
+												<?php
 												if (count($orders) > 0) {
 													$srno = 1;
 													foreach ($orders as $order) {
 												?>
-												<tr>
-													<td><?=$order["id"]?></td>
-													<td>
-														<a href="view_customer.php?view=<?=$order["userId"]?>" target="_blank"><?=$order["username"]?></a>
-													</td>
-													<td><?=$order["streetName"].", ".$order["city"].", ".$order["state"]?></td>
-													<td>
-														<span class="delivery-time"><?=$order["createdDate"]?></span>
-													</td>
+														<tr>
+															<td><?= $order["id"] ?></td>
+															<td>
+																<a href="view_customer.php?view=<?= $order["userId"] ?>" target="_blank"><?= $order["username"] ?></a>
+															</td>
+															<td><?= $order["streetName"] . ", " . $order["city"] . ", " . $order["state"] ?></td>
+															<td>
+																<span class="delivery-time"><?= $order["createdDate"] ?></span>
+															</td>
 
-													<td><?=$order["totalQuantity"]?></td>
-													<td><?=$order["totalPrice"]?></td>
-													<td class="">
-														<a class="btn btn-sm btn-primary mr-1" href="view_order.php?view=<?=$order["id"]?>" >View</a>
-													</td>
-												</tr>
+															<td><?= $order["totalQuantity"] ?></td>
+															<td><?= $order["totalPrice"] ?></td>
+															<td class="action-btns">
+                                                                <a href="view_order.php?view=<?=$order["id"]?>" class="view-shop-btn" title="View"><i class="fas fa-eye"></i></a>
+                                                            </td>
+														</tr>
 												<?php
-                                                    }
-                                                } else {
-                                                    echo "<tr><td colspan=7>No Record Found!!</td></tr>";
-                                                }
-                                                ?>
+													}
+												} else {
+													echo "<tr><td colspan=7>No Record Found!!</td></tr>";
+												}
+												?>
 											</tbody>
 										</table>
 									</div>
