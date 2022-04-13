@@ -3,9 +3,9 @@ session_start();
 require("./handler/orderHandler.php");
 $obj = new OrderHandler();
 $orders = $obj->getRecentOrders(5);
-$totalPending = $obj->totalPending();
-$totalCompleted = $obj->totalCompleted();
-$totalCancelled = $obj->totalCancelled();
+$totalPending = $obj->TotalPending();
+$totalCompleted = $obj->TotalCompleted();
+$totalCancelled = $obj->TotalCancelled();
 $msg = '';
 $error = false;
 if (isset($_SESSION["result"])) {

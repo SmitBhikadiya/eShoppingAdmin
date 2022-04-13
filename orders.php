@@ -2,7 +2,20 @@
 session_start();
 require("./handler/orderHandler.php");
 $obj = new OrderHandler();
-$orders = $obj->getAllOrders();
+
+// for pagination
+$currntPage = 1;
+$showRecords = 5;
+$search = '';
+if (isset($_GET["page"])) {
+	$currntPage = $_GET["page"];
+	$showRecords = isset($_GET["show"]) ? $_GET["show"] : $showRecords;
+	$search = isset($_GET["search"]) ? $_GET["search"] : $search;
+}
+
+$totalRecords = $obj->TotalOrders($search);
+$orders = $obj->getAllOrders($search, (($currntPage - 1) * $showRecords), $showRecords);
+
 $msg = '';
 $error = false;
 if (isset($_SESSION["result"])) {
@@ -42,7 +55,7 @@ if (isset($_SESSION["result"])) {
 			<main>
 				<div class="container-fluid">
 					<h2 class="mt-30 page-title">Orders</h2>
-					<ol class="breadcrumb mb-30">
+					<ol class="breadcrumb">
 						<li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
 						<li class="breadcrumb-item active">Orders</li>
 					</ol>
@@ -58,6 +71,14 @@ if (isset($_SESSION["result"])) {
 					}
 					?>
 
+					<nav class="navbar navbar-light bg-light justify-content-between">
+						<div></div>
+						<div class="form-inline">
+							<input class="form-control mr-sm-2" type="search" placeholder="Search By user" aria-label="Search" value="<?= $search ?>">
+							<button class="status-btn hover-btn my-2 my-sm-0" id="searchRec" type="submit">Search</button>
+						</div>
+					</nav>
+
 					<div class="row justify-content-center">
 
 						<div class="col-lg-12 col-md-12">
@@ -66,11 +87,11 @@ if (isset($_SESSION["result"])) {
 									<h4><b>Orders</b></h4>
 								</div>
 								<div class="card-body-table px-3">
-                                <div class="table-responsive">
+									<div class="table-responsive">
 										<table class="table ucp-table table-hover">
 											<thead>
-											<tr>
-													<th style="width:120px">SrNo.</th>
+												<tr>
+													<th style="width:120px">Order Id.</th>
 													<th style="width:100px">Client Name</th>
 													<th style="width:400px">Address</th>
 													<th style="width:100px">Order Date</th>
@@ -87,7 +108,7 @@ if (isset($_SESSION["result"])) {
 													foreach ($orders as $order) {
 												?>
 														<tr>
-															<td><?= $srno++ ?></td>
+															<td><?= $order["id"] ?></td>
 															<td>
 																<a href="view_customer.php?view=<?= $order["userId"] ?>" target="_blank"><?= $order["username"] ?></a>
 															</td>
@@ -97,24 +118,24 @@ if (isset($_SESSION["result"])) {
 															</td>
 															<td>
 																<?php
-																	switch($order["orderStatus"]){
-																		case 0:
-																			echo "Pending";
-																			break;
-																		case 1;
-																			echo "Delivered";
-																			break;
-																		case 2;
-																			echo "Cancelled";
-																			break;
-																	}
+																switch ($order["orderStatus"]) {
+																	case 0:
+																		echo "Pending";
+																		break;
+																	case 1;
+																		echo "Delivered";
+																		break;
+																	case 2;
+																		echo "Cancelled";
+																		break;
+																}
 																?>
 															</td>
 															<td><?= $order["totalQuantity"] ?></td>
 															<td><?= $order["totalPrice"] ?></td>
 															<td class="action-btns">
-                                                                <a href="view_order.php?view=<?=$order["id"]?>" class="view-shop-btn" title="View"><i class="fas fa-eye"></i></a>
-                                                            </td>
+																<a href="view_order.php?view=<?= $order["id"] ?>" class="view-shop-btn" title="View"><i class="fas fa-eye"></i></a>
+															</td>
 														</tr>
 												<?php
 													}
@@ -124,6 +145,55 @@ if (isset($_SESSION["result"])) {
 												?>
 											</tbody>
 										</table>
+										<div class="div-pagination mt-3 d-flex justify-content-between">
+											<div class="page-select">
+												show&nbsp;
+												<select style="height: 35px; width:60px; border:1px solid #0056b3; color:#0056b3; border-radius:4px" name="" id="show-record">
+													<?php
+													foreach ([5, 10, 25, 50] as $rec) {
+														$selected = '';
+														if ($rec == $showRecords) {
+															$selected = "selected";
+														}
+														echo "<option value='$rec' $selected>$rec</option>";
+													}
+													?>
+
+												</select>&nbsp;&nbsp;entries, Total Records: <span id="totalrecords"><?= $totalRecords ?></span>
+											</div>
+											<div>
+												<nav aria-label="Page navigation example">
+													<ul class="pagination">
+														<li class="page-item">
+															<a class="page-link" aria-label="Previous" data-action="left">
+																<span aria-hidden="true">&laquo;</span>
+																<span class="sr-only">Previous</span>
+															</a>
+														</li>
+														<?php
+														for ($i = $currntPage; $i <= $currntPage + 2; $i++) {
+															$active = "";
+															$disabled = '';
+															if ($i == $currntPage) {
+																$active = "active";
+															}
+															if (ceil($totalRecords / $showRecords) < $i) {
+																$disabled = "disabled";
+															}
+															echo '<li class="page-item ' . $active . '"><a class="page-link ' . $disabled . '">' . $i . '</a></li>';
+														}
+														?>
+
+														<li class="page-item">
+															<a class="page-link" aria-label="Next" data-action="right">
+																<span aria-hidden="true">&raquo;</span>
+																<span class="sr-only">Next</span>
+															</a>
+														</li>
+													</ul>
+												</nav>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
