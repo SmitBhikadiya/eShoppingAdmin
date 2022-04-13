@@ -1,5 +1,27 @@
 <?php
-    session_start();
+session_start();
+require("./handler/orderHandler.php");
+
+if (!isset($_GET["view"])) {
+	$_SESSION["result"] = ["msg" => "Invalid Request", "error" => true];
+	header("Location: ./pending_orders.php");
+} else {
+	$obj = new OrderHandler();
+	$id = (int) $_GET["view"];
+	$order = $obj->getOrderById($id);
+	if (count($order) < 1) {
+		$_SESSION["result"] = ["msg" => "Invalid Request", "error" => true];
+		header("Location: ./pending_orders.php");
+	}
+}
+
+$msg = '';
+$error = false;
+if (isset($_SESSION["result"])) {
+	$error = $_SESSION["result"]["error"];
+	$msg = $_SESSION["result"]["msg"];
+	unset($_SESSION["result"]);
+}
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +33,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="description-gambolthemes" content="">
 	<meta name="author-gambolthemes" content="">
-	<title>Gambo Supermarket Admin</title>
+	<title>eShopping - Admin</title>
 	<link href="css/styles.css" rel="stylesheet">
 	<link href="css/admin-style.css" rel="stylesheet">
 	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -19,8 +41,8 @@
 </head>
 
 <body class="sb-nav-fixed">
-<?php 
-		include_once("./includes/header.php");
+	<?php
+	include_once("./includes/header.php");
 	?>
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
@@ -31,41 +53,46 @@
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid">
-					<h2 class="mt-30 page-title">Orders</h2>
+					<h2 class="mt-30 page-title">Order View</h2>
 					<ol class="breadcrumb mb-30">
 						<li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
 						<li class="breadcrumb-item"><a href="pending_orders.php">Orders</a></li>
 						<li class="breadcrumb-item active">Order View</li>
 					</ol>
+
+					<?php
+					if ($msg != '') {
+					?>
+						<div class="alert alert-<?= ($error) ? 'danger' : 'success' ?> alert-dismissible fade show" role="alert">
+							<?= $msg ?>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+					<?php
+					}
+					?>
+
 					<div class="row">
 						<div class="col-xl-12 col-md-12">
 							<div class="card card-static-2 mb-30">
 								<div class="card-title-2">
 									<h2 class="title1458">Invoice</h2>
-									<span class="order-id">Order #ORDR-123456</span>
+									<span class="order-id">Order: <?= $order["id"] ?></span>
 								</div>
 								<div class="invoice-content">
 									<div class="row">
 										<div class="col-lg-6 col-sm-6">
 											<div class="ordr-date">
-												<b>Order Date :</b> 29 May 2020
-											</div>
-											<div class="ordr-date">
-												<b>Client Name :</b> Sam Curran
-											</div>
-											<div class="ordr-date">
-												<b>Client No :</b> 9067117191
+												<b>Order Date :</b> <?= date('d, M yy', strtotime($order["createdDate"])) ?> <br>
+												<b>Client Name :</b> <?= $order["username"] ?> <br>
+												<b>Client Mobile :</b> <?= $order["mobile"] ?> <br>
 											</div>
 										</div>
 										<div class="col-lg-6 col-sm-6">
 											<div class="ordr-date right-text">
 												<b>Order Address :</b><br>
-												#0000, St No. 8,<br>
-												Shahid Karnail Singh Nagar,<br>
-												MBD Mall,<br>
-												Frozpur road,<br>
-												Ludhiana,<br>
-												141001<br>
+												<?= $order["streetName"] ?>,<br>
+												<?= $order["city"] ?>,<br>
+												<?= $order["state"] ?><br>
 											</div>
 										</div>
 										<div class="col-lg-12">
@@ -82,32 +109,36 @@
 																	<th>Item</th>
 																	<th>Item Color</th>
 																	<th>Item Size</th>
-																	<th style="width:150px" class="text-center">Price</th>
+																	<th style="width:150px" class="text-center">Unit Price</th>
 																	<th style="width:150px" class="text-center">Qty</th>
 																	<th style="width:100px" class="text-center">Total</th>
 																</tr>
 															</thead>
 															<tbody>
-																<tr>
-																	<td>1</td>
-																	<td>
-																		<a href="#">Men T-shirt</a>
-																	</td>
-																	<td>Green</td>
-																	<td>XL</td>
-																	<td class="text-center">$15</td>
-																	<td class="text-center">1</td>
-																	<td class="text-center">$15</td>
-																</tr>
-																<tr>
-																	<td>2</td>
-																	<td><a href="#">Men Jeans</a></td>
-																	<td>Black</td>
-																	<td>L</td>
-																	<td class="text-center">$12</td>
-																	<td class="text-center">1</td>
-																	<td class="text-center">$12</td>
-																</tr>
+																<?php
+
+																$productlist = $obj->getOrderListByOrderId($id);
+																if (count($productlist) > 0) {
+																	$srno = 1;
+																	foreach ($productlist as $prd) {
+																?>
+																		<tr>
+																			<td><?= $srno++ ?></td>
+																			<td>
+																				<a href="./view_product.php?view=<?= $prd["productId"] ?>"><?= $prd["productName"] ?></a>
+																			</td>
+																			<td><?= $prd["productColor"] ?></td>
+																			<td><?= strtoupper($prd["productSize"]) ?></td>
+																			<td class="text-center">$<?= $prd["unitPrice"] ?></td>
+																			<td class="text-center"><?= $prd["qunatity"] ?></td>
+																			<td class="text-center">$<?= ($prd["unitPrice"] * $prd["qunatity"]) ?></td>
+																		</tr>
+																<?php
+																	}
+																} else {
+																	echo "<tr><td colspan=6>No Record Found!!</td></tr>";
+																}
+																?>
 															</tbody>
 														</table>
 													</div>
@@ -121,7 +152,7 @@
 													Sub Total
 												</div>
 												<div class="order-total-right-text">
-													$27
+													$<?= $order["totalPrice"] ?>
 												</div>
 											</div>
 											<div class="order-total-dt">
@@ -137,24 +168,33 @@
 													Total Amount
 												</div>
 												<div class="order-total-right-text fsz-18">
-													$27
+													$<?= $order["totalPrice"] ?>
 												</div>
 											</div>
 										</div>
 										<div class="col-lg-7"></div>
 										<div class="col-lg-5">
-										<div class="select-status">
-												<label for="status">Status*</label>
-												<div class="input-group">
-													<select id="status" name="status" class="custom-select">
-														<option value="1">Completed</option>
-														<option value="2">Cancelled</option>
-													</select>
-													<div class="input-group-append">
-														<button class="status-btn hover-btn" type="submit">Submit</button>
+											<?php
+												if($order["orderStatus"]==0){
+											?>
+											<form action="./handler/requestHandler.php" method="POST">
+												<input type="hidden" name="ordid" value="<?=$order["id"]?>">
+												<div class="select-status">
+													<label for="status">Status*</label>
+													<div class="input-group">
+														<select id="status" name="status" class="custom-select">
+															<option value="1">Completed</option>
+															<option value="2">Cancelled</option>
+														</select>
+														<div class="input-group-append">
+															<button class="status-btn hover-btn" type="submit" name="orderStatus" value="orderStatus">Submit</button>
+														</div>
 													</div>
 												</div>
-											</div>
+											</form>
+											<?php
+												}
+											?>
 										</div>
 									</div>
 								</div>
@@ -164,7 +204,7 @@
 				</div>
 			</main>
 			<?php
-				include_once("./includes/footer.php");
+			include_once("./includes/footer.php");
 			?>
 		</div>
 	</div>

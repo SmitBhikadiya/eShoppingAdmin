@@ -5,19 +5,19 @@
     require_once("categoryHandler.php");
     require_once("productHandler.php");
     require_once("customerHandler.php");
+    require_once("orderHandler.php");
 
     $addressH = new AddressHandler();
     $adminuserH = new AdminUser();
     $categoryH = new CategoryHandler();
     $productH = new ProductHandler();
     $customerH = new CustomerHandler();
+    $orderH = new OrderHandler();
     $error = '';
     $success = '';
 
 
-    /************* Request: ADMIN SIGNIN *************/
-
-    /*------------- Admin User Signin -------------*/
+    /*************** Request: Admin ***************/
     if (isset($_POST["signin"])) {
         $email = $_POST["email"];
         $password = $_POST["password"];
@@ -29,10 +29,25 @@
             header("Location: ../signin.php");
         }
     }
-
     /********************* END **********************/
 
-    /************** Request: Customer ***************/
+    /*************** Request: Admin ***************/
+    if (isset($_POST["orderStatus"])){
+        $status = (int) $_POST["status"];
+        $id = (int) $_POST["ordid"];
+        if(in_array($status, [1,2])){
+            $orderH->updateStatus($status, $id);
+            $msg = "Order ".(($status==1) ? "completed" : "cancelled")." successfully!!!";
+            $_SESSION["result"] =["msg"=>$msg, "error"=>false];
+            header("Location: ../completed_orders.php");
+        }else{
+            $_SESSION["result"] =["msg"=>"Invalid Request!!!", "error"=>true];
+            header("Location: ../view_order.php");
+        }
+    }
+    /******************** END ********************/
+
+    /*************** Request: Customer ***************/
     if(isset($_GET["dCustomer"])){
         $id = (int) $_GET["dCustomer"];
         if($customerH->deleteCustomer($id)){
@@ -42,11 +57,10 @@
         }
         header("Location: ../customers.php");
     }
+    /********************** END **********************/
 
-    /********************* END **********************/
 
-
-    /************ Request: Product, Color, Size *************/
+    /************ Request: Product,Color,Size *************/
     if(isset($_POST["AddProduct"])){
         $name = strtolower(trim($_POST["name"]));
         $desc = strtolower(trim($_POST["desc"]));
