@@ -4,12 +4,7 @@ class ProductHandler extends DBConnection
 {
 
     function TotalProducts($search){
-        $search_ = '';
-        if($search==''){
-            $search_ = 1;
-        }else{
-            $search_ = "productName LIKE '%".$search."%'";
-        }
+        $search_ = ($search=='') ? 1 : "productName LIKE '%".$search."%'";
         $sql = "SELECT COUNT(*) AS total FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND products.status=0 AND category.status=0 ORDER BY products.id DESC";
         $result = $this->getConnection()->query($sql);
         if($result && $result->num_rows > 0){
@@ -17,9 +12,28 @@ class ProductHandler extends DBConnection
         } 
         return 0;
     }
+    function TotalColors($search){
+        $search_ = ($search=='') ? 1 : "colorName LIKE '%".$search."%'";
+        $sql = "SELECT COUNT(*) AS total FROM productcolor WHERE $search_ AND status=0 ORDER BY id DESC";
+        $result = $this->getConnection()->query($sql);
+        if($result && $result->num_rows > 0){
+            return $result->fetch_assoc()["total"];
+        } 
+        return 0;
+    }
+    function TotalSizes($search){
+        $search_ = ($search=='') ? 1 : "size LIKE '%".$search."%'";
+        $sql = "SELECT COUNT(*) AS total FROM productsize WHERE $search_ AND status=0 ORDER BY id DESC";
+        $result = $this->getConnection()->query($sql);
+        if($result && $result->num_rows > 0){
+            return $result->fetch_assoc()["total"];
+        } 
+        return 0;
+    }
 
-    function getColors(){
-        $sql = "SELECT * FROM productcolor WHERE status=0 ORDER BY id DESC";
+    function getColors($search, $page, $show){
+        $search_ = ($search=='') ? 1 : "colorName LIKE '%".$search."%'";
+        $sql = "SELECT * FROM productcolor WHERE $search_ AND status=0 ORDER BY id DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {
@@ -31,8 +45,9 @@ class ProductHandler extends DBConnection
         }
         return $records;
     }
-    function getSizes(){
-        $sql = "SELECT * FROM productsize WHERE status=0 ORDER BY id DESC";
+    function getSizes($search, $page, $show){
+        $search_ = ($search=='') ? 1 : "size LIKE '%".$search."%'";
+        $sql = "SELECT * FROM productsize WHERE $search_ AND status=0 ORDER BY id DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {
@@ -45,12 +60,7 @@ class ProductHandler extends DBConnection
         return $records;
     }
     function getProducts($search, $page, $show){
-        $search_ = '';
-        if($search==''){
-            $search_ = 1;
-        }else{
-            $search_ = "productName LIKE '%".$search."%'";
-        }
+        $search_ = ($search=='') ? 1 : "productName LIKE '%".$search."%'";
         $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND products.status=0 AND category.status=0 ORDER BY products.id DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
