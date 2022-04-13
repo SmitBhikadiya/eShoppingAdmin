@@ -3,6 +3,21 @@ require_once("dbHandler.php");
 class ProductHandler extends DBConnection
 {
 
+    function TotalProducts($search){
+        $search_ = '';
+        if($search==''){
+            $search_ = 1;
+        }else{
+            $search_ = "productName LIKE '%".$search."%'";
+        }
+        $sql = "SELECT COUNT(*) AS total FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND products.status=0 AND category.status=0 ORDER BY products.id DESC";
+        $result = $this->getConnection()->query($sql);
+        if($result && $result->num_rows > 0){
+            return $result->fetch_assoc()["total"];
+        } 
+        return 0;
+    }
+
     function getColors(){
         $sql = "SELECT * FROM productcolor WHERE status=0 ORDER BY id DESC";
         $result = $this->getConnection()->query($sql);
@@ -29,8 +44,14 @@ class ProductHandler extends DBConnection
         }
         return $records;
     }
-    function getProducts(){
-        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE products.status=0 AND category.status=0 ORDER BY products.id DESC";
+    function getProducts($search, $page, $show){
+        $search_ = '';
+        if($search==''){
+            $search_ = 1;
+        }else{
+            $search_ = "productName LIKE '%".$search."%'";
+        }
+        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND products.status=0 AND category.status=0 ORDER BY products.id DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {
