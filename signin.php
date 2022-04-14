@@ -1,5 +1,10 @@
 ﻿<?php
     session_start();
+
+    if(isset($_SESSION['adminlogin'])){
+        header("Location: index.php");
+    }
+
     require_once("./handler/adminuserHandler.php");
     $error = '';
     if(isset($_SESSION["error"])){
