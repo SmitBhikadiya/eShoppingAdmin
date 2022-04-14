@@ -1,29 +1,30 @@
 <?php
-	session_start();
-	require("./handler/addressHandler.php");
-	$address = new AddressHandler();
-	$countries = $address->getAllCountry();
-    $states = [];
-	$msg = '';
-	$error = false;
-    $btn = "Add";
+session_start();
+require("./handler/addressHandler.php");
+$obj = new AddressHandler();
+$countries = $obj->getAllCountry();
 
-    if(isset($_GET["edit"])){
-        $result = $address->getCityById($_GET["edit"]);
-        if(count($result) < 1){
-            $_SESSION["result"] =["msg"=>"Invalid Request", "error"=>true];
-            header("Location: cities.php");
-        }
-        $city = $result["city"];
-        $btn = "Edit";
-        $states = $address->getStatesByCountryId($result["countryId"]);
+// checking update request
+$states = [];
+$btn = "Add";
+if (isset($_GET["edit"])) {
+    $result = $obj->getCityById($_GET["edit"]);
+    if (count($result) < 1) {
+        $_SESSION["result"] = ["msg" => "Invalid Request", "error" => true];
+        header("Location: ./cities.php");
     }
+    $btn = "Edit";
+    $states = $obj->getStatesByCountryId($result["countryId"]);
+}
 
-	if(isset($_SESSION["result"])){
-		$error = $_SESSION["result"]["error"];
-		$msg = $_SESSION["result"]["msg"];
-		unset($_SESSION["result"]);
-	}
+// for error or success message
+$msg = '';
+$error = false;
+if (isset($_SESSION["result"])) {
+    $error = $_SESSION["result"]["error"];
+    $msg = $_SESSION["result"]["msg"];
+    unset($_SESSION["result"]);
+}
 ?>
 
 <!DOCTYPE html>
@@ -56,33 +57,33 @@
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid">
-                    <h2 class="mt-30 page-title"><?=$btn?> City</h2>
+                    <h2 class="mt-30 page-title"><?= $btn ?> City</h2>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="cities.php">City</a></li>
-                        <li class="breadcrumb-item active"><?=$btn?> City</li>
+                        <li class="breadcrumb-item active"><?= $btn ?> City</li>
                     </ol>
                     <?php
-					if ($msg != '') {
-					?>
-						<div class="alert alert-<?= ($error) ? 'danger' : 'success' ?> alert-dismissible fade show" role="alert">
-							<?= $msg ?>
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						</div>
-					<?php
-					}
-					?>
+                    if ($msg != '') {
+                    ?>
+                        <div class="alert alert-<?= ($error) ? 'danger' : 'success' ?> alert-dismissible fade show" role="alert">
+                            <?= $msg ?>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                    <?php
+                    }
+                    ?>
                     <div class="row justify-content-between">
                         <div class="col-lg-5 col-md-5">
                             <div class="card card-static-2 mb-30">
                                 <div class="card-title-2">
                                     <h4 style="width:100%;display: flex; justify-content: space-between;align-items: center;">
-                                        <p><b><?=$btn?> City</b></p>
+                                        <p><b><?= $btn ?> City</b></p>
                                     </h4>
                                 </div>
                                 <div class="card-body-table px-3">
                                     <form id="formAddCity" action="./handler/requestHandler.php" method="POST">
-                                        <input type="hidden" name="cityid" value="<?=isset($result) ? $result["id"] : ""?>">
+                                        <input type="hidden" name="cityid" value="<?= isset($result) ? $result["id"] : "" ?>">
                                         <div class="form-group">
                                             <label class="form-label">Select Country*</label>
                                             <select class="form-control" name="country" id="countrylist">
@@ -90,7 +91,7 @@
                                                 <?php
                                                 foreach ($countries as $country) {
                                                     $selected = '';
-                                                    if(isset($result) && $result["countryId"]==$country["id"]){
+                                                    if (isset($result) && $result["countryId"] == $country["id"]) {
                                                         $selected = "selected";
                                                     }
                                                     echo "<option value='" . $country["id"] . "' $selected>" . $country["country"] . "</option>";
@@ -101,10 +102,10 @@
                                         <div class="form-group">
                                             <label class="form-label">Select State*</label>
                                             <select class="form-control" name="state" id="statelist">
-                                            <?php
+                                                <?php
                                                 foreach ($states as $state) {
                                                     $selected = '';
-                                                    if($result["stateId"]==$state["id"]){
+                                                    if ($result["stateId"] == $state["id"]) {
                                                         $selected = "selected";
                                                     }
                                                     echo "<option value='" . $state["id"] . "' $selected>" . $state["state"] . "</option>";
@@ -114,9 +115,9 @@
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label">City Name*</label>
-                                            <input type="text" class="form-control" name="city" value="<?=isset($result) ? $result["city"] : ""?>" id="cityname" placeholder="City name">
+                                            <input type="text" class="form-control" name="city" value="<?= isset($result) ? $result["city"] : "" ?>" id="cityname" placeholder="City name">
                                         </div>
-                                        <button type="submit" class="save-btn hover-btn mb-3" name="<?=$btn?>City" value="<?=$btn?>City"><?=$btn?> City</button>
+                                        <button type="submit" class="save-btn hover-btn mb-3" name="<?= $btn ?>City" value="<?= $btn ?>City"><?= $btn ?> City</button>
                                     </form>
                                 </div>
                             </div>

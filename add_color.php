@@ -2,19 +2,21 @@
 session_start();
 require("./handler/productHandler.php");
 $obj = new ProductHandler();
-$msg = '';
-$error = false;
-$btn = "Add";
 
+// checking update request
+$btn = "Add";
 if (isset($_GET["edit"])) {
     $result = $obj->getColorById($_GET["edit"]);
     if (count($result) < 1) {
         $_SESSION["result"] = ["msg" => "Invalid Request", "error" => true];
-        header("Location: product_color.php");
+        header("Location: ./product_color.php");
     }
     $btn = "Edit";
 }
 
+// for error or success message
+$msg = '';
+$error = false;
 if (isset($_SESSION["result"])) {
     $error = $_SESSION["result"]["error"];
     $msg = $_SESSION["result"]["msg"];

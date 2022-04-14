@@ -3,7 +3,7 @@ session_start();
 require("./handler/addressHandler.php");
 $obj = new AddressHandler();
 
-// for pagination
+// for pagination and searching
 $currntPage = 1;
 $showRecords = 5;
 $search = '';
@@ -16,6 +16,7 @@ if (isset($_GET["page"])) {
 $totalRecords = $obj->TotalCountries($search);
 $countries = $obj->getCountries($search, (($currntPage - 1) * $showRecords), $showRecords);
 
+// for error or success message
 $msg = '';
 $error = false;
 if (isset($_SESSION["result"])) {

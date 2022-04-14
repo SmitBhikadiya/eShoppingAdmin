@@ -2,10 +2,9 @@
 session_start();
 require("./handler/productHandler.php");
 $obj = new ProductHandler();
-$msg = '';
-$error = false;
-$btn = "Add";
 
+// checking update request
+$btn = "Add";
 if (isset($_GET["edit"])) {
     $result = $obj->getSizeById($_GET["edit"]);
     if (count($result) < 1) {
@@ -15,6 +14,9 @@ if (isset($_GET["edit"])) {
     $btn = "Edit";
 }
 
+// for error or success message
+$msg = '';
+$error = false;
 if (isset($_SESSION["result"])) {
     $error = $_SESSION["result"]["error"];
     $msg = $_SESSION["result"]["msg"];

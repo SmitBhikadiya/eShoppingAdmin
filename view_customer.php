@@ -15,6 +15,7 @@ if (!isset($_GET["view"])) {
     }
 }
 
+// for error or success message
 $msg = '';
 $error = false;
 if (isset($_SESSION["result"])) {

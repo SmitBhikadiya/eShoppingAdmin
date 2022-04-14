@@ -4,19 +4,21 @@ require("./handler/productHandler.php");
 require("./handler/categoryHandler.php");
 $productH = new ProductHandler();
 $categoryH = new CategoryHandler();
-$msg = '';
-$error = false;
-$btn = "Add";
 
+// checking update request
+$btn = "Add";
 if (isset($_GET["edit"])) {
 	$result = $productH->getProductById($_GET["edit"]);
 	if (count($result) < 1) {
 		$_SESSION["result"] = ["msg" => "Invalid Request", "error" => true];
-		header("Location: products.php");
+		header("Location: ./products.php");
 	}
 	$btn = "Edit";
 }
 
+// for error or success message
+$msg = '';
+$error = false;
 if (isset($_SESSION["result"])) {
 	$error = $_SESSION["result"]["error"];
 	$msg = $_SESSION["result"]["msg"];
