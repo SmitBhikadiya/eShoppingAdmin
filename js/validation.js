@@ -81,6 +81,8 @@ $(document).ready(function(){
         $('.error').remove();
         $('.alert').remove();
         isFieldEmpty("#cityname");
+        isOptionSelected("#countrylist");
+        isOptionSelected("#statelist");
         if(!window.isValid){
             e.preventDefault();
         }

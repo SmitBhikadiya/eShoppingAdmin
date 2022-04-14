@@ -63,13 +63,13 @@
             </a>
             <div class="collapse" id="collapseAddress" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
                 <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link sub_nav_link" href="cities.php">City List</a>
+                    <a class="nav-link sub_nav_link" href="cities.php">Cities</a>
                 </nav>
                 <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link sub_nav_link" href="states.php">State List</a>
+                    <a class="nav-link sub_nav_link" href="states.php">States</a>
                 </nav>
                 <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link sub_nav_link" href="countries.php">Country List</a>
+                    <a class="nav-link sub_nav_link" href="countries.php">Countries</a>
                 </nav>
             </div>
         </div>
