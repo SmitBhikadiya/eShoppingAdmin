@@ -3,26 +3,30 @@ require_once("dbHandler.php");
 class CategoryHandler extends DBConnection
 {
 
-    function TotalCategory($search){
-        $search_ = ($search=='') ? 1 : "catName LIKE '%".$search."%'";
+    function TotalCategory($search)
+    {
+        $search_ = ($search == '') ? 1 : "catName LIKE '%" . $search . "%'";
         $sql = "SELECT COUNT(*) AS total FROM category WHERE $search_ AND status=0 ORDER BY id DESC";
         $result = $this->getConnection()->query($sql);
-        if($result && $result->num_rows > 0){
+        if ($result && $result->num_rows > 0) {
             return $result->fetch_assoc()["total"];
-        } 
-        return 0;
-    }
-    function TotalSubCategory($search){
-        $search_ = ($search=='') ? 1 : "subCatName LIKE '%".$search."%'";
-        $sql = "SELECT COUNT(*) AS total FROM subcategory JOIN category ON category.id=subcategory.categoryId WHERE $search_ AND category.status=0 AND subcategory.status=0";
-        $result = $this->getConnection()->query($sql);
-        if($result && $result->num_rows > 0){
-            return $result->fetch_assoc()["total"];
-        } 
+        }
         return 0;
     }
 
-    function getAllCategory(){
+    function TotalSubCategory($search)
+    {
+        $search_ = ($search == '') ? 1 : "subCatName LIKE '%" . $search . "%'";
+        $sql = "SELECT COUNT(*) AS total FROM subcategory JOIN category ON category.id=subcategory.categoryId WHERE $search_ AND category.status=0 AND subcategory.status=0";
+        $result = $this->getConnection()->query($sql);
+        if ($result && $result->num_rows > 0) {
+            return $result->fetch_assoc()["total"];
+        }
+        return 0;
+    }
+
+    function getAllCategory()
+    {
         $sql = "SELECT * FROM category WHERE status=0 ORDER BY id DESC";
         $result = $this->getConnection()->query($sql);
         $records = [];
@@ -35,8 +39,10 @@ class CategoryHandler extends DBConnection
         }
         return $records;
     }
-    function getCategory($search, $page, $show){
-        $search_ = ($search=='') ? 1 : "catName LIKE '%".$search."%'";
+
+    function getCategory($search, $page, $show)
+    {
+        $search_ = ($search == '') ? 1 : "catName LIKE '%" . $search . "%'";
         $sql = "SELECT * FROM category WHERE $search_ AND status=0 ORDER BY id DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
@@ -49,8 +55,10 @@ class CategoryHandler extends DBConnection
         }
         return $records;
     }
-    function getSubCategory($search, $page, $show){
-        $search_ = ($search=='') ? 1 : "subCatName LIKE '%".$search."%'";
+
+    function getSubCategory($search, $page, $show)
+    {
+        $search_ = ($search == '') ? 1 : "subCatName LIKE '%" . $search . "%'";
         $sql = "SELECT subcategory.*, category.catName FROM subcategory JOIN category ON category.id=subcategory.categoryId WHERE $search_ AND category.status=0 AND subcategory.status=0 ORDER BY subcategory.id DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
@@ -63,7 +71,9 @@ class CategoryHandler extends DBConnection
         }
         return $records;
     }
-    function getCatById($id){
+
+    function getCatById($id)
+    {
         $records = [];
         $catid = (int) $id;
         $sql = "SELECT * FROM category WHERE id=$catid AND status = 0";
@@ -76,7 +86,9 @@ class CategoryHandler extends DBConnection
         }
         return $records;
     }
-    function getSubCatById($id){
+
+    function getSubCatById($id)
+    {
         $records = [];
         $catid = (int) $id;
         $sql = "SELECT * FROM subcategory WHERE id=$catid AND subcategory.status = 0";
@@ -89,7 +101,9 @@ class CategoryHandler extends DBConnection
         }
         return $records;
     }
-    function getSubCategoryByCategoryId($id){
+
+    function getSubCategoryByCategoryId($id)
+    {
         $sql = "SELECT subcategory.*, category.catName FROM subcategory JOIN category ON category.id=subcategory.categoryId WHERE subcategory.categoryId=$id AND category.status = 0 AND subcategory.status = 0";
         $result = $this->getConnection()->query($sql);
         $records = [];
@@ -103,7 +117,8 @@ class CategoryHandler extends DBConnection
         return $records;
     }
 
-    function addCategory($catname, $catdesc){
+    function addCategory($catname, $catdesc)
+    {
         $error = "";
         if (!$this->isCategoryExits($catname)) {
             $sql = "INSERT INTO category (catName, catDesc, createdDate) VALUES ('$catname', '$catdesc' , now())";
@@ -116,7 +131,9 @@ class CategoryHandler extends DBConnection
         }
         return $error;
     }
-    function addSubCategory($catname, $catdesc, $catid){
+
+    function addSubCategory($catname, $catdesc, $catid)
+    {
         $error = "";
         if (!$this->isSubCategoryExits($catname, $catid)) {
             $sql = "INSERT INTO subcategory (categoryId, subCatName, subCatDesc, createdDate) VALUES ($catid ,'$catname', '$catdesc' , now())";
@@ -130,7 +147,8 @@ class CategoryHandler extends DBConnection
         return $error;
     }
 
-    function updateCategory($id, $name, $desc){
+    function updateCategory($id, $name, $desc)
+    {
         $error = "";
         $sql = "UPDATE category SET catName='$name', catDesc='$desc', modifiedDate=now() WHERE id=$id";
         $result = $this->getConnection()->query($sql);
@@ -139,7 +157,9 @@ class CategoryHandler extends DBConnection
         }
         return $error;
     }
-    function updateSubCategory($id, $name, $desc, $catid){
+
+    function updateSubCategory($id, $name, $desc, $catid)
+    {
         $error = "";
         $sql = "UPDATE subcategory SET subCatName='$name', subCatDesc='$desc', categoryId=$catid, modifiedDate=now() WHERE id=$id";
         $result = $this->getConnection()->query($sql);
@@ -149,7 +169,8 @@ class CategoryHandler extends DBConnection
         return $error;
     }
 
-    function deleteCategory($id){
+    function deleteCategory($id)
+    {
         $sql = "UPDATE category SET status=1, modifiedDate=now() WHERE id=$id";
         $result = $this->getConnection()->query($sql);
         if ($result) {
@@ -157,7 +178,9 @@ class CategoryHandler extends DBConnection
         }
         return false;
     }
-    function deleteSubCategory($id){
+
+    function deleteSubCategory($id)
+    {
         $sql = "UPDATE subcategory SET status=1, modifiedDate=now() WHERE id=$id";
         $result = $this->getConnection()->query($sql);
         if ($result) {
@@ -166,7 +189,8 @@ class CategoryHandler extends DBConnection
         return false;
     }
 
-    function isCategoryExits($catname){
+    function isCategoryExits($catname)
+    {
         $sql = "SELECT * FROM category WHERE catName='$catname' AND status = 0";
         $result = $this->getConnection()->query($sql);
         if ($result->num_rows > 0) {
@@ -174,7 +198,9 @@ class CategoryHandler extends DBConnection
         }
         return false;
     }
-    function isSubCategoryExits($catname, $catid){
+
+    function isSubCategoryExits($catname, $catid)
+    {
         $sql = "SELECT * FROM subcategory WHERE categoryId=$catid AND subCatName='$catname' AND status = 0";
         $result = $this->getConnection()->query($sql);
         if ($result->num_rows > 0) {

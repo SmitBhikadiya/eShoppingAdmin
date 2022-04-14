@@ -2,35 +2,41 @@
 require_once("dbHandler.php");
 class AddressHandler extends DBConnection
 {
-    function TotalCities($search=''){
-        $search_ = ($search=='') ? 1 : "city LIKE '%".$search."%'";
+    function TotalCities($search = '')
+    {
+        $search_ = ($search == '') ? 1 : "city LIKE '%" . $search . "%'";
         $sql = "SELECT COUNT(*) AS total FROM cities JOIN states ON cities.stateId=states.id JOIN countries ON countries.id=cities.countryId WHERE $search_ AND cities.status=0 AND countries.status=0 AND states.status=0 ORDER BY cities.id DESC";
         $result = $this->getConnection()->query($sql);
-        if($result && $result->num_rows > 0){
+        if ($result && $result->num_rows > 0) {
             return $result->fetch_assoc()["total"];
-        } 
-        return 0;
-    }
-    function TotalStates($search=''){
-        $search_ = ($search=='') ? 1 : "state LIKE '%".$search."%'";
-        $sql = "SELECT COUNT(*) AS total FROM states JOIN countries ON countries.id=states.countryId WHERE $search_ AND states.status=0 AND countries.status=0";
-        $result = $this->getConnection()->query($sql);
-        if($result && $result->num_rows > 0){
-            return $result->fetch_assoc()["total"];
-        } 
-        return 0;
-    }
-    function TotalCountries($search=''){
-        $search_ = ($search=='') ? 1 : "country LIKE '%".$search."%'";
-        $sql = "SELECT COUNT(*) AS total FROM countries WHERE $search_ AND countries.status = 0";
-        $result = $this->getConnection()->query($sql);
-        if($result && $result->num_rows > 0){
-            return $result->fetch_assoc()["total"];
-        } 
+        }
         return 0;
     }
 
-    function getAllCountry(){
+    function TotalStates($search = '')
+    {
+        $search_ = ($search == '') ? 1 : "state LIKE '%" . $search . "%'";
+        $sql = "SELECT COUNT(*) AS total FROM states JOIN countries ON countries.id=states.countryId WHERE $search_ AND states.status=0 AND countries.status=0";
+        $result = $this->getConnection()->query($sql);
+        if ($result && $result->num_rows > 0) {
+            return $result->fetch_assoc()["total"];
+        }
+        return 0;
+    }
+
+    function TotalCountries($search = '')
+    {
+        $search_ = ($search == '') ? 1 : "country LIKE '%" . $search . "%'";
+        $sql = "SELECT COUNT(*) AS total FROM countries WHERE $search_ AND countries.status = 0";
+        $result = $this->getConnection()->query($sql);
+        if ($result && $result->num_rows > 0) {
+            return $result->fetch_assoc()["total"];
+        }
+        return 0;
+    }
+
+    function getAllCountry()
+    {
         $sql = "SELECT * FROM countries WHERE countries.status = 0 ORDER BY countries.id DESC";
         $result = $this->getConnection()->query($sql);
         $records = [];
@@ -43,10 +49,10 @@ class AddressHandler extends DBConnection
         }
         return $records;
     }
-    
+
     function getCities($search, $page, $show)
     {
-        $search_ = ($search=='') ? 1 : "cities.city LIKE '%".$search."%'";
+        $search_ = ($search == '') ? 1 : "cities.city LIKE '%" . $search . "%'";
         $sql = "SELECT cities.*, states.state, countries.country FROM cities JOIN states ON cities.stateId=states.id JOIN countries ON countries.id=cities.countryId WHERE $search_ AND cities.status=0 AND countries.status=0 AND states.status=0 ORDER BY cities.id DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
@@ -59,9 +65,10 @@ class AddressHandler extends DBConnection
         }
         return $records;
     }
+
     function getStates($search, $page, $show)
     {
-        $search_ = ($search=='') ? 1 : "states.state LIKE '%".$search."%'";
+        $search_ = ($search == '') ? 1 : "states.state LIKE '%" . $search . "%'";
         $sql = "SELECT states.*, countries.country FROM states JOIN countries ON countries.id=states.countryId WHERE $search_ AND states.status=0 AND countries.status=0 ORDER BY states.id DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
@@ -74,9 +81,10 @@ class AddressHandler extends DBConnection
         }
         return $records;
     }
+
     function getCountries($search, $page, $show)
     {
-        $search_ = ($search=='') ? 1 : "countries.country LIKE '%".$search."%'";
+        $search_ = ($search == '') ? 1 : "countries.country LIKE '%" . $search . "%'";
         $sql = "SELECT * FROM countries WHERE $search_ AND countries.status = 0 ORDER BY countries.id DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
@@ -89,6 +97,7 @@ class AddressHandler extends DBConnection
         }
         return $records;
     }
+
     function getCityById($id)
     {
         $records = [];
@@ -103,7 +112,9 @@ class AddressHandler extends DBConnection
         }
         return $records;
     }
-    function getStateById($id){
+
+    function getStateById($id)
+    {
         $records = [];
         $stateid = (int) $id;
         $sql = "SELECT * FROM states WHERE id = $stateid AND status = 0";
@@ -116,7 +127,9 @@ class AddressHandler extends DBConnection
         }
         return $records;
     }
-    function getCountryById($id){
+
+    function getCountryById($id)
+    {
         $records = [];
         $countryid = (int) $id;
         $sql = "SELECT * FROM countries WHERE id=$countryid AND countries.status = 0";
@@ -129,6 +142,7 @@ class AddressHandler extends DBConnection
         }
         return $records;
     }
+
     function getStatesByCountryId($countryid)
     {
         $sql = "SELECT states.*, countries.country FROM states JOIN countries ON countries.id=states.countryId WHERE states.countryId=$countryid AND states.status = 0 AND countries.status = 0";
@@ -158,6 +172,7 @@ class AddressHandler extends DBConnection
         }
         return $error;
     }
+
     function addState($countryid, $state)
     {
         $error = "";
@@ -172,6 +187,7 @@ class AddressHandler extends DBConnection
         }
         return $error;
     }
+
     function addCountry($country)
     {
         $error = "";
@@ -197,6 +213,7 @@ class AddressHandler extends DBConnection
         }
         return $error;
     }
+
     function updateState($countryid, $stateid, $state)
     {
         $error = "";
@@ -207,7 +224,9 @@ class AddressHandler extends DBConnection
         }
         return $error;
     }
-    function updateCountry($countryid, $country){
+
+    function updateCountry($countryid, $country)
+    {
         $error = "";
         $sql = "UPDATE countries SET country='$country', modifiedDate=now() WHERE id=$countryid";
         $result = $this->getConnection()->query($sql);
@@ -217,7 +236,8 @@ class AddressHandler extends DBConnection
         return $error;
     }
 
-    function deleteCity($id){
+    function deleteCity($id)
+    {
         $sql = "UPDATE cities SET status=1, modifiedDate=now() WHERE id=$id";
         $result = $this->getConnection()->query($sql);
         if ($result) {
@@ -225,7 +245,9 @@ class AddressHandler extends DBConnection
         }
         return false;
     }
-    function deleteState($id){
+
+    function deleteState($id)
+    {
         $sql = "UPDATE states SET status=1, modifiedDate=now() WHERE id=$id";
         $result = $this->getConnection()->query($sql);
         if ($result) {
@@ -233,7 +255,9 @@ class AddressHandler extends DBConnection
         }
         return false;
     }
-    function deleteCountry($id){
+
+    function deleteCountry($id)
+    {
         $sql = "UPDATE countries SET status=1, modifiedDate=now() WHERE id=$id";
         $result = $this->getConnection()->query($sql);
         if ($result) {
@@ -251,6 +275,7 @@ class AddressHandler extends DBConnection
         }
         return false;
     }
+
     function isStateExits($countryid, $state)
     {
         $sql = "SELECT * FROM states WHERE countryId=$countryid AND state='$state' AND states.status = 0";
@@ -260,6 +285,7 @@ class AddressHandler extends DBConnection
         }
         return false;
     }
+
     function isCountryExits($country)
     {
         $sql = "SELECT * FROM countries WHERE country='$country' AND countries.status = 0";
