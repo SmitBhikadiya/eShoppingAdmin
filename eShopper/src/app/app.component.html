@@ -1,0 +1,41 @@
+<div class="wrapper">
+    <app-header></app-header>
+    <router-outlet></router-outlet>
+    <app-footer></app-footer>
+
+    <div class="popup-outer">
+        <div class="modal fade" id="Login-popup" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h2>eShopper Login</h2>
+                    </div>
+                    <div class="modal-body">
+                        <form  class="loginform">
+                            <div class="form-group">
+                                <label class="form-label">Username</label>
+                                <input type="text" class="form-control" placeholder="Enter your Username">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control" placeholder="Enter your Password">
+                            </div>
+                            <div class="form-group validation-error">
+                                <label class="form-label">Password</label>
+                                <input type="text" class="form-control" placeholder="Enter your Password" value="Incorrect Password">
+                            </div>
+                            <div class="form-group clearfix login-options">
+                                <button type="submit" class="btn-secondary">Login</button>
+                                <p>Not a Member? <a href="register.html" title="Register">Register</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

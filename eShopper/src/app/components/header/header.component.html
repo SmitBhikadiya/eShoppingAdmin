@@ -1,0 +1,125 @@
+<!-- Header Start -->
+<header class="header">
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="row">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle nav-toggle collapsed " data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="col-sm-1">
+                    <a href="index.html" title="eShopper" class="logo"><img src="../assets/images/logo.svg" alt="eShopper"></a>
+                </div>
+                <div class="col-sm-5 col-xs-12">
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <nav class="nav is-fixed">
+                            <div class="nav-container clearfix">
+                                <ul class="nav-menu menu clearfix">
+                                    <li class="menu-item"><a href="index.html" class="menu-link" title="Home">Home</a></li>
+                                    <li class="menu-item" *ngFor="let cat of categories">
+                                        <a [routerLink]="['product/'+cat.catName]" class="menu-link" (mouseover)="getSubCategory(cat.id)" title="{{ cat.catName }}">{{ cat.catName }}</a>
+                                        <ul class="sub-menu" *ngIf="subcategories?.length">
+                                            <li *ngFor="let subcat of subcategories">
+                                                <a [routerLink]="['product/'+cat.catName+'/'+subcat.subCatName]">{{ subcat.subCatName }}</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12 search-outer">
+                    <form>
+                        <ul class="header-right-block clearfix">
+                            <li class="login-link"><a href="#" title="Login" data-toggle="modal" data-target="#Login-popup">Login</a></li>
+                            <li class="cart-outer">
+                                <a href="#" title="Add to Cart" class="add-to-cart"></a>
+                                <div class="cart-wrap">
+                                    <p>Recently added item(s)</p>
+                                    <ul>
+                                        <li>
+                                            <a class="cart-product" title="consectetur adipiscing elit" href="product-detail.html"><img alt="" src="../assets/images/new-thumb-01.jpg"></a>
+
+                                            <div class="cart-details">
+                                                <a class="btn-remove" title="Remove item" href="#"><img src="../assets/images/cross.svg" alt=""></a>
+                                                <a class="btn-edit" title="Edit item" href="cart.html">
+                                                    <img src="../assets/images/edit.svg" alt="">
+                                                </a>
+                                                <p class="product-name"><a href="product-detail.html">U.S. Polo Assn. Full Sleeve Plain T-Shirts...</a></p>
+                                                <p class="price">$120.00 </p>
+                                                <p class="qty-wrapper">
+                                                    <span>Qty :  </span>
+                                                    <span>1</span>
+                                                </p>
+                                                <div class="size-wrap">
+                                                    <dl class="item-options">
+                                                        <dt>Size :</dt>
+                                                        <dd>
+                                                            Medium/Large    
+                                                        </dd>
+                                                    </dl>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <a class="cart-product" title="consectetur adipiscing elit" href="product-detail.html"><img alt="" src="../assets/images/new-thumb-02.jpg"></a>
+                                            <div class="cart-details">
+                                                <a class="btn-remove" title="Remove item" href="#"><img src="../assets/images/cross.svg" alt=""></a>
+                                                <a class="btn-edit" title="Edit item" href="cart.html">
+                                                    <img src="../assets/images/edit.svg" alt="">
+                                                </a>
+                                                <p class="product-name"><a href="product-detail.html">U.S. Polo Assn. Full Sleeve Plain T-Shirts for Men</a></p>
+                                                <p class="price">$120.00</p>     
+                                                
+                                                <p class="qty-wrapper">
+                                                    <span>Qty :  </span>
+                                                    <span>
+                                                        1
+                                                    </span>
+                                                </p>      
+                                                <div class="size-wrap">
+                                                    <dl class="item-options">
+                                                        <dt>Size :</dt>
+                                                        <dd>
+                                                            Medium/Large    
+                                                        </dd>
+                                                    </dl>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <div class="summary">           
+                                        <p class="subtotal">
+                                            <span>Cart Subtotal:</span> <span class="price">$168.00</span>
+                                        </p>
+                                    </div>
+                                    <div class="cart-action">
+                                        <a href="cart.html" title="View Cart"  class="btn-secondary">View Cart</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="search-link-wrap">
+                                <div class="search-link-outer">
+                                    <div class="search-link clearfix">
+                                        <input type="text" class="form-control" placeholder="Search">
+                                        <a href="#" title="Search"><i><img src="../assets/images/search.svg" alt="Search"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </form>
+                </div>
+
+                <!-- /.navbar-collapse -->
+            </div>
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+</header>
+<!-- Header End-->
