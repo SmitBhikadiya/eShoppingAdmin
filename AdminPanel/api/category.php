@@ -4,11 +4,10 @@ session_start();
 require_once("../handler/categoryHandler.php");
 $obj = new CategoryHandler();
 
+$cats = [];
+
 $cats = $obj->getAllCategory();
-if(count($cats) > 0){
-    echo json_encode($cats);
-}else{
-    http_response_code(404);
-}
+
+echo json_encode(["result"=>$cats]);
 
 ?>

@@ -173,6 +173,36 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
+    function getProductBySubCatName($catname, $subcatname, $page, $show){
+        $records = [];
+        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE category.catName = '$catname' AND ".(($subcatname=="null") ? 1 : "subcategory.subCatName = '$subcatname'")." AND products.status=0 AND category.status=0 AND subcategory.status=0 LIMIT $page, $show";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
+    function getProductByCatName($catname, $page, $show){
+        $records = [];
+        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE category.catName = '$catname' AND products.status=0 AND category.status=0 AND subcategory.status=0 LIMIT $page, $show";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
     function getProductByCategory($catid){
         $records = [];
         $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE products.categoryId=$catid AND products.status=0 AND category.status=0 AND subcategory.status=0";
