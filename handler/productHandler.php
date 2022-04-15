@@ -36,6 +36,20 @@ class ProductHandler extends DBConnection
         return 0;
     }
 
+    function getAllProduct(){
+        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE products.status=0 AND category.status=0 ORDER BY products.id DESC";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
     function getAllColor()
     {
         $sql = "SELECT * FROM productcolor WHERE status=0 ORDER BY id DESC";
@@ -153,6 +167,36 @@ class ProductHandler extends DBConnection
         $records = [];
         if ($result && $result->num_rows > 0) {
             $records = $result->fetch_assoc();
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
+    function getProductByCategory($catid){
+        $records = [];
+        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE products.categoryId=$catid AND products.status=0 AND category.status=0 AND subcategory.status=0";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
+    function getProductBySubCategory($subcatid){
+        $records = [];
+        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE products.subCategoryId=$subcatid AND products.status=0 AND category.status=0 AND subcategory.status=0";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
         } else {
             $records = [];
         }

@@ -35,6 +35,34 @@ class AddressHandler extends DBConnection
         return 0;
     }
 
+    function getAllCity(){
+        $sql = "SELECT cities.*, states.state, countries.country FROM cities JOIN states ON cities.stateId=states.id JOIN countries ON countries.id=cities.countryId WHERE cities.status=0 AND countries.status=0 AND states.status=0 ORDER BY cities.id DESC";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
+    function getAllState(){
+        $sql = "SELECT states.*, countries.country FROM states JOIN countries ON countries.id=states.countryId WHERE states.status=0 AND countries.status=0 ORDER BY states.id DESC";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
     function getAllCountry()
     {
         $sql = "SELECT * FROM countries WHERE countries.status = 0 ORDER BY countries.id DESC";
