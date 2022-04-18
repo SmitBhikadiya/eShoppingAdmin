@@ -8,6 +8,7 @@ document.write(
 	'<script type="text/javascript" src="../assets/js/html5shiv.min.js"></script>' +
 	'<script type="text/javascript" src="../assets/js/jquery.fancybox.js"></script>' +
 	'<script type="text/javascript" src="../assets/js/respond.min.js"></script>' +
-	'<script type="text/javascript" src="../assets/js/general.js"></script>'
+	'<script type="text/javascript" src="../assets/js/general.js"></script>' +
+	'<script type="text/javascript" src="../assets/js/rangeInput.js"></script>'
 	);
 

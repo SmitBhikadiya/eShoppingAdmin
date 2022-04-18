@@ -23,4 +23,8 @@ export class CategoryService {
   getSubCategoryByCatId(id:number) : Observable<any>{
     return this.http.get<ISubCategory[]>(`${environment.API_SERVER_URL}/subcategory.php?catid=${id}`);
   }
+
+  getSubCategoryByCatName(catname:string) : Observable<any>{
+    return this.http.get<ISubCategory[]>(`${environment.API_SERVER_URL}/subcategory.php?catname=${catname}`);
+  }
 }

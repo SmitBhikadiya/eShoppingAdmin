@@ -36,7 +36,8 @@ class ProductHandler extends DBConnection
         return 0;
     }
 
-    function getAllProduct(){
+    function getAllProduct()
+    {
         $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE products.status=0 AND category.status=0 ORDER BY products.id DESC";
         $result = $this->getConnection()->query($sql);
         $records = [];
@@ -112,14 +113,26 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getProducts($search, $page, $show)
+    function getProducts($search, $page, $show, $colorid = '', $sizeids = '')
     {
-        $search_ = ($search == '') ? 1 : "productName LIKE '%" . $search . "%'";
-        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND products.status=0 AND category.status=0 ORDER BY products.id DESC LIMIT $page, $show";
+        $colorid_ = ($colorid == '') ? 1 : "products.productColorIds LIKE '%" . $colorid . "%'";
+        $search_ = ($search == '') ? 1 : "products.productName LIKE '%" . $search . "%'";
+        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND $colorid_ AND products.status=0 AND category.status=0 ORDER BY products.id DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
+                if (!empty($sizeids)) {
+                    $sizes = explode(",", $sizeids);
+                    $sizeIds = explode(",", $this->getProductById($row["id"])["productSizeIds"]);
+                    for ($i = 0; $i < count($sizeIds); $i++) {
+                        if (in_array($sizeIds[$i], $sizes)) {
+                            array_push($records, $row);
+                            break;
+                        }
+                    }
+                    continue;
+                }
                 array_push($records, $row);
             }
         } else {
@@ -173,13 +186,26 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getProductBySubCatName($catname, $subcatname, $page, $show){
+    function getProductBySubCatName($catname, $subcatname, $page, $show, $colorid = '', $sizeids = '')
+    {
         $records = [];
-        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE category.catName = '$catname' AND ".(($subcatname=="null") ? 1 : "subcategory.subCatName = '$subcatname'")." AND products.status=0 AND category.status=0 AND subcategory.status=0 LIMIT $page, $show";
+        $colorid_ = ($colorid == '') ? 1 : "products.productColorIds LIKE '%" . $colorid . "%'";
+        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE $colorid_ AND category.catName = '$catname' AND " . (($subcatname == "null") ? 1 : "subcategory.subCatName = '$subcatname'") . " AND products.status=0 AND category.status=0 AND subcategory.status=0 LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result && $result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
+                if (!empty($sizeids)) {
+                    $sizes = explode(",", $sizeids);
+                    $sizeIds = explode(",", $this->getProductById($row["id"])["productSizeIds"]);
+                    for ($i = 0; $i < count($sizeIds); $i++) {
+                        if (in_array($sizeIds[$i], $sizes)) {
+                            array_push($records, $row);
+                            break;
+                        }
+                    }
+                    continue;
+                }
                 array_push($records, $row);
             }
         } else {
@@ -188,22 +214,39 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getProductByCatName($catname, $page, $show){
+    function getProductByCatName($catname, $page, $show, $colorid = '', $sizeids = '')
+    {
         $records = [];
-        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE category.catName = '$catname' AND products.status=0 AND category.status=0 AND subcategory.status=0 LIMIT $page, $show";
+        $colorid_ = ($colorid == '') ? 1 : "products.productColorIds LIKE '%" . $colorid . "%'";
+        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE $colorid_ AND category.catName = '$catname' AND products.status=0 AND category.status=0 AND subcategory.status=0 LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result && $result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
+                if (!empty($sizeids)) {
+                    $sizes = explode(",", $sizeids);
+                    $sizeIds = explode(",", $this->getProductById($row["id"])["productSizeIds"]);
+                    for ($i = 0; $i < count($sizeIds); $i++) {
+                        if (in_array($sizeIds[$i], $sizes)) {
+                            array_push($records, $row);
+                            break;
+                        }
+                    }
+                    continue;
+                }
                 array_push($records, $row);
             }
         } else {
             $records = [];
         }
+        // echo $sql;
+        // echo "<pre>";
+        // print_r($records);
         return $records;
     }
 
-    function getProductByCategory($catid){
+    function getProductByCategory($catid)
+    {
         $records = [];
         $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE products.categoryId=$catid AND products.status=0 AND category.status=0 AND subcategory.status=0";
         $result = $this->getConnection()->query($sql);
@@ -218,7 +261,8 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getProductBySubCategory($subcatid){
+    function getProductBySubCategory($subcatid)
+    {
         $records = [];
         $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE products.subCategoryId=$subcatid AND products.status=0 AND category.status=0 AND subcategory.status=0";
         $result = $this->getConnection()->query($sql);

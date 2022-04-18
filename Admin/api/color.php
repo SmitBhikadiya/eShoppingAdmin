@@ -4,11 +4,13 @@ session_start();
 require_once("../handler/productHandler.php");
 $obj = new ProductHandler();
 
-$colors = $obj->getAllColor();
-if(count($colors) > 0){
-    echo json_encode($colors);
+$colors = [];
+if(isset($_GET["colorids"])){
+    $ids = "(".$_GET["colorids"].")";
+    $colors = $obj->getColorByIds($ids);
 }else{
-    http_response_code(404);
+    $colors = $obj->getAllColor();
 }
+echo json_encode(["result"=>$colors]);
 
 ?>

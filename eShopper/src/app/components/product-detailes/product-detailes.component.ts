@@ -19,6 +19,7 @@ export class ProductDetailesComponent implements OnInit {
   sizes!:ISize[];
   colors!:IColor[];
   imgURL = environment.IMAGES_SERVER_URL;
+  show:boolean = false;
 
   constructor(private productService:ProductService, private router:Router, private route:ActivatedRoute) { 
     router.events.subscribe((ev)=>{
@@ -33,6 +34,10 @@ export class ProductDetailesComponent implements OnInit {
       this.prdid = param["id"];
     });
     this.getProductById();
+  }
+
+  toggleReview(){
+    this.show = !this.show;
   }
 
   getProductById(){

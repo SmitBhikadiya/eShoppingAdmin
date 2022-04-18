@@ -13,8 +13,9 @@ export class ProductService {
 
   constructor(private http:HttpClient) { }
 
-  getProducts(load:number) : Observable<any>{
-    return this.http.get<IProduct[]>(`${environment.API_SERVER_URL}/product.php?load=${load}`);
+  getProducts(load:number, formvalues:string) : Observable<any>{
+    let query_ = new URLSearchParams(formvalues).toString();
+    return this.http.get<IProduct[]>(`${environment.API_SERVER_URL}/product.php?load=${load}&${query_}`);
   }
 
   getProductsById(id:number) : Observable<any>{
@@ -29,27 +30,31 @@ export class ProductService {
     return this.http.get<IProduct[]>(`${environment.API_SERVER_URL}/product.php?subcatid=${id}`);
   }
 
-  getProductsByCatName(load:number, cat:string): Observable<any>{
-    return this.http.get<IProduct[]>(`${environment.API_SERVER_URL}/product.php?load=${load}&catname=${cat}`);
+  getProductsByCatName(load:number, cat:string, formvalues:any): Observable<any>{
+    let query_ = new URLSearchParams(formvalues).toString();
+    console.log(`${environment.API_SERVER_URL}/product.php?load=${load}&catname=${cat}&${query_}`);
+    return this.http.get<IProduct[]>(`${environment.API_SERVER_URL}/product.php?load=${load}&catname=${cat}&${query_}`);
   }
 
-  getProductsBySubCatName(load:number, cat:string, subcat:string): Observable<any>{
-    return this.http.get<IProduct[]>(`${environment.API_SERVER_URL}/product.php?load=${load}&catname=${cat}&subcatname=${subcat}`);
+  getProductsBySubCatName(load:number, cat:string, subcat:string, formvalues:string): Observable<any>{
+    let query_ = new URLSearchParams(formvalues).toString();
+    console.log(`${environment.API_SERVER_URL}/product.php?load=${load}&catname=${cat}&subcatname=${subcat}&${query_}`);
+    return this.http.get<IProduct[]>(`${environment.API_SERVER_URL}/product.php?load=${load}&catname=${cat}&subcatname=${subcat}&${query_}`);
   }
 
-  getColors() : Observable<IColor[]>{
-    return this.http.get<IColor[]>(`${environment.API_SERVER_URL}/product.php`);
+  getColors() : Observable<any>{
+    return this.http.get<IColor[]>(`${environment.API_SERVER_URL}/color.php`);
   }
 
   getColorByIds(ids:string) : Observable<any>{
-    return this.http.get<any>(`${environment.API_SERVER_URL}/product.php?colorids=${ids}`);
+    return this.http.get<any>(`${environment.API_SERVER_URL}/color.php?colorids=${ids}`);
   }
 
-  getSizes() : Observable<ISize[]>{
-    return this.http.get<ISize[]>(`${environment.API_SERVER_URL}/product.php`);
+  getSizes() : Observable<any>{
+    return this.http.get<ISize[]>(`${environment.API_SERVER_URL}/size.php`);
   }
 
   getSizeByIds(ids:string) : Observable<any>{
-    return this.http.get<any>(`${environment.API_SERVER_URL}/product.php?sizeids=${ids}`);
+    return this.http.get<any>(`${environment.API_SERVER_URL}/size.php?sizeids=${ids}`);
   }
 }

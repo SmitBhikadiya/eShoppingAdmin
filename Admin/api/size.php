@@ -4,11 +4,13 @@ session_start();
 require_once("../handler/productHandler.php");
 $obj = new ProductHandler();
 
-$sizes = $obj->getAllSize();
-if(count($sizes) > 0){
-    echo json_encode($sizes);
+$sizes = [];
+if(isset($_GET["sizeids"])){
+    $ids = "(".$_GET["sizeids"].")";
+    $sizes = $obj->getSizeByIds($ids);
 }else{
-    http_response_code(404);
+    $sizes = $obj->getAllSize();
 }
 
+echo json_encode(["result"=>$sizes]);
 ?>

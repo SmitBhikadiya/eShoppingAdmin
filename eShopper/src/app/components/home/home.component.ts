@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
   }
 
   getProducts(){
-    this.productService.getProducts(this.defaultLoadProduct).subscribe((res)=>{
+    this.productService.getProducts(this.defaultLoadProduct, '').subscribe((res)=>{
       this.products = res["result"];
     },(err)=>{
       this.error = err;
