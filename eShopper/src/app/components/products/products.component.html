@@ -256,7 +256,7 @@
               <figure class="effect-goliath">
                 <div class="thumb-outer">
                   <a href="#" title="thumb" class="thumb-image"
-                    ><img style="height: 328px;" src="{{ imageURL }}/product/{{(product.productImages | imageURLFilter)[0]}}" alt="thumb"
+                    ><img style="height: 328px;" src="{{ imageURL }}/product/{{(product.productImages | strtoarray: ',')[0]}}" alt="thumb"
                   /></a>
                   <a title="Add to Cart" class="cart-button"
                     >Add to Cart</a
@@ -264,7 +264,7 @@
                 </div>
                 <figcaption>
                   <a
-                    href="product-detail.html"
+                  [routerLink]="['/productInfo/'+product['id']]"
                     title="{{ product.productName }}"
                     class="heading"
                     >{{ product.productName }}</a

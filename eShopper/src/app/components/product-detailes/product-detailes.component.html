@@ -1,100 +1,94 @@
 <div class="title-block-outer">
-    <img src="images/inner-banner.jpg" alt="Banner-image" class="img-responsive" />
+    <img src="../../../assets/images/inner-banner.jpg" alt="Banner-image" class="img-responsive" />
     <div class="container title-block-container">
-        <h2>T-shirts</h2>
+        <h2>{{ product.subCatName }}</h2>
     </div>
 </div>
 <div class="breadcrumb-panel">
     <div class="container">
         <ol class="breadcrumb">
             <li><a href="index.html" title="Home">Home</a></li>
-            <li><a href="product.html" title="Men">Men</a></li>
-            <li><a href="product.html" title="T-shirts">T-shirts</a></li>
-            <li class="active">U.S. Polo Assn. Full Sleeve Plain T-Shirts for Men</li>
+            <li><a [routerLink]="['/product/'+product['catName']]" title="Men">{{ product["catName"] | titleCaptilize
+                    }}</a></li>
+            <li><a [routerLink]="['/product/'+product['catName']+'/'+product['subCatName']]">{{ product["subCatName"] | titleCaptilize }}</a></li>
+            <li class="active">{{ product["productName"] }}</li>
         </ol>
     </div>
 </div>
 <section class="product_detail content">
-    <div class="container shopping-wrap">
+    <!-- <div class="container shopping-wrap">
         <div class="alert alert-dismissible alert-success" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">×</span>
             </button>
-            <i><img src="images/success.svg" alt="success" /></i>
+            <i><img src="../../../assets/images/success.svg" alt="success" /></i>
             <span> U.S. Polo Assn. Full Sleeve Plain T-Shirts for Men </span> has been
             added to your wishlist.
         </div>
-    </div>
+    </div> -->
     <div class="container">
         <div class="row">
             <div class="col-sm-5">
                 <ul class="sync1">
-                    <li>
-                        <a class="fancybox" href="images/new-thumb-01-big.jpg" data-fancybox-group="gallery"
-                            title=""><img src="images/new-thumb-01.jpg" alt="" /></a>
-                    </li>
-                    <li>
-                        <a class="fancybox" href="images/new-thumb-02-big.jpg" data-fancybox-group="gallery"
-                            title=""><img src="images/new-thumb-02.jpg" alt="" /></a>
-                    </li>
-                    <li>
-                        <a class="fancybox" href="images/new-thumb-03-big.jpg" data-fancybox-group="gallery"
-                            title=""><img src="images/new-thumb-03.jpg" alt="" /></a>
-                    </li>
-                    <li>
-                        <a class="fancybox" href="images/new-thumb-04-big.jpg" data-fancybox-group="gallery"
-                            title=""><img src="images/new-thumb-04.jpg" alt="" /></a>
-                    </li>
-                    <li>
-                        <a class="fancybox" href="images/new-thumb-05-big.jpg" data-fancybox-group="gallery"
-                            title=""><img src="images/new-thumb-05.jpg" alt="" /></a>
-                    </li>
-                    <li>
-                        <a class="fancybox" href="images/new-thumb-06-big.jpg" data-fancybox-group="gallery"
-                            title=""><img src="images/new-thumb-06.jpg" alt="" /></a>
-                    </li>
-                    <li>
-                        <a class="fancybox" href="images/new-thumb-07-big.jpg" data-fancybox-group="gallery"
-                            title=""><img src="images/new-thumb-07.jpg" alt="" /></a>
-                    </li>
-                    <li>
-                        <a class="fancybox" href="images/new-thumb-08-big.jpg" data-fancybox-group="gallery"
-                            title=""><img src="images/new-thumb-08.jpg" alt="" /></a>
+                    <li *ngFor="let img of product['productImages'] | strtoarray: ','">
+                        <a class="fancybox" href="{{ imgURL }}/product/{{ img }}" data-fancybox-group="gallery"
+                            title=""><img src="{{ imgURL }}/product/{{ img }}" alt="" /></a>
                     </li>
                 </ul>
                 <ul class="sync2">
-                    <li><img src="images/new-thumb-01.jpg" alt="" /></li>
-                    <li><img src="images/new-thumb-02.jpg" alt="" /></li>
-                    <li><img src="images/new-thumb-03.jpg" alt="" /></li>
-                    <li><img src="images/new-thumb-04.jpg" alt="" /></li>
-                    <li><img src="images/new-thumb-05.jpg" alt="" /></li>
-                    <li><img src="images/new-thumb-06.jpg" alt="" /></li>
-                    <li><img src="images/new-thumb-07.jpg" alt="" /></li>
-                    <li><img src="images/new-thumb-08.jpg" alt="" /></li>
+                    <li *ngFor="let img of product['productImages'] | strtoarray: ','">
+                        <img src="{{ imgURL }}/product/{{ img }}" alt="" />
+                    </li>
                 </ul>
+                <!-- <ul class="sync1">
+                    <li>
+                        <a class="fancybox" href="../../../assets/images/new-thumb-01-big.jpg" data-fancybox-group="gallery" title=""><img src="../../../assets/images/new-thumb-01.jpg" alt="" /></a>
+                    </li>
+                    <li>
+                        <a class="fancybox" href="../../../assets/images/new-thumb-02-big.jpg" data-fancybox-group="gallery" title=""><img src="../../../assets/images/new-thumb-02.jpg" alt="" /></a>
+                    </li>
+                    <li>
+                        <a class="fancybox" href="../../../assets/images/new-thumb-03-big.jpg" data-fancybox-group="gallery" title=""><img src="../../../assets/images/new-thumb-03.jpg" alt="" /></a>
+                    </li>
+                    <li>
+                        <a class="fancybox" href="../../../assets/images/new-thumb-04-big.jpg" data-fancybox-group="gallery" title=""><img src="../../../assets/images/new-thumb-04.jpg" alt="" /></a>
+                    </li>
+                    
+                </ul>
+                <ul class="sync2">
+                    <li><img src="../../../assets/images/new-thumb-01.jpg" alt=""> </li>
+                    <li><img src="../../../assets/images/new-thumb-02.jpg" alt=""></li>
+                    <li><img src="../../../assets/images/new-thumb-03.jpg" alt=""></li>
+                    <li><img src="../../../assets/images/new-thumb-04.jpg" alt=""></li>
+                </ul> -->
             </div>
             <div class="col-sm-7">
                 <div class="product-name">
-                    <h1>U.S. Polo Assn. Full Sleeve Plain T-Shirts for Men</h1>
+                    <h1>{{ product["productName"] }} {{ product["subCatName"] }} for {{ product["catName"] }}</h1>
                 </div>
                 <div class="short-description">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at ante.
-                    Mauris eleifend, quam a vulputate dictum, massa quam dapibus leo, eget
-                    vulputate orci purus ut lorem. In fringilla mi in ligula. Pellentesque
-                    aliquam quam vel dolor. every item is a vital part of a woman's
-                    wardrobe.
+                    {{ product["productDesc"] }}
                 </div>
                 <div class="sku"><span>SKU: </span> mag209_prod1</div>
                 <!-- <p class="availability">Availability:<span class="in-stock">In stock</span><span class="not-in-stock">Not Available</span></p> -->
                 <div class="price-box">$120.00</div>
                 <div class="product-options">
-                    <label class="required"><em>*</em> size</label>
+                    <label class="required"><em>*</em> Size</label>
                     <p class="required">* Required Fields</p>
                     <div class="form-group">
                         <select>
                             <option>-- Please Select --</option>
-                            <option>Medium/Large</option>
-                            <option>Small/Medium</option>
+                            <option *ngFor="let size of sizes" value="{{ size['id'] }}">{{ size['size'] | uppercase}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="product-options">
+                    <label class="required"><em>*</em> Color</label>
+                    <p class="required">* Required Fields</p>
+                    <div class="form-group">
+                        <select>
+                            <option>-- Please Select --</option>
+                            <option *ngFor="let color of colors" value="{{ color['id'] }}">{{ color['colorName'] | uppercase}}</option>
                         </select>
                     </div>
                 </div>

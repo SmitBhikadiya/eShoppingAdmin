@@ -60,13 +60,13 @@
                             <figure class="effect-goliath">
                                 <div class="thumb-outer">
                                     <a href="#" title="{{ product.productName }}" class="thumb-image">
-                                        <img style="height: 328px;" src="{{ imageURL }}/product/{{(product.productImages | imageURLFilter)[0]}}"
+                                        <img style="height: 328px;" src="{{ imageURL }}/product/{{(product.productImages | strtoarray: ',')[0]}}"
                                             alt="thumb" />
                                     </a>
                                     <a href="cart.html" title="Add to Cart" class="cart-button">Add to Cart</a>
                                 </div>
                                 <figcaption>
-                                    <a href="product-detail.html" title="{{ product.productName }}" class="heading">{{
+                                    <a [routerLink]="['/productInfo/'+product['id']]" title="{{ product.productName }}" class="heading">{{
                                         product.productName }}</a>
                                     <span>{{ product.productPrice | currency: "USD" }}</span>
                                 </figcaption>

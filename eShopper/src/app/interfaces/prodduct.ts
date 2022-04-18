@@ -13,4 +13,5 @@ export interface IProduct{
     createdDate:string
     status:number
     catName:string
+    subCatName:string
 }

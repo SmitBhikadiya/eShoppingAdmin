@@ -14,7 +14,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { HomeComponent } from './components/home/home.component';
 import { ProductDetailesComponent } from './components/product-detailes/product-detailes.component';
 import { ProductsComponent } from './components/products/products.component';
-import { ImageURLFilterPipe } from './pipes/image-urlfilter.pipe';
+import { StrtoarrayPipe } from './pipes/strtoarray.pipe';
 import { TitleCaptilizePipe } from './pipes/title-captilize.pipe';
 
 @NgModule({
@@ -25,7 +25,7 @@ import { TitleCaptilizePipe } from './pipes/title-captilize.pipe';
     HomeComponent,
     ProductDetailesComponent,
     ProductsComponent,
-    ImageURLFilterPipe,
+    StrtoarrayPipe,
     TitleCaptilizePipe
   ],
   imports: [

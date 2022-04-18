@@ -6,9 +6,13 @@ import { first } from 'rxjs';
 })
 export class TitleCaptilizePipe implements PipeTransform {
 
-  transform(value: string): unknown {
-    let first = value.substring(0,1).toUpperCase();
-    return first+value.substring(1);
+  transform(value: string): string {
+    if(value!=null || value!=undefined){
+      let first = value.substring(0,1).toUpperCase();
+      return first+value.substring(1);
+    }else{
+      return '';
+    }
   }
 
 }

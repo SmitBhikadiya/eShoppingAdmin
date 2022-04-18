@@ -17,6 +17,10 @@ export class ProductService {
     return this.http.get<IProduct[]>(`${environment.API_SERVER_URL}/product.php?load=${load}`);
   }
 
+  getProductsById(id:number) : Observable<any>{
+    return this.http.get<IProduct>(`${environment.API_SERVER_URL}/product.php?id=${id}`);
+  }
+
   getProductsByCatId(id:number) : Observable<any>{
     return this.http.get<IProduct[]>(`${environment.API_SERVER_URL}/product.php?catid=${id}`);
   }
@@ -37,7 +41,15 @@ export class ProductService {
     return this.http.get<IColor[]>(`${environment.API_SERVER_URL}/product.php`);
   }
 
+  getColorByIds(ids:string) : Observable<any>{
+    return this.http.get<any>(`${environment.API_SERVER_URL}/product.php?colorids=${ids}`);
+  }
+
   getSizes() : Observable<ISize[]>{
     return this.http.get<ISize[]>(`${environment.API_SERVER_URL}/product.php`);
+  }
+
+  getSizeByIds(ids:string) : Observable<any>{
+    return this.http.get<any>(`${environment.API_SERVER_URL}/product.php?sizeids=${ids}`);
   }
 }
