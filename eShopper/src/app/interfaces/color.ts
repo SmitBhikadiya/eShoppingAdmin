@@ -5,4 +5,5 @@ export interface IColor{
     modifiedDate:string
     createdDate:string
     status:number
+    totalPrd:number
 }

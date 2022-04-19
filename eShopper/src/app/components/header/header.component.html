@@ -20,7 +20,7 @@
                         <nav class="nav is-fixed">
                             <div class="nav-container clearfix">
                                 <ul class="nav-menu menu clearfix">
-                                    <li class="menu-item"><a href="index.html" class="menu-link" title="Home">Home</a></li>
+                                    <li class="menu-item"><a [routerLink]="['product/']" class="menu-link" title="Home">Home</a></li>
                                     <li class="menu-item" *ngFor="let cat of categories">
                                         <a [routerLink]="['product/'+cat.catName]" class="menu-link" (mouseover)="getSubCategory(cat.id)" title="{{ cat.catName }}">{{ cat.catName }}</a>
                                         <ul class="sub-menu" *ngIf="subcategories?.length">

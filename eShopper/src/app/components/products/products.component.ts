@@ -75,7 +75,11 @@ export class ProductsComponent implements OnInit {
 
   filterUpdate(){
     this.getProductsBy();
-    //console.log(this.filterForm.value);
+  }
+
+  resetForm(){
+    this.filterForm.reset();
+    this.ngOnInit();
   }
 
   getProductsBy() : void{
@@ -121,7 +125,7 @@ export class ProductsComponent implements OnInit {
   }
 
   getColors(){
-    this.productService.getColors().subscribe((res)=>{
+    this.productService.getColorsBy(this.category, this.subcategory).subscribe((res)=>{
       this.colors = res["result"];
       //console.log(this.colors);
     },(err)=>{
@@ -130,7 +134,7 @@ export class ProductsComponent implements OnInit {
   }
 
   getSizes(){
-    this.productService.getSizes().subscribe((res)=>{
+    this.productService.getSizesBy(this.category, this.subcategory).subscribe((res)=>{
       this.sizes = res["result"];
       //console.log(this.colors);
     },(err)=>{

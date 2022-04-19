@@ -14,7 +14,7 @@ export class ProductService {
   constructor(private http:HttpClient) { }
 
   getProducts(load:number, formvalues:string) : Observable<any>{
-    let query_ = new URLSearchParams(formvalues).toString();
+    let query_ = (formvalues==='') ? '' : new URLSearchParams(formvalues).toString();
     return this.http.get<IProduct[]>(`${environment.API_SERVER_URL}/product.php?load=${load}&${query_}`);
   }
 
@@ -50,11 +50,19 @@ export class ProductService {
     return this.http.get<any>(`${environment.API_SERVER_URL}/color.php?colorids=${ids}`);
   }
 
+  getColorsBy(cat:string, subcat:string) : Observable<any>{
+    return this.http.get<any>(`${environment.API_SERVER_URL}/color.php?cat=${cat}&subcat=${subcat}`);
+  }
+
   getSizes() : Observable<any>{
     return this.http.get<ISize[]>(`${environment.API_SERVER_URL}/size.php`);
   }
 
   getSizeByIds(ids:string) : Observable<any>{
     return this.http.get<any>(`${environment.API_SERVER_URL}/size.php?sizeids=${ids}`);
+  }
+
+  getSizesBy(cat:string, subcat:string) : Observable<any>{
+    return this.http.get<any>(`${environment.API_SERVER_URL}/size.php?cat=${cat}&subcat=${subcat}`);
   }
 }

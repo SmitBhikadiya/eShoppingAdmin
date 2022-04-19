@@ -4,4 +4,5 @@ export interface ISize{
     modifiedDate:string
     createdDate:string
     status:number
+    totalPrd:number
 }

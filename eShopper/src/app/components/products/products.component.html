@@ -40,10 +40,10 @@
               <div class="filter-option-inner collapse in" id="collapse1">
                 <ul>
                   <li class="custom-check" *ngFor="let cat of subcategories">
-                    <label>
-                      <input type="checkbox" class="icheck" name="subcategories" [value]="cat['id']" (change)="onCheckboxChange($event, 'subcategories')" />
+                    <label *ngIf="(subcategory==null || subcategory=='') || subcategory==cat['subCatName']">
+                      <input type="checkbox" class="icheck" name="subcategories" [value]="cat['id']" (change)="onCheckboxChange($event, 'subcategories')" [checked]="subcategory==cat['subCatName']" />
                       {{ cat["subCatName"] }}
-                      <span>(25275)</span>
+                      <span>({{ cat["totalPrd"] }})</span>
                     </label>
                   </li>
                 </ul>
@@ -59,24 +59,16 @@
                 Colour
               </div>
               <div class="filter-option-inner collapse in" id="collapse2">
-                <ul class="colour_family_list clearfix">
+                <ul class="colour_family_list">
                   <li class="custom-check" *ngFor="let color of colors">
-                    <label>
-                      <span class="{{ color.colorName }}-color"></span>
+                    <label style="display: flex; width: 100%;">
+                      <span class="{{ color['colorName'] }}-color"></span>
                       <input type="radio" class="icheck" name="colors" [value]="color['id']" style="display: none;" formControlName="colors" />
-                      &nbsp;&nbsp;{{ color.colorName | uppercase }}
+                      &nbsp;&nbsp;{{ color["colorName"] | uppercase }}&nbsp;<p style="padding-bottom:5px; font-size: 11px;">({{ color["totalPrd"] }})</p>
                     </label>
                   </li>
+                  <li><a (click)="resetForm()" title="Reset" class="reset-link">Reset</a></li>
                 </ul>
-                <!-- <ul class="colour_family_list clearfix">
-                  <li *ngFor="let color of colors">
-                    <a title="{{ color.colorName }}">
-                      <span class="{{ color.colorName }}-color"></span>
-                      {{ color.colorName }} <i>(1250)</i></a
-                    >
-                  </li>
-                  <li><a href="#" title="Reset" class="reset-link">Reset</a></li>
-                </ul> -->
               </div>
             </div>
             <div class="filter-option">
@@ -92,9 +84,9 @@
                 <div class="price-slider">
                   <span class="inline-span">
                     from&nbsp;
-                    <input type="number" value="0" min="0" max="12000" />
+                    <input type="number" value="0" min="0" max="12000" style="pointer-events: none;" />
                     &nbsp;to&nbsp;
-                    <input type="number" value="12000" min="0" max="12000" />
+                    <input type="number" value="12000" min="0" max="12000" style="pointer-events: none;" />
                   </span>
                   <input value="0" min="0" name="priceStart" max="12000" step="100" type="range" formControlName='priceStart'/>
                   <input value="12000" min="0" name="priceEnd" max="12000" step="100" type="range" formControlName='priceEnd'/>
@@ -121,8 +113,8 @@
                   <li class="custom-check" *ngFor="let size of sizes">
                     <label>
                       <input type="checkbox" class="icheck" [value]="size['id']" (change)="onCheckboxChange($event, 'sizes')" />
-                      {{ size.size | uppercase }}
-                      <span>(81)</span>
+                      {{ size["size"] | uppercase }}
+                      <span>({{ size["totalPrd"] }})</span>
                     </label>
                   </li>
                 </ul>
@@ -146,7 +138,7 @@
         <div class="toolbar clearfix">
           <div class="pager_right">
             <div class="sort-by">
-              <label>Sort By</label>
+              <label>Sort By&nbsp;</label>
               <div class="form-group">
                 <select class="custom-dropdown">
                   <option>Position</option>
@@ -158,11 +150,8 @@
           </div>
         </div>
         <div class="grid-content">
-          <div class="grid row">
-            <div
-              class="col-sm-4 col-xs-6"
-              *ngFor="let product of products; trackBy: trackByProduct"
-            >
+          <div class="grid row" *ngIf="products.length > 0; else elseBlockPrd">
+            <div class="col-sm-4 col-xs-6" *ngFor="let product of products; trackBy: trackByProduct">
               <figure class="effect-goliath">
                 <div class="thumb-outer">
                   <a href="#" title="thumb" class="thumb-image"
@@ -187,9 +176,13 @@
               </figure>
             </div>
           </div>
+          <ng-template #elseBlockPrd>
+            <div class="grid row">
+              <div class="col-sm-4 col-xs-6">Record Not Found!!!</div>
+            </div>
+          </ng-template>
         </div>
-
-        <div class="col-sm-12 col-xs-12">
+        <div class="col-sm-12 col-xs-12" *ngIf="products.length > 0;">
           <span class="button-outer text-center">
             <a
               class="btn-tertiary"

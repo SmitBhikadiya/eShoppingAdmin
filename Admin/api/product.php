@@ -6,9 +6,9 @@ $obj = new ProductHandler();
 
 $res = [];
 $load = 10;
-$subcatids = [];
+$subcatids = '';
 $colorid = '';
-$sizes = [];
+$sizes = '';
 $priceStart = 0;
 $priceEnd = 12000;
 
@@ -42,9 +42,9 @@ if(isset($_GET["catid"])){
     $catname = strtolower($_GET["catname"]);
     if(isset($_GET["subcatname"]) && $_GET["subcatname"]!="null"){
         $subcatname = strtolower($_GET["subcatname"]);
-        $res = $obj->getProductBySubCatName($catname, $subcatname, 0, $load, $colorid, $sizes);
+        $res = $obj->getProductBySubCatName($catname, $subcatname, 0, $load, $colorid, $sizes, $subcatids, $priceStart, $priceEnd);
     }else{
-        $res = $obj->getProductByCatName($catname, 0, $load, $colorid, $sizes);
+        $res = $obj->getProductByCatName($catname, 0, $load, $colorid, $sizes, $subcatids, $priceStart, $priceEnd);
     }
 }else if(isset($_GET["id"])){
     $id = (int) $_GET["id"];
@@ -53,7 +53,7 @@ if(isset($_GET["catid"])){
     if(isset($_GET["load"])){
         $load = $_GET["load"];
     }
-    $res = $obj->getProducts('', 0, $load, $colorid, $sizes);
+    $res = $obj->getProducts('', 0, $load, $colorid, $sizes, $subcatids, $priceStart, $priceEnd);
 }
 
 echo json_encode(["result"=>$res]);

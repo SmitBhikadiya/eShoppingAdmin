@@ -7,4 +7,5 @@ export interface ISubCategory{
     createdDate:string
     status:number
     catName:string
+    totalPrd:number
 }

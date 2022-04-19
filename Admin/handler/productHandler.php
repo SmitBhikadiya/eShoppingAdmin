@@ -51,13 +51,15 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getAllColor()
+    function getAllColor($cat = '', $subcat = '')
     {
-        $sql = "SELECT * FROM productcolor WHERE status=0 ORDER BY id DESC";
+        $sql = "SELECT productcolor.* FROM productcolor WHERE productcolor.status=0 ORDER BY productcolor.id DESC";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
+                $totalPrd = $this->countPrdByColorId($row["id"], $cat, $subcat);
+                $row["totalPrd"] = $totalPrd;
                 array_push($records, $row);
             }
         } else {
@@ -66,13 +68,15 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getAllSize()
+    function getAllSize($cat = '', $subcat = '')
     {
-        $sql = "SELECT * FROM productsize WHERE status=0 ORDER BY id DESC";
+        $sql = "SELECT productsize.* FROM productsize WHERE productsize.status=0 ORDER BY productsize.id DESC";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
+                $totalPrd = $this->countPrdBySizeId($row["id"], $cat, $subcat);
+                $row["totalPrd"] = $totalPrd;
                 array_push($records, $row);
             }
         } else {
@@ -113,11 +117,12 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getProducts($search, $page, $show, $colorid = '', $sizeids = '')
+    function getProducts($search, $page, $show, $colorid = '', $sizeids = '', $subcatids = '', $priceStart = 0, $priceEnd = 12000)
     {
         $colorid_ = ($colorid == '') ? 1 : "products.productColorIds LIKE '%" . $colorid . "%'";
+        $subcatids_ = ($subcatids == '') ? 1 : "products.subCategoryId IN (" . $subcatids . ")";
         $search_ = ($search == '') ? 1 : "products.productName LIKE '%" . $search . "%'";
-        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND $colorid_ AND products.status=0 AND category.status=0 ORDER BY products.id DESC LIMIT $page, $show";
+        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND $colorid_ AND $subcatids_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND products.status=0 AND category.status=0 ORDER BY products.id DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {
@@ -186,11 +191,12 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getProductBySubCatName($catname, $subcatname, $page, $show, $colorid = '', $sizeids = '')
+    function getProductBySubCatName($catname, $subcatname, $page, $show, $colorid = '', $sizeids = '', $subcatids = '', $priceStart = 0, $priceEnd = 12000)
     {
         $records = [];
         $colorid_ = ($colorid == '') ? 1 : "products.productColorIds LIKE '%" . $colorid . "%'";
-        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE $colorid_ AND category.catName = '$catname' AND " . (($subcatname == "null") ? 1 : "subcategory.subCatName = '$subcatname'") . " AND products.status=0 AND category.status=0 AND subcategory.status=0 LIMIT $page, $show";
+        $subcatids_ = ($subcatids == '') ? 1 : "products.subCategoryId IN (" . $subcatids . ")";
+        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE $colorid_ AND $subcatids_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND category.catName = '$catname' AND " . (($subcatname == "null") ? 1 : "subcategory.subCatName = '$subcatname'") . " AND products.status=0 AND category.status=0 AND subcategory.status=0 LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result && $result->num_rows > 0) {
@@ -214,11 +220,12 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getProductByCatName($catname, $page, $show, $colorid = '', $sizeids = '')
+    function getProductByCatName($catname, $page, $show, $colorid = '', $sizeids = '', $subcatids = '', $priceStart = 0, $priceEnd = 12000)
     {
         $records = [];
         $colorid_ = ($colorid == '') ? 1 : "products.productColorIds LIKE '%" . $colorid . "%'";
-        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE $colorid_ AND category.catName = '$catname' AND products.status=0 AND category.status=0 AND subcategory.status=0 LIMIT $page, $show";
+        $subcatids_ = ($subcatids == '') ? 1 : "products.subCategoryId IN (" . $subcatids . ")";
+        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE $colorid_ AND $subcatids_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND category.catName = '$catname' AND products.status=0 AND category.status=0 AND subcategory.status=0 LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result && $result->num_rows > 0) {
@@ -356,6 +363,84 @@ class ProductHandler extends DBConnection
             $error = "'$name' is already exits in the selected category!!";
         }
         return $error;
+    }
+
+    function countPrdBySubCatId($id)
+    {
+        $sql = "SELECT COUNT(*) AS total FROM products WHERE subCategoryId=$id AND status=0";
+        $result = $this->getConnection()->query($sql);
+        if ($result && $result->num_rows > 0) {
+            return $result->fetch_assoc()["total"];
+        } else {
+            return 0;
+        }
+    }
+
+    function getSubCategoryByCatName($catname)
+    {
+        $sql = "SELECT subcategory.* FROM subcategory JOIN category ON category.id=subcategory.categoryId WHERE category.catName='$catname' AND category.status = 0 AND subcategory.status = 0";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
+    function getSubCategoryByName($name){
+        $sql = "SELECT subcategory.* FROM subcategory WHERE subCatName=$name subcategory.status = 0";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
+    function countPrdByColorId($id, $cat = '', $subcat = '')
+    {
+        $count = 0;
+        $cat_ = ($subcat=='') ? (($cat=='') ? 1 : 'category.catName="'.$cat.'"') : 'category.catName="'.$cat.'" AND subcategory.subCatName="'.$subcat.'"' ;
+        $sql = "SELECT products.productColorIds FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id = products.subCategoryId WHERE $cat_ AND products.status=0 AND subcategory.status=0 AND category.status=0 ORDER BY products.id DESC";
+        $result = $this->getConnection()->query($sql);
+        if ($result && $result->num_rows > 0) {
+            while ($result && $product = $result->fetch_assoc()) {
+                $ids = explode(",", $product["productColorIds"]);
+                if (in_array($id, $ids)) {
+                    $count++;
+                }
+            }
+        } else {
+            $count = 0;
+        }
+        return $count;
+    }
+
+    function countPrdBySizeId($id, $cat = '', $subcat = '')
+    {
+        $count = 0;
+        $cat_ = ($subcat=='') ? (($cat=='') ? 1 : 'category.catName="'.$cat.'"') : 'category.catName="'.$cat.'" AND subcategory.subCatName="'.$subcat.'"' ;
+        $sql = "SELECT products.productSizeIds FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id = products.subCategoryId WHERE $cat_ AND products.status=0 AND subcategory.status=0 AND category.status=0 ORDER BY products.id DESC";
+        $result = $this->getConnection()->query($sql);
+        if ($result && $result->num_rows > 0) {
+            while ($result && $product = $result->fetch_assoc()) {
+                $ids = explode(",", $product["productSizeIds"]);
+                if (in_array($id, $ids)) {
+                    $count++;
+                }
+            }
+        } else {
+            $count = 0;
+        }
+        return $count;
     }
 
     function updateProduct($prdid, $name, $desc, $catid, $subcatid, $price, $qty, $colorsArr, $sizesArr, $imagesArr)

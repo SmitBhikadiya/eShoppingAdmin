@@ -3,6 +3,21 @@ require_once("dbHandler.php");
 class CategoryHandler extends DBConnection
 {
 
+    function getAllProduct()
+    {
+        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE products.status=0 AND category.status=0 ORDER BY products.id DESC";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
     function TotalCategory($search)
     {
         $search_ = ($search == '') ? 1 : "catName LIKE '%" . $search . "%'";
@@ -101,19 +116,31 @@ class CategoryHandler extends DBConnection
         }
         return $records;
     }
-
+    
     function getSubCategoryByCatName($catname){
         $sql = "SELECT subcategory.*, category.catName FROM subcategory JOIN category ON category.id=subcategory.categoryId WHERE category.catName='$catname' AND category.status = 0 AND subcategory.status = 0";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result && $result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
+                $totalPrd = $this->countPrdBySubCatId($row["id"]);
+                $row["totalPrd"] = $totalPrd;
                 array_push($records, $row);
             }
         } else {
             $records = [];
         }
         return $records;
+    }
+
+    function countPrdBySubCatId($id){
+        $sql = "SELECT COUNT(*) AS total FROM products WHERE subCategoryId=$id AND status=0";
+        $result = $this->getConnection()->query($sql);
+        if($result && $result->num_rows > 0){
+            return $result->fetch_assoc()["total"];
+        }else{
+            return 0;
+        }
     }
 
     function getSubCatById($id)
