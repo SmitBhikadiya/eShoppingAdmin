@@ -195,10 +195,25 @@ if (isset($_SESSION["result"])) {
 												</select>
 											</div>
 
+											<div class="form-check form-check-inline my-3">
+												<?php
+													$check = (isset($result)) ? (($result['isTrending']==0) ? '' : 'checked')  : '';
+												?>
+												<input class="form-check-input" type="checkbox" name="trending" id="ptrending" <?=$check?>>
+												<label class="form-check-label" for="ptrending">
+													Set As Trending
+												</label>
+											</div>
+
 											<div class="form-group">
-												<label class="form-label">Product Images*</label>
-												<input type="hidden" name="oldimages" value="<?=isset($result) ? $result["productImages"] : ""?>">
-												<input type="file" class="form-control" name="file[]" accept=".jpg, .jpeg, .png" id="pimages" data-action="<?=$btn?>" multiple />
+												<label class="form-label">Profile Image*</label>
+												<div class="input-group">
+													<div class="custom-file">
+														<input type="hidden" name="oldimages" value="<?= isset($result) ? $result["productImages"] : "" ?>">
+														<input type="file" class="custom-file-input" name="file[]" id="pimages" accept=".jpg, .jpeg, .png" aria-describedby="inputGroupFileAddon04" data-action="<?= $btn ?>" multiple>
+														<label class="custom-file-label" for="pimages">Choose Image</label>
+													</div>
+												</div>
 												<ul class="add-produc-imgs">
 													<?php
 													if (isset($result)) {
@@ -207,7 +222,7 @@ if (isset($_SESSION["result"])) {
 													?>
 															<li>
 																<div class="add-cate-img-1">
-																	<img width='70' height='70' src="./images/product/<?=$image?>" alt="" />
+																	<img width='70' height='70' src="./images/product/<?= $image ?>" alt="" />
 																</div>
 															</li>
 													<?php
@@ -216,6 +231,28 @@ if (isset($_SESSION["result"])) {
 													?>
 												</ul>
 											</div>
+
+											<!-- <div class="form-group">
+												<label class="form-label">Product Images*</label>
+												<input type="hidden" name="oldimages" value="<?= isset($result) ? $result["productImages"] : "" ?>">
+												<input type="file" class="form-control" name="file[]" accept=".jpg, .jpeg, .png" id="pimages" data-action="<?= $btn ?>" multiple />
+												<ul class="add-produc-imgs">
+													<?php
+													if (isset($result)) {
+														$images = explode(",", $result["productImages"]);
+														foreach ($images as $image) {
+													?>
+															<li>
+																<div class="add-cate-img-1">
+																	<img width='70' height='70' src="./images/product/<?= $image ?>" alt="" />
+																</div>
+															</li>
+													<?php
+														}
+													}
+													?>
+												</ul>
+											</div> -->
 											<button class="save-btn hover-btn" type="submit" name="<?= $btn ?>Product" value="<?= $btn ?>Product">
 												<?= $btn ?> New Product
 											</button>

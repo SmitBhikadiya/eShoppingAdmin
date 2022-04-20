@@ -1,9 +1,5 @@
 <div class="title-block-outer">
-  <img
-    src="../assets/images/inner-banner.jpg"
-    alt="Banner-image"
-    class="img-responsive"
-  />
+  <img src="../assets/images/inner-banner.jpg" alt="Banner-image" class="img-responsive" />
   <div class="container title-block-container">
     <h2>{{ category | titleCaptilize }}</h2>
   </div>
@@ -14,8 +10,7 @@
       <li><a href="index.html" title="Home">Home</a></li>
       <li>
         <a [routerLink]="['/product/' + category]">
-          {{ category | titleCaptilize }}</a
-        >
+          {{ category | titleCaptilize }}</a>
       </li>
       <li class="active">{{ subcategory | titleCaptilize }}</li>
     </ol>
@@ -29,55 +24,45 @@
           <div class="left-panel">
             <h3>Filter By</h3>
             <div class="filter-option">
-              <div
-                class="title"
-                data-toggle="collapse"
-                href="#collapse1"
-                aria-expanded="false"
-              >
+              <div class="title" data-toggle="collapse" href="#collapse1" aria-expanded="false">
                 Categories
               </div>
               <div class="filter-option-inner collapse in" id="collapse1">
                 <ul>
-                  <li class="custom-check" *ngFor="let cat of subcategories">
+                  <li class="custom-check" *ngFor="let cat of subcategories;">
                     <label *ngIf="(subcategory==null || subcategory=='') || subcategory==cat['subCatName']">
-                      <input type="checkbox" class="icheck" name="subcategories" [value]="cat['id']" (change)="onCheckboxChange($event, 'subcategories')" [checked]="subcategory==cat['subCatName']" />
+                      <input type="checkbox" class="subcatcheck icheck" name="subcategories" [value]="cat['id']"
+                        (change)="onCheckboxChange($event, 'subcategories')"
+                        [checked]="subcategory==cat['subCatName']" [disabled]="subcategory==cat['subCatName']" />
                       {{ cat["subCatName"] }}
                       <span>({{ cat["totalPrd"] }})</span>
                     </label>
                   </li>
+                  <li *ngIf="subcategory==null"><a (click)="resetFormControl('subcategories')" title="Reset" style="padding-left: 0px;" class="reset-link">Reset</a></li>
                 </ul>
               </div>
             </div>
             <div class="filter-option">
-              <div
-                class="title"
-                data-toggle="collapse"
-                href="#collapse2"
-                aria-expanded="false"
-              >
+              <div class="title" data-toggle="collapse" href="#collapse2" aria-expanded="false">
                 Colour
               </div>
               <div class="filter-option-inner collapse in" id="collapse2">
                 <ul class="colour_family_list">
-                  <li class="custom-check" *ngFor="let color of colors">
+                  <li class="custom-check" *ngFor="let color of colors;">
                     <label style="display: flex; width: 100%;">
                       <span class="{{ color['colorName'] }}-color"></span>
-                      <input type="radio" class="icheck" name="colors" [value]="color['id']" style="display: none;" formControlName="colors" />
-                      &nbsp;&nbsp;{{ color["colorName"] | uppercase }}&nbsp;<p style="padding-bottom:5px; font-size: 11px;">({{ color["totalPrd"] }})</p>
+                      <input type="radio" class="icheck colorcheck" name="colors" (change)="radioChange($event)" [value]="color['id']" style="display: none;"
+                        formControlName="colors" />
+                      &nbsp;&nbsp;{{ color["colorName"] | uppercase }}&nbsp;<p
+                        style="padding-bottom:5px; font-size: 11px;">({{ color["totalPrd"] }})</p>
                     </label>
                   </li>
-                  <li><a (click)="resetForm()" title="Reset" class="reset-link">Reset</a></li>
+                  <li><a (click)="resetFormControl('colors')" title="Reset" style="padding-left: 0px;" class="reset-link">Reset</a></li>
                 </ul>
               </div>
             </div>
             <div class="filter-option">
-              <div
-                class="title"
-                data-toggle="collapse"
-                href="#collapse3"
-                aria-expanded="false"
-              >
+              <div class="title" data-toggle="collapse" href="#collapse3" aria-expanded="false">
                 Price
               </div>
               <div class="filter-option-inner collapse in" id="collapse3">
@@ -88,46 +73,39 @@
                     &nbsp;to&nbsp;
                     <input type="number" value="12000" min="0" max="12000" style="pointer-events: none;" />
                   </span>
-                  <input value="0" min="0" name="priceStart" max="12000" step="100" type="range" formControlName='priceStart'/>
-                  <input value="12000" min="0" name="priceEnd" max="12000" step="100" type="range" formControlName='priceEnd'/>
+                  <input value="0" min="0" name="priceStart" max="12000" step="100" type="range"
+                    formControlName='priceStart' />
+                  <input value="12000" min="0" name="priceEnd" max="12000" step="100" type="range"
+                    formControlName='priceEnd' />
                   <svg width="100%" height="24">
-                    <line x1="4" y1="0" x2="300" y2="0" stroke="#212121" stroke-width="12" stroke-dasharray="1 20"></line>
+                    <line x1="4" y1="0" x2="300" y2="0" stroke="#212121" stroke-width="12" stroke-dasharray="1 20">
+                    </line>
                   </svg>
-              </div>
+                </div>
               </div>
             </div>
             <div class="filter-option">
-              <div
-                class="title"
-                data-toggle="collapse"
-                href="#collapse4"
-                aria-expanded="false"
-              >
+              <div class="title" data-toggle="collapse" href="#collapse4" aria-expanded="false">
                 Size
               </div>
-              <div
-                class="filter-option-inner size-filter collapse in"
-                id="collapse4"
-              >
+              <div class="filter-option-inner size-filter collapse in" id="collapse4">
                 <ul>
-                  <li class="custom-check" *ngFor="let size of sizes">
+                  <li class="custom-check" *ngFor="let size of sizes;">
                     <label>
-                      <input type="checkbox" class="icheck" [value]="size['id']" (change)="onCheckboxChange($event, 'sizes')" />
+                      <input type="checkbox" class="sizecheck icheck" [value]="size['id']"
+                        (change)="onCheckboxChange($event, 'sizes')" />
                       {{ size["size"] | uppercase }}
                       <span>({{ size["totalPrd"] }})</span>
                     </label>
                   </li>
+                  <li><a (click)="resetFormControl('sizes')" title="Reset" style="padding-left: 0px;" class="reset-link">Reset</a></li>
                 </ul>
               </div>
             </div>
           </div>
           <div class="add-block">
-            <a href="product.html" title="Promotion"
-              ><img
-                src="../assets/images/promo2.jpg"
-                alt=""
-                class="img-responsive"
-            /></a>
+            <a href="product.html" title="Promotion"><img src="../assets/images/promo2.jpg" alt=""
+                class="img-responsive" /></a>
           </div>
         </form>
       </div>
@@ -137,13 +115,13 @@
         </h3>
         <div class="toolbar clearfix">
           <div class="pager_right">
-            <div class="sort-by">
+            <div class="sort-by" *ngIf="products.length > 0;">
               <label>Sort By&nbsp;</label>
               <div class="form-group">
-                <select class="custom-dropdown">
-                  <option>Position</option>
-                  <option>Name</option>
-                  <option>Price</option>
+                <select class="custom-dropdown" #sortby (change)="sortProduct(sortby.value)">
+                  <option value="latest">Latest</option>
+                  <option value="name">Name</option>
+                  <option value="price">Price</option>
                 </select>
               </div>
             </div>
@@ -154,23 +132,14 @@
             <div class="col-sm-4 col-xs-6" *ngFor="let product of products; trackBy: trackByProduct">
               <figure class="effect-goliath">
                 <div class="thumb-outer">
-                  <a href="#" title="thumb" class="thumb-image"
-                    ><img
-                      style="height: 328px"
-                      src="{{ imageURL }}/product/{{
+                  <a href="#" title="thumb" class="thumb-image"><img style="height: 328px" src="{{ imageURL }}/product/{{
                         (product.productImages | strtoarray: ',')[0]
-                      }}"
-                      alt="thumb"
-                  /></a>
+                      }}" alt="thumb" /></a>
                   <a title="Add to Cart" class="cart-button">Add to Cart</a>
                 </div>
                 <figcaption>
-                  <a
-                    [routerLink]="['/productInfo/' + product['id']]"
-                    title="{{ product.productName }}"
-                    class="heading"
-                    >{{ product.productName }}</a
-                  >
+                  <a [routerLink]="['/productInfo/' + product['id']]" title="{{ product.productName }}"
+                    class="heading">{{ product.productName }}</a>
                   <span>{{ product.productPrice | currency: "USD" }}</span>
                 </figcaption>
               </figure>
@@ -178,18 +147,14 @@
           </div>
           <ng-template #elseBlockPrd>
             <div class="grid row">
-              <div class="col-sm-4 col-xs-6">Record Not Found!!!</div>
+              <div class="col-sm-12 col-xs-12"><h2 style="color: gray;">Record Not Found!!!</h2></div>
             </div>
           </ng-template>
         </div>
-        <div class="col-sm-12 col-xs-12" *ngIf="products.length > 0;">
+        <div class="col-sm-12 col-xs-12" *ngIf="products.length >= 9;">
           <span class="button-outer text-center">
-            <a
-              class="btn-tertiary"
-              (click)="loadMoreProduct(defaultLoadProduct)"
-              title="More Products"
-              >More Products</a
-            >
+            <a class="btn-tertiary" (click)="loadMoreProduct(defaultLoadProduct)" title="More Products">More
+              Products</a>
           </span>
         </div>
       </div>

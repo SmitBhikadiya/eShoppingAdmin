@@ -14,4 +14,5 @@ export interface IProduct{
     status:number
     catName:string
     subCatName:string
+    isTrending:number
 }

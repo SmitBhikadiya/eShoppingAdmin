@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, OnInit, Renderer2 } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { IColor } from 'src/app/interfaces/color';
-import { IProduct } from 'src/app/interfaces/prodduct';
+import { IProduct } from 'src/app/interfaces/product';
 import { ISize } from 'src/app/interfaces/size';
 import { ISubCategory } from 'src/app/interfaces/subcategory';
 import { CategoryService } from 'src/app/services/category.service';
@@ -24,11 +24,15 @@ export class ProductsComponent implements OnInit {
   sizes!:ISize[];
   error:string = '';
   filterForm!:FormGroup;
+  selected:boolean = false;
+  sortby:string = 'latest';
+  f_subcatIds:number[] = [];
+  f_sizeIds:number[] = [];
   defaultLoadProduct:number = environment.DEFAULT_LOAD_PRODUCT;
 
   imageURL:string = environment.IMAGES_SERVER_URL;
 
-  constructor(private builder:FormBuilder ,private productService:ProductService, private categoryService:CategoryService, private router:Router,private route:ActivatedRoute) {
+  constructor(private render:Renderer2,private builder:FormBuilder ,private productService:ProductService, private categoryService:CategoryService, private router:Router,private route:ActivatedRoute) {
     this.router.events.subscribe((ev) => {
       if (ev instanceof NavigationEnd) {
         this.ngOnInit();
@@ -39,11 +43,11 @@ export class ProductsComponent implements OnInit {
   ngOnInit(): void {
     
     this.filterForm = this.builder.group({
-      subcategories: this.builder.array([]),
+      subcategories: [''],
       colors: [""],
       priceStart: ["0"],
       priceEnd: ["12000"],
-      sizes: this.builder.array([])
+      sizes: ['']
     });
 
     this.route.paramMap.subscribe((params)=>{
@@ -58,28 +62,73 @@ export class ProductsComponent implements OnInit {
 
   }
 
+  radioChange(e:any){
+    let labels = document.querySelectorAll(".colour_family_list label");
+    labels.forEach(label => {
+      this.render.removeClass(label, 'active');
+    });
+    this.render.addClass(e.target.parentNode, 'active');
+  }
+
   onCheckboxChange(e:any, controlname:string){
-    const checkArray: FormArray = this.filterForm.get(controlname) as FormArray;
-    if(e.target.checked){
-      checkArray.push(new FormControl(e.target.value));
-    }else{
-      let i:number = 0;
-      checkArray.controls.forEach((item:any)=>{
-        if(item.value == e.target.value){
-          checkArray.removeAt(i);
+    switch(controlname){
+      case 'subcategories':
+        if(e.target.checked){
+          this.f_subcatIds.push(e.target.value);
+        }else{
+          let index = this.f_subcatIds.indexOf(e.target.value);
+          this.f_subcatIds.splice(index,e.target.value);
         }
-        i++;
-      });
+        this.filterForm.controls["subcategories"].setValue(this.f_subcatIds);
+        break;
+      case 'sizes':
+        if(e.target.checked){
+          this.f_sizeIds.push(e.target.value);
+        }else{
+          let index = this.f_sizeIds.indexOf(e.target.value);
+          this.f_sizeIds.splice(index,e.target.value);
+        }
+        this.filterForm.controls["sizes"].setValue(this.f_sizeIds);
+        break;
     }
+    this.filterUpdate();
+  }
+
+  sortProduct(sortby:string){
+    this.sortby = sortby;
+    this.ngOnInit();
   }
 
   filterUpdate(){
     this.getProductsBy();
   }
 
-  resetForm(){
-    this.filterForm.reset();
-    this.ngOnInit();
+  resetFormControl(controlName:string){
+    switch(controlName){
+      case 'subcategories':
+        this.uncheckedInput('subcatcheck');
+        this.filterForm.controls["subcategories"].setValue([]);
+        break;
+      case 'colors':
+        let labels = document.querySelectorAll(".colour_family_list label");
+        labels.forEach(label => {
+          this.render.removeClass(label, 'active');
+        });
+        this.filterForm.controls["colors"].setValue("");
+        break;
+      case 'sizes':
+        this.uncheckedInput('sizecheck');
+        this.filterForm.controls["sizes"].patchValue([]);
+        break;
+    }
+    this.getProductsBy();
+  }
+
+  uncheckedInput(className:string){
+    var inputs = document.querySelectorAll(`.${className}`);
+    for (var i = 0; i < inputs.length; i++) {
+        (inputs[i] as HTMLInputElement).checked = false;
+    }
   }
 
   getProductsBy() : void{
@@ -88,25 +137,23 @@ export class ProductsComponent implements OnInit {
     let subcat:string = this.subcategory;
     let load:number = this.defaultLoadProduct;
     let formvalues = this.filterForm.value;
-
-    console.log(formvalues);
     
     if(cat==null){
-      this.productService.getProducts(load, formvalues).subscribe((res)=>{
+      this.productService.getProducts(load, formvalues, this.sortby).subscribe((res)=>{
         this.products = res["result"];
         console.log(this.products);
       }, (err)=>{
         this.error=err;
       });
     }else if(subcat==null){
-      this.productService.getProductsByCatName(load, cat, formvalues).subscribe((res)=>{
+      this.productService.getProductsByCatName(load, cat, formvalues, this.sortby).subscribe((res)=>{
         this.products = res["result"];
         console.log(this.products);
       }, (err)=>{
         this.error=err;
       });
     }else{
-      this.productService.getProductsBySubCatName(load, cat, subcat, formvalues).subscribe((res)=>{
+      this.productService.getProductsBySubCatName(load, cat, subcat, formvalues, this.sortby).subscribe((res)=>{
         this.products = res["result"];
         console.log(this.products);
       }, (err)=>{
@@ -118,7 +165,6 @@ export class ProductsComponent implements OnInit {
   getSubCategories(){
     this.categoryService.getSubCategoryByCatName(this.category).subscribe((res)=>{
       this.subcategories = res["result"];
-      //console.log(res);
     }, (err)=>{
       this.error = err;
     });
@@ -127,7 +173,6 @@ export class ProductsComponent implements OnInit {
   getColors(){
     this.productService.getColorsBy(this.category, this.subcategory).subscribe((res)=>{
       this.colors = res["result"];
-      //console.log(this.colors);
     },(err)=>{
       this.error = err;      
     })
@@ -136,7 +181,6 @@ export class ProductsComponent implements OnInit {
   getSizes(){
     this.productService.getSizesBy(this.category, this.subcategory).subscribe((res)=>{
       this.sizes = res["result"];
-      //console.log(this.colors);
     },(err)=>{
       this.error = err;      
     })

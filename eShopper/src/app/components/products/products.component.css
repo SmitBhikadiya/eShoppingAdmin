@@ -122,3 +122,7 @@
     display: flex;
     margin-top: 10px;
   }
+
+  .custom-check label.active{
+    color: #ea4748;
+  }

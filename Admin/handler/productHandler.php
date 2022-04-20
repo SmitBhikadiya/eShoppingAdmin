@@ -117,12 +117,26 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getProducts($search, $page, $show, $colorid = '', $sizeids = '', $subcatids = '', $priceStart = 0, $priceEnd = 12000)
+    function getProducts($search, $page, $show, $colorid = '', $sizeids = '', $subcatids = '', $priceStart = 0, $priceEnd = 12000, $sortby='latest', $trending='0,1')
     {
         $colorid_ = ($colorid == '') ? 1 : "products.productColorIds LIKE '%" . $colorid . "%'";
         $subcatids_ = ($subcatids == '') ? 1 : "products.subCategoryId IN (" . $subcatids . ")";
         $search_ = ($search == '') ? 1 : "products.productName LIKE '%" . $search . "%'";
-        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND $colorid_ AND $subcatids_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND products.status=0 AND category.status=0 ORDER BY products.id DESC LIMIT $page, $show";
+        $trending_ = "(".$trending.")";
+        
+        $sortby_ = 1;
+        switch($sortby){
+            case 'latest':
+                $sortby_ = 'products.id'; break;
+            case 'name':
+                $sortby_ = 'products.productName'; break;
+            case 'price':
+                $sortby_ = 'products.productPrice'; break;
+            default:
+                $sortby_ = 'products.id';
+        }
+
+        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND $colorid_ AND $subcatids_ AND products.isTrending IN $trending_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND products.status=0 AND category.status=0 ORDER BY $sortby_ DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {
@@ -191,12 +205,24 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getProductBySubCatName($catname, $subcatname, $page, $show, $colorid = '', $sizeids = '', $subcatids = '', $priceStart = 0, $priceEnd = 12000)
+    function getProductBySubCatName($catname, $subcatname, $page, $show, $colorid = '', $sizeids = '', $subcatids = '', $priceStart = 0, $priceEnd = 12000, $sortby='latest')
     {
         $records = [];
         $colorid_ = ($colorid == '') ? 1 : "products.productColorIds LIKE '%" . $colorid . "%'";
         $subcatids_ = ($subcatids == '') ? 1 : "products.subCategoryId IN (" . $subcatids . ")";
-        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE $colorid_ AND $subcatids_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND category.catName = '$catname' AND " . (($subcatname == "null") ? 1 : "subcategory.subCatName = '$subcatname'") . " AND products.status=0 AND category.status=0 AND subcategory.status=0 LIMIT $page, $show";
+        
+        switch($sortby){
+            case 'latest':
+                $sortby_ = 'products.id'; break;
+            case 'name':
+                $sortby_ = 'products.productName'; break;
+            case 'price':
+                $sortby_ = 'products.productPrice'; break;
+            default:
+                $sortby_ = 'products.id';
+        }
+
+        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE $colorid_ AND $subcatids_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND category.catName = '$catname' AND " . (($subcatname == "null") ? 1 : "subcategory.subCatName = '$subcatname'") . " AND products.status=0 AND category.status=0 AND subcategory.status=0 ORDER BY $sortby_ DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result && $result->num_rows > 0) {
@@ -220,12 +246,24 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getProductByCatName($catname, $page, $show, $colorid = '', $sizeids = '', $subcatids = '', $priceStart = 0, $priceEnd = 12000)
+    function getProductByCatName($catname, $page, $show, $colorid = '', $sizeids = '', $subcatids = '', $priceStart = 0, $priceEnd = 12000, $sortby='latest')
     {
         $records = [];
         $colorid_ = ($colorid == '') ? 1 : "products.productColorIds LIKE '%" . $colorid . "%'";
         $subcatids_ = ($subcatids == '') ? 1 : "products.subCategoryId IN (" . $subcatids . ")";
-        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE $colorid_ AND $subcatids_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND category.catName = '$catname' AND products.status=0 AND category.status=0 AND subcategory.status=0 LIMIT $page, $show";
+        
+        switch($sortby){
+            case 'latest':
+                $sortby_ = 'products.id'; break;
+            case 'name':
+                $sortby_ = 'products.productName'; break;
+            case 'price':
+                $sortby_ = 'products.productPrice'; break;
+            default:
+                $sortby_ = 'products.id';
+        }
+        
+        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE $colorid_ AND $subcatids_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND category.catName = '$catname' AND products.status=0 AND category.status=0 AND subcategory.status=0 ORDER BY $sortby_ DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result && $result->num_rows > 0) {
@@ -284,7 +322,7 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getSizeByIds($ids = [])
+    function getSizeByIds($ids = '()')
     {
         $records = [];
         $sql = "SELECT * FROM productsize WHERE id IN $ids AND status = 0";
@@ -346,15 +384,15 @@ class ProductHandler extends DBConnection
         return $error;
     }
 
-    function addProduct($name, $desc, $catid, $subcatid, $price, $qty, $colors, $sizes, $imagesArr)
+    function addProduct($name, $desc, $catid, $subcatid, $price, $qty, $colors, $sizes, $imagesArr, $trending)
     {
         $images = implode(',', $imagesArr);
         $colorIds = implode(',', $colors);
         $sizeIds = implode(',', $sizes);
         $error = "";
         if (!$this->isProductExits($name, $catid, $subcatid)) {
-            $sql = "INSERT INTO products (productName, productDesc, productPrice, productSizeIds, productColorIds, productImages, totalQuantity, categoryId, subCategoryId, createdDate) 
-                    VALUES ('$name', '$desc', $price, '$sizeIds', '$colorIds', '$images', $qty, $catid, $subcatid , now())";
+            $sql = "INSERT INTO products (productName, productDesc, productPrice, productSizeIds, productColorIds, productImages, totalQuantity, categoryId, subCategoryId, isTrending, createdDate) 
+                    VALUES ('$name', '$desc', $price, '$sizeIds', '$colorIds', '$images', $qty, $catid, $subcatid , $trending, now())";
             $result = $this->getConnection()->query($sql);
             if (!$result) {
                 $error = "Somthing went wrong with the $sql";
@@ -443,13 +481,13 @@ class ProductHandler extends DBConnection
         return $count;
     }
 
-    function updateProduct($prdid, $name, $desc, $catid, $subcatid, $price, $qty, $colorsArr, $sizesArr, $imagesArr)
+    function updateProduct($prdid, $name, $desc, $catid, $subcatid, $price, $qty, $colorsArr, $sizesArr, $imagesArr, $trending)
     {
         $images = implode(',', $imagesArr);
         $colorIds = implode(',', $colorsArr);
         $sizeIds = implode(',', $sizesArr);
         $error = "";
-        $sql = "UPDATE products SET productName='$name', productDesc='$desc', productPrice=$price, productSizeIds='$sizeIds', productColorIds='$colorIds', productImages='$images', totalQuantity=$qty, categoryId=$catid, subCategoryId=$subcatid, modifiedDate=now() 
+        $sql = "UPDATE products SET productName='$name', productDesc='$desc', productPrice=$price, productSizeIds='$sizeIds', productColorIds='$colorIds', productImages='$images', totalQuantity=$qty, categoryId=$catid, subCategoryId=$subcatid, isTrending=$trending, modifiedDate=now() 
                 WHERE id=$prdid";
         $result = $this->getConnection()->query($sql);
         if (!$result) {

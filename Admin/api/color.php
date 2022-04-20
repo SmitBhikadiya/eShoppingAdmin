@@ -5,8 +5,8 @@ require_once("../handler/productHandler.php");
 $obj = new ProductHandler();
 
 $colors = [];
-$cat = (isset($_GET["cat"]) && $_GET["cat"]=='null') ? "" : $_GET["cat"];
-$subcat = (isset($_GET["subcat"]) && $_GET["subcat"]=='null') ? "" : $_GET["subcat"];
+$cat = (isset($_GET["cat"])) ? (($_GET["cat"]=='null') ? '' : $_GET["cat"]) : '';
+$subcat = (isset($_GET["subcat"])) ? (($_GET["subcat"]=='null') ? '' : $_GET["subcat"]) : '';
 
 if(isset($_GET["colorids"])){
     $ids = "(".$_GET["colorids"].")";

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { IColor } from 'src/app/interfaces/color';
-import { IProduct } from 'src/app/interfaces/prodduct';
+import { IProduct } from 'src/app/interfaces/product';
 import { ISize } from 'src/app/interfaces/size';
 import { ProductService } from 'src/app/services/product.service';
 import { environment } from 'src/environments/environment';

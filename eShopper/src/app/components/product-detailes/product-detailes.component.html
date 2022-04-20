@@ -8,9 +8,16 @@
     <div class="container">
         <ol class="breadcrumb">
             <li><a href="index.html" title="Home">Home</a></li>
-            <li><a [routerLink]="['/product/'+product['catName']]" title="Men">{{ product["catName"] | titleCaptilize
-                    }}</a></li>
-            <li><a [routerLink]="['/product/'+product['catName']+'/'+product['subCatName']]">{{ product["subCatName"] | titleCaptilize }}</a></li>
+            <li>
+                <a [routerLink]="['/product/' + product['catName']]" title="Men">{{
+                    product["catName"] | titleCaptilize
+                    }}</a>
+            </li>
+            <li>
+                <a [routerLink]="[
+            '/product/' + product['catName'] + '/' + product['subCatName']
+          ]">{{ product["subCatName"] | titleCaptilize }}</a>
+            </li>
             <li class="active">{{ product["productName"] }}</li>
         </ol>
     </div>
@@ -29,7 +36,17 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-5">
-                <ul class="sync1">
+                <div class="demo">
+                    <ul id="lightSlider">
+                        <li *ngFor="let img of product['productImages'] | strtoarray: ','" attr.data-thumb="{{ imgURL }}/product/{{ img }}">
+                            <img src="{{ imgURL }}/product/{{ img }}" alt="" />
+                        </li>
+                        <!-- <li data-thumb="https://sachinchoolur.github.io/lightslider/img/thumb/cS-1.jpg">
+                            <img src="https://sachinchoolur.github.io/lightslider/img/cS-1.jpg" />
+                        </li> -->
+                    </ul>
+                </div>
+                <!-- <ul class="sync1">
                     <li *ngFor="let img of product['productImages'] | strtoarray: ','">
                         <a class="fancybox" href="{{ imgURL }}/product/{{ img }}" data-fancybox-group="gallery"
                             title=""><img src="{{ imgURL }}/product/{{ img }}" alt="" /></a>
@@ -39,7 +56,7 @@
                     <li *ngFor="let img of product['productImages'] | strtoarray: ','">
                         <img src="{{ imgURL }}/product/{{ img }}" alt="" />
                     </li>
-                </ul>
+                </ul> -->
                 <!-- <ul class="sync1">
                     <li>
                         <a class="fancybox" href="../../../assets/images/new-thumb-01-big.jpg" data-fancybox-group="gallery" title=""><img src="../../../assets/images/new-thumb-01.jpg" alt="" /></a>
@@ -64,13 +81,20 @@
             </div>
             <div class="col-sm-7">
                 <div class="product-name">
-                    <h1>{{ product["productName"] }} {{ product["subCatName"] }} for {{ product["catName"] }}</h1>
+                    <h1>
+                        {{ product["productName"] }} {{ product["subCatName"] }} for
+                        {{ product["catName"] }}
+                    </h1>
                 </div>
                 <div class="short-description">
                     {{ product["productDesc"] }}
                 </div>
                 <!-- <div class="sku"><span>SKU: </span> mag209_prod1</div> -->
-                <p class="availability">Availability:<span class="in-stock" *ngIf="product['totalQuantity'] > 0; else notinstock">In stock</span><ng-template #notinstock><span class="not-in-stock">Not Available</span></ng-template></p>
+                <p class="availability">
+                    Availability:<span class="in-stock" *ngIf="product['totalQuantity'] > 0; else notinstock">In
+                        stock</span>
+                    <ng-template #notinstock><span class="not-in-stock">Not Available</span></ng-template>
+                </p>
                 <div class="price-box">$120.00</div>
                 <div class="product-options">
                     <label class="required"><em>*</em> Size</label>
@@ -78,7 +102,9 @@
                     <div class="form-group">
                         <select>
                             <option>-- Please Select --</option>
-                            <option *ngFor="let size of sizes" value="{{ size['id'] }}">{{ size['size'] | uppercase}}</option>
+                            <option *ngFor="let size of sizes" value="{{ size['id'] }}">
+                                {{ size["size"] | uppercase }}
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -88,7 +114,9 @@
                     <div class="form-group">
                         <select>
                             <option>-- Please Select --</option>
-                            <option *ngFor="let color of colors" value="{{ color['id'] }}">{{ color['colorName'] | uppercase}}</option>
+                            <option *ngFor="let color of colors" value="{{ color['id'] }}">
+                                {{ color["colorName"] | uppercase }}
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -192,7 +220,6 @@
                     <p>
                         <strong>{{ product["productDesc"] }}</strong>
                     </p>
-                    
                 </div>
                 <div role="tabpanel" class="tab-pane" id="product-review">
                     <p class="write-review">

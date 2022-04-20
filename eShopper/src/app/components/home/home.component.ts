@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IProduct } from 'src/app/interfaces/prodduct';
+import { IProduct } from 'src/app/interfaces/product';
 import { ProductService } from 'src/app/services/product.service';
 import { environment } from 'src/environments/environment';
 
@@ -22,8 +22,9 @@ export class HomeComponent implements OnInit {
   }
 
   getProducts(){
-    this.productService.getProducts(this.defaultLoadProduct, '').subscribe((res)=>{
+    this.productService.getProducts(this.defaultLoadProduct, '', 'latest', '1').subscribe((res)=>{
       this.products = res["result"];
+      console.log(res);
     },(err)=>{
       this.error = err;
     });

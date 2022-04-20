@@ -68,6 +68,7 @@ if (isset($_POST["AddProduct"])) {
     $sizeids = $_POST["sizes"];
     $files = $_FILES["file"];
     $images = [];
+    $trending = isset($_POST["trending"]) ? 1 : 0;
 
     // upload files to local directory
     $targetDir = "../images/product/";
@@ -79,7 +80,7 @@ if (isset($_POST["AddProduct"])) {
         }
     }
 
-    $error = $productH->addProduct($name, $desc, $catid, $subcatid, $price, $qty, $colorids, $sizeids, $images);
+    $error = $productH->addProduct($name, $desc, $catid, $subcatid, $price, $qty, $colorids, $sizeids, $images, $trending);
     if ($error == "") {
         $_SESSION["result"] = ["msg" => "New Product '$name' Added Successfully", "error" => false];
     } else {
@@ -129,6 +130,7 @@ if (isset($_POST["EditProduct"])) {
     $prdid = $_POST["productid"];
     $images = [];
     $targetDir = "../images/product/";
+    $trending = isset($_POST["trending"]) ? 1 : 0;
 
     // remove oldimages if new images are selected
     if ($files["name"][0] != "") {
@@ -147,7 +149,7 @@ if (isset($_POST["EditProduct"])) {
         $images = explode(",", $oldfiles);
     }
 
-    $error = $productH->updateProduct($prdid, $name, $desc, $catid, $subcatid, $price, $qty, $colorids, $sizeids, $images);
+    $error = $productH->updateProduct($prdid, $name, $desc, $catid, $subcatid, $price, $qty, $colorids, $sizeids, $images, $trending);
     if ($error == "") {
         $_SESSION["result"] = ["msg" => "Product '$name' Updated Successfully", "error" => false];
     } else {

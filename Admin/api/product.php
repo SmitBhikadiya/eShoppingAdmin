@@ -11,6 +11,8 @@ $colorid = '';
 $sizes = '';
 $priceStart = 0;
 $priceEnd = 12000;
+$sortby = 'latest';
+$trending = '0,1';
 
 // filtering
 if(isset($_GET["subcategories"])){
@@ -25,6 +27,12 @@ if(isset($_GET["priceStart"]) && isset($_GET["priceEnd"])){
 }
 if(isset($_GET["sizes"])){
     $sizes = $_GET["sizes"];
+}
+if(isset($_GET["sortby"])){
+    $sortby = $_GET["sortby"];
+}
+if(isset($_GET["trending"])){
+    $trending = $_GET["trending"];
 }
 
 // load more products
@@ -42,9 +50,9 @@ if(isset($_GET["catid"])){
     $catname = strtolower($_GET["catname"]);
     if(isset($_GET["subcatname"]) && $_GET["subcatname"]!="null"){
         $subcatname = strtolower($_GET["subcatname"]);
-        $res = $obj->getProductBySubCatName($catname, $subcatname, 0, $load, $colorid, $sizes, $subcatids, $priceStart, $priceEnd);
+        $res = $obj->getProductBySubCatName($catname, $subcatname, 0, $load, $colorid, $sizes, $subcatids, $priceStart, $priceEnd, $sortby);
     }else{
-        $res = $obj->getProductByCatName($catname, 0, $load, $colorid, $sizes, $subcatids, $priceStart, $priceEnd);
+        $res = $obj->getProductByCatName($catname, 0, $load, $colorid, $sizes, $subcatids, $priceStart, $priceEnd, $sortby);
     }
 }else if(isset($_GET["id"])){
     $id = (int) $_GET["id"];
@@ -53,7 +61,7 @@ if(isset($_GET["catid"])){
     if(isset($_GET["load"])){
         $load = $_GET["load"];
     }
-    $res = $obj->getProducts('', 0, $load, $colorid, $sizes, $subcatids, $priceStart, $priceEnd);
+    $res = $obj->getProducts('', 0, $load, $colorid, $sizes, $subcatids, $priceStart, $priceEnd, $sortby, $trending);
 }
 
 echo json_encode(["result"=>$res]);
