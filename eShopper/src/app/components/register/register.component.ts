@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserAuthService } from 'src/app/services/user-auth.service';
-declare var $:any;
-
+import { CustomValidation } from 'src/app/customValidation';
+import { Router } from '@angular/router';
+declare let $:any;
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -13,8 +14,10 @@ export class RegisterComponent implements OnInit {
   registerForm!:FormGroup;
   isAnyError:boolean = false;
   isFormValid:boolean = false;
+  isLoggedIn = false;
   message:string = '';
-  constructor(private builder:FormBuilder, private userauth:UserAuthService) { }
+  validator = new CustomValidation();
+  constructor(private builder:FormBuilder, private route:Router, private userauth:UserAuthService) {}
 
   ngOnInit(): void {
     this.registerForm = this.builder.group({
@@ -24,7 +27,7 @@ export class RegisterComponent implements OnInit {
       firstname: ['', [Validators.required]],
       lastname: ['', [Validators.required]],
       mobile: ['', [Validators.required, Validators.pattern('/^[0-9]{12}$/')]],
-      gender: ['0', [Validators.required]],
+      gender: ['', [Validators.required]],
       phone: ['', [Validators.required, Validators.pattern('/^[0-9]{6}$/')]]
     });
   }
@@ -81,62 +84,27 @@ export class RegisterComponent implements OnInit {
 
   formValidate(){
     $(".spanError").remove();
-    this.isFieldEmpty('#username');
-    this.isFieldEmpty('#firstname');
-    this.isFieldEmpty('#lastname');
-    this.isNumberValid("#mobile",/^[\d]{10,12}$/, '10-12')
-    this.isNumberValid("#phone",/^[\d]{6,8}$/, '6-8')
-    this.isPasswordValid('#password');
-    this.isEmailValid("#email");
-    this.isFieldChecked("#privacy");
-    if($("#formregister").find('.spanError').length==0 && $("#formregister").find(".custom_error").length==0){
+    this.validator.isFieldEmpty('#username');
+    this.validator.isFieldEmpty('#firstname');
+    this.validator.isFieldEmpty('#lastname');
+    this.validator.isNumberValid("#mobile",/^[\d]{10,12}$/, '10-12')
+    this.validator.isNumberValid("#phone",/^[\d]{6,8}$/, '6-8')
+    this.validator.isPasswordValid('#password');
+    this.validator.isEmailValid("#email");
+    this.validator.isRadioSelected("#gender", "gender");
+    this.validator.isFieldChecked("#privacy");
+    if($("#formregister").find('.spanError').length==0 && $("#formregister").find(".emailError").length==0 && $("#formregister").find(".userError").length==0){
       return true;
     }else{
       return false;
     }
   }
 
-  isFieldChecked(id:string){
-    let is = $(id).is(":checked");
-    if(!is){
-      $(id).parent().after("<span class='spanError'>* Privacy and policy must be selected!!</span>");
-    }
-  }
-
-  isNumberValid(id:string, reg:RegExp, range:string){
-    let value = $(id).val();
-    if(value.length == 0){
-      $(id).after("<span class='spanError'>* field can't be empty!!</span>");
-    }else if(!reg.test(value)){
-      $(id).after("<span class='spanError'>*Mobile must be "+range+" charcters long</span>");
-    }
-  }
-
-  isFieldEmpty(id:string){
-    let value = $(id).val();
-    if(value.length == 0){
-      $(id).after("<span class='spanError'>* field can't be empty!!</span>");
-    }
-  }
-
-  isPasswordValid(id:string){
-    var reg = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&])[a-zA-Z\d@$!%*#?&]{6,14}$/;
-    let value = $(id).val();
-    if(value.length == 0){
-      $(id).after("<span class='spanError'>* field can't be empty!!</span>");
-    }else if(!reg.test(value)){
-      $(id).after("<span class='spanError'>*At least one uppercase, lowercase, special char, numbers and 6 to 14 characters longer</span>");
-    }
-  }
-
-  isEmailValid(id:string){
-    var reg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
-    let value = $(id).val();
-    if(value.length == 0){
-      $(id).after("<span class='spanError'>* field can't be empty!!</span>");
-    }else if(!reg.test(value)){
-      $(id).after("<span class='spanError'>*Enter a valid email!!</span>");
-    }
+  resetForm(){
+    $(".spanError").remove();
+    $(".userError").remove();
+    $(".emailError").remove();
+    this.registerForm.reset();
   }
 
   get username(){

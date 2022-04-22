@@ -14,6 +14,16 @@ class ProductHandler extends DBConnection
         return 0;
     }
 
+    function TotalTrendingProducts($search = ''){
+        $search_ = ($search == '') ? 1 : "productName LIKE '%" . $search . "%'";
+        $sql = "SELECT COUNT(*) AS total FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND products.status=0 AND category.status=0 AND isTrending=1 ORDER BY products.id DESC";
+        $result = $this->getConnection()->query($sql);
+        if ($result && $result->num_rows > 0) {
+            return $result->fetch_assoc()["total"];
+        }
+        return 0;
+    }
+
     function TotalColors($search = '')
     {
         $search_ = ($search == '') ? 1 : "colorName LIKE '%" . $search . "%'";
@@ -137,6 +147,49 @@ class ProductHandler extends DBConnection
         }
 
         $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND $colorid_ AND $subcatids_ AND products.isTrending IN $trending_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND products.status=0 AND category.status=0 ORDER BY $sortby_ DESC LIMIT $page, $show";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                if (!empty($sizeids)) {
+                    $sizes = explode(",", $sizeids);
+                    $sizeIds = explode(",", $this->getProductById($row["id"])["productSizeIds"]);
+                    for ($i = 0; $i < count($sizeIds); $i++) {
+                        if (in_array($sizeIds[$i], $sizes)) {
+                            array_push($records, $row);
+                            break;
+                        }
+                    }
+                    continue;
+                }
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
+    function getTrendingProducts($search, $page, $show, $colorid = '', $sizeids = '', $subcatids = '', $priceStart = 0, $priceEnd = 12000, $sortby='latest', $trending='0,1')
+    {
+        $colorid_ = ($colorid == '') ? 1 : "products.productColorIds LIKE '%" . $colorid . "%'";
+        $subcatids_ = ($subcatids == '') ? 1 : "products.subCategoryId IN (" . $subcatids . ")";
+        $search_ = ($search == '') ? 1 : "products.productName LIKE '%" . $search . "%'";
+        $trending_ = "(".$trending.")";
+        
+        $sortby_ = 1;
+        switch($sortby){
+            case 'latest':
+                $sortby_ = 'products.id'; break;
+            case 'name':
+                $sortby_ = 'products.productName'; break;
+            case 'price':
+                $sortby_ = 'products.productPrice'; break;
+            default:
+                $sortby_ = 'products.id';
+        }
+
+        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND $colorid_ AND $subcatids_ AND products.isTrending IN $trending_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND products.status=0 AND category.status=0 AND isTrending=1 ORDER BY $sortby_ DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {

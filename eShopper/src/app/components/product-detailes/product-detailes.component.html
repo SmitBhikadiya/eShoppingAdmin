@@ -36,25 +36,29 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-5">
-                <div class="demo">
-                    <ul id="lightSlider">
-                        <li *ngFor="let img of product['productImages'] | strtoarray: ','" attr.data-thumb="{{ imgURL }}/product/{{ img }}">
-                            <img src="{{ imgURL }}/product/{{ img }}" alt="" />
-                        </li>
-                        <!-- <li data-thumb="https://sachinchoolur.github.io/lightslider/img/thumb/cS-1.jpg">
-                            <img src="https://sachinchoolur.github.io/lightslider/img/cS-1.jpg" />
-                        </li> -->
-                    </ul>
+                <div class="product-imgs">
+                    <div class="img-display" id="slider">
+                        <div class="img-showcase" id="innerslider">
+                            <img *ngFor="let img of productImages" attr.data-fancybox-group="gallery" [src]="img" class="slide" alt="shoe image">
+                        </div>
+                    </div>
+                    <div class="img-select">
+                        <div class="img-item" *ngFor="let img of productImages; let i=index">
+                            <a attr.data-id="{{ i+1 }}">
+                                <img [src]="img" height="120px" alt="shoe image">
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <!-- <ul class="sync1">
-                    <li *ngFor="let img of product['productImages'] | strtoarray: ','">
-                        <a class="fancybox" href="{{ imgURL }}/product/{{ img }}" data-fancybox-group="gallery"
-                            title=""><img src="{{ imgURL }}/product/{{ img }}" alt="" /></a>
+                <!-- <ul [class]="'sync1'">
+                    <li *ngFor="let img of productImages">
+                        <a [class]="'fancybox'" [href]="img" attr.data-fancybox-group="gallery"
+                            title="img"><img [src]="img" alt="" /></a>
                     </li>
                 </ul>
-                <ul class="sync2">
-                    <li *ngFor="let img of product['productImages'] | strtoarray: ','">
-                        <img src="{{ imgURL }}/product/{{ img }}" alt="" />
+                <ul [class]="'sync2'">
+                    <li *ngFor="let img of productImages">
+                        <img [src]="img" alt="" />
                     </li>
                 </ul> -->
                 <!-- <ul class="sync1">

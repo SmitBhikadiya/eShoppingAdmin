@@ -20,11 +20,13 @@ export class ProductDetailesComponent implements OnInit {
   colors!:IColor[];
   imgURL = environment.IMAGES_SERVER_URL;
   show:boolean = false;
+  productImages!:string[];
+
 
   constructor(private productService:ProductService, private router:Router, private route:ActivatedRoute) { 
     router.events.subscribe((ev)=>{
       if(ev instanceof NavigationEnd){
-        this.ngOnInit();
+        //this.ngOnInit();
       }
     });
   }
@@ -43,6 +45,8 @@ export class ProductDetailesComponent implements OnInit {
   getProductById(){
     this.productService.getProductsById(this.prdid).subscribe((res)=>{
       this.product = res["result"];
+      this.productImages = this.product["productImages"].split(",").map((n) => `${this.imgURL}/product/${n}`);;
+      console.log(this.productImages);
       this.getSizeByIds(this.product["productSizeIds"]);
       this.getColorByIds(this.product["productColorIds"]);
     },(err)=>{

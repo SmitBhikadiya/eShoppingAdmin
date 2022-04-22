@@ -42,7 +42,7 @@
                                 <span><em>Welcome</em>, {{ username }}</span>
                             </li>
                             <li *ngIf="isLoggin;">
-                                <a href="profile.html" title="My Profile">Profile</a>
+                                <a [routerLink]="['/profile']" title="My Profile">Profile</a>
                             </li>
                             <li *ngIf="isLoggin;" class="login-link"><a href="index.html" title="Logout" (click)="userLogout()">Logout</a></li>
                             <li class="cart-outer">

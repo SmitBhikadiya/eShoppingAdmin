@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 14, 2022 at 05:54 AM
+-- Generation Time: Apr 22, 2022 at 06:41 AM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 7.4.20
 
@@ -226,11 +226,11 @@ CREATE TABLE `productcolor` (
 --
 
 INSERT INTO `productcolor` (`id`, `colorName`, `colorCode`, `modifiedDate`, `createdDate`, `status`) VALUES
-(1, 'navy blue', '#031159', '2022-04-11 15:38:31', '2022-04-11 15:37:59', 0),
+(1, 'navy', '#031159', '2022-04-11 15:38:31', '2022-04-11 15:37:59', 0),
 (2, 'red', '#ff0000', NULL, '2022-04-11 15:38:46', 0),
-(4, 'yellow', '#fbff1f', '2022-04-12 11:39:49', '2022-04-11 15:39:22', 0),
-(5, 'green', '#1fbd00', '2022-04-12 11:39:37', '2022-04-12 11:39:24', 0),
-(6, 'black', '#000000', NULL, '2022-04-12 14:38:55', 0),
+(4, 'orange', '#ff571f', '2022-04-18 10:25:19', '2022-04-11 15:39:22', 0),
+(5, 'grey', '#7a7a7a', '2022-04-18 10:24:47', '2022-04-12 11:39:24', 0),
+(6, 'pink', '#f500c8', '2022-04-18 10:23:45', '2022-04-12 14:38:55', 0),
 (7, 'blue', '#0000ff', NULL, '2022-04-13 15:51:10', 0);
 
 -- --------------------------------------------------------
@@ -266,6 +266,8 @@ CREATE TABLE `products` (
   `totalQuantity` int(11) NOT NULL,
   `categoryId` int(11) NOT NULL,
   `subCategoryId` int(11) NOT NULL,
+  `isTrending` tinyint(2) NOT NULL DEFAULT 0,
+  `SKU` varchar(50) NOT NULL,
   `modifiedDate` datetime DEFAULT NULL,
   `createdDate` datetime DEFAULT NULL,
   `status` tinyint(2) NOT NULL DEFAULT 0
@@ -275,13 +277,17 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `productName`, `productDesc`, `productPrice`, `productSizeIds`, `productColorIds`, `productImages`, `totalQuantity`, `categoryId`, `subCategoryId`, `modifiedDate`, `createdDate`, `status`) VALUES
-(1, 't-shirt', 'full sleeve t-shirt', 293, '2,1', '2,1', 'product_1649834498744.png,product_1649834498793.png', 10, 1, 1, '2022-04-13 12:51:38', '2022-04-12 10:59:15', 0),
-(2, 'polo t-shirt', 'for testing', 597, '2', '6,2', 'product_1649908382608.png', 11, 1, 1, '2022-04-14 09:23:02', '2022-04-12 11:38:45', 0),
-(3, 'blacky shine', 'this is for testing', 898, '4,2', '1', 'product_1649747082428.png', 45, 1, 2, '2022-04-12 14:37:02', '2022-04-12 12:34:42', 0),
-(4, 'abc', 'for testing', 1299, '4,2', '1', 'product_1649754686373.png,product_1649754686824.png', 13, 1, 2, '2022-04-12 14:59:53', '2022-04-12 14:40:36', 1),
-(5, 'jeans', '100% dustproof', 799, '5,2', '1', 'product_1649827927850.png,product_1649827927705.png', 15, 1, 2, '2022-04-13 11:02:25', '2022-04-13 11:02:07', 0),
-(6, 'remote super car', 'this is a remote car for kids', 248, '8', '5,2', 'product_1649852044962.png', 15, 3, 3, NULL, '2022-04-13 17:44:04', 0);
+INSERT INTO `products` (`id`, `productName`, `productDesc`, `productPrice`, `productSizeIds`, `productColorIds`, `productImages`, `totalQuantity`, `categoryId`, `subCategoryId`, `isTrending`, `SKU`, `modifiedDate`, `createdDate`, `status`) VALUES
+(1, 't-shirt', 'full sleeve t-shirt', 293, '2,1', '2,1', 'product_1649834498744.png,product_1649834498793.png', 10, 1, 1, 0, 'prod101', '2022-04-13 12:51:38', '2022-04-12 10:59:15', 0),
+(2, 'polo t-shirt', 'for testing', 597, '2', '6,2', 'product_1650275459430.png,product_1650275459824.png,product_1650275459190.png,product_1650275459570.png', 11, 1, 1, 1, 'prod102', '2022-04-20 12:23:34', '2022-04-12 11:38:45', 0),
+(3, 'blacky shine', 'this is for testing', 898, '2', '1', 'product_1650018282149.png', 45, 1, 2, 0, 'prod103', '2022-04-15 15:54:42', '2022-04-12 12:34:42', 0),
+(4, 'abc', 'for testing', 1299, '4,2', '1', 'product_1649754686373.png,product_1649754686824.png', 13, 1, 2, 0, 'prod104', '2022-04-12 14:59:53', '2022-04-12 14:40:36', 1),
+(5, 'sportored mens regular', '100% dustproof', 799, '5,2', '1', 'product_1650435623280.png,product_1650435623240.png', 15, 1, 1, 0, 'prod105', '2022-04-20 12:22:54', '2022-04-13 11:02:07', 0),
+(6, 'remote super car', 'this is a remote car for kids', 3500, '8', '5,2', 'product_1649852044962.png', 15, 3, 3, 0, 'prod106', '2022-04-19 10:28:26', '2022-04-13 17:44:04', 0),
+(7, 'super jeans', 'made in india', 1099, '7,1', '7,6', 'product_1650275499532.png', 399, 1, 2, 1, 'prod107', '2022-04-21 11:29:36', '2022-04-14 11:23:22', 0),
+(8, 'truck', 'remote control truck', 7999, '8', '4,2,1', 'product_1650258044880.png', 14, 3, 3, 1, 'prod108', '2022-04-20 12:20:36', '2022-04-18 10:30:44', 0),
+(9, 'super toy remote control', '2.4ghz cameralism drone f with altitude hold, headless mode and 360-degree flip action, multicolor', 1999, '8', '4', 'product_1650436415635.png', 398, 3, 3, 0, 'prod145', '2022-04-21 18:04:11', '2022-04-20 12:03:35', 0),
+(10, 'skechers women navy go walk lite', 'this product is already at its best price', 4997, '11,10', '1', 'product_1650529597669.png', 15, 2, 4, 1, 'prod113', '2022-04-21 18:07:13', '2022-04-21 13:56:37', 0);
 
 -- --------------------------------------------------------
 
@@ -306,7 +312,11 @@ INSERT INTO `productsize` (`id`, `size`, `modifiedDate`, `createdDate`, `status`
 (2, 'l', '2022-04-11 15:37:38', '2022-04-11 15:37:31', 0),
 (5, 'xxxll', '2022-04-12 09:34:49', '2022-04-12 09:34:25', 0),
 (7, 'm', NULL, '2022-04-13 15:53:16', 0),
-(8, '124 x 50', NULL, '2022-04-13 17:42:02', 0);
+(8, '124 x 50', NULL, '2022-04-13 17:42:02', 0),
+(9, 'large', '2022-04-21 13:54:33', '2022-04-21 13:54:18', 1),
+(10, '7', NULL, '2022-04-21 13:54:40', 0),
+(11, '8', NULL, '2022-04-21 13:54:47', 0),
+(12, '9', '2022-04-21 13:55:24', '2022-04-21 13:54:54', 1);
 
 -- --------------------------------------------------------
 
@@ -356,7 +366,8 @@ CREATE TABLE `subcategory` (
 INSERT INTO `subcategory` (`id`, `categoryId`, `subCatName`, `subCatDesc`, `modifiedDate`, `createdDate`, `status`) VALUES
 (1, 1, 't-shirt', 'made by using 100% quality fabric', '2022-04-11 14:21:09', '2022-04-11 11:06:03', 0),
 (2, 1, 'jeans', '80% fire proof', '2022-04-11 12:01:46', '2022-04-11 11:52:36', 0),
-(3, 3, 'toys', 'plastic toys for kids', NULL, '2022-04-13 15:18:21', 0);
+(3, 3, 'toys', 'plastic toys for kids', NULL, '2022-04-13 15:18:21', 0),
+(4, 2, 'shoes', 'shoes for women', NULL, '2022-04-21 13:53:21', 0);
 
 -- --------------------------------------------------------
 
@@ -387,13 +398,13 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `password` varchar(16) NOT NULL,
+  `password` varchar(150) NOT NULL,
   `firstname` varchar(50) NOT NULL,
   `lastname` varchar(50) NOT NULL,
   `gender` tinyint(2) NOT NULL,
   `mobile` varchar(12) NOT NULL,
   `phone` varchar(12) NOT NULL,
-  `interestList` varchar(100) NOT NULL,
+  `interestList` varchar(100) DEFAULT NULL,
   `modifiedDate` datetime DEFAULT NULL,
   `createdDate` datetime DEFAULT NULL,
   `status` tinyint(2) NOT NULL DEFAULT 0
@@ -404,7 +415,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `firstname`, `lastname`, `gender`, `mobile`, `phone`, `interestList`, `modifiedDate`, `createdDate`, `status`) VALUES
-(1, 'smit', 'smit@gmail.com', '1234567890', 'S', 'D', 0, '7096794624', '12345', 'jeans, black', '2022-04-12 16:11:32', '2022-04-12 12:02:14', 0);
+(1, 'smit', 'smit@gmail.com', '$2y$10$CR/EiKPtkCfpHovu3JJ/.ea5gL12BkKy2tEc0Ol2bQy9jRvTOOi0W', 'S', 'D', 0, '7096794624', '12345', 'jeans, black', '2022-04-12 16:11:32', '2022-04-12 12:02:14', 0),
+(5, 'smit@123', 'sbhikadiya@gmail.com', '$2y$10$qmac/pmrhREiNVVaUf3Ku.c23YxQ/P.O..AhLvLYQjAgpGFNoq85S', 'S', 'fgf', 0, '6458967456', '65433', NULL, NULL, '2022-04-21 17:14:04', 0);
 
 --
 -- Indexes for dumped tables
@@ -579,13 +591,13 @@ ALTER TABLE `productreview`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `productsize`
 --
 ALTER TABLE `productsize`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `states`
@@ -597,7 +609,7 @@ ALTER TABLE `states`
 -- AUTO_INCREMENT for table `subcategory`
 --
 ALTER TABLE `subcategory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `useraddress`
@@ -609,7 +621,7 @@ ALTER TABLE `useraddress`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables

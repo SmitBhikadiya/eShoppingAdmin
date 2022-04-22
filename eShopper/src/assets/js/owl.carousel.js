@@ -20,7 +20,6 @@
     };
 }
 (function ($, window, document) {
-
     var Carousel = {
         init : function (options, el) {
             var base = this;

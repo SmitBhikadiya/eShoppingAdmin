@@ -1,19 +1,45 @@
-.demo {
-    width:450px;
-}
-ul {
-    list-style: none outside none;
-    padding-left: 0;
-    margin-bottom:0;
-}
-li {
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css");
+img{
+    width: 100%;
     display: block;
-    float: left;
-    margin-right: 6px;
-    cursor:pointer;
 }
-img {
-    display: block;
-    height: auto;
-    max-width: 100%;
+.img-display{
+    overflow: hidden;
+}
+.img-showcase{
+    display: flex;
+    width: 100%;
+    transition: all 0.5s ease;
+}
+.img-showcase img{
+    min-width: 100%;
+}
+.img-select{
+    display: flex;
+    justify-content:flex-start;
+}
+.img-item{
+    box-shadow:0px 0px 0.5px 0.2px black;
+    margin: 0.5rem;
+}
+.img-item img{
+    max-width: 100px;
+}
+.img-item:nth-child(1),
+.img-item:nth-child(2),
+.img-item:nth-child(3){
+    margin-right: 0;
+}
+.img-item:hover{
+    opacity: 0.8;
+}
+
+
+
+@media screen and (min-width: 992px){
+    .product-imgs{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 }

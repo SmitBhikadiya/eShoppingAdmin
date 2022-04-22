@@ -47,7 +47,7 @@
                             <div class="form-group gender-list">
                                 <label class="form-label">Gender</label>
                                 <div class="filter-option">
-                                    <div class="filter-option-inner">
+                                    <div class="filter-option-inner" id="gender">
                                         <ul>
                                             <li class="custom-check">
                                                 <label> <input type="radio" class="icheck" name="gender" formControlName="gender" value="0"> Male</label>
@@ -155,7 +155,7 @@
 
                                 <div class="form-group clearfix submit-outer">
                                     <button type="submit" class="btn-secondary">Submit</button>&nbsp;
-                                    <button type="button" class="btn-tertiary" (click)="registerForm.reset()">Clear</button>
+                                    <button type="button" class="btn-tertiary" (click)="resetForm()">Clear</button>
                                 </div>
 
                             </div>
