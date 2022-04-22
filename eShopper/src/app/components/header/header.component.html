@@ -37,7 +37,14 @@
                 <div class="col-sm-6 col-xs-12 search-outer">
                     <form>
                         <ul class="header-right-block clearfix">
-                            <li class="login-link"><a href="#" title="Login" data-toggle="modal" data-target="#Login-popup">Login</a></li>
+                            <li class="login-link"><a href="#" title="Login" data-toggle="modal" data-target="#Login-popup" *ngIf="!isLoggin;">Login</a></li>
+                            <li class="hidden-xs" *ngIf="isLoggin;">
+                                <span><em>Welcome</em>, {{ username }}</span>
+                            </li>
+                            <li *ngIf="isLoggin;">
+                                <a href="profile.html" title="My Profile">Profile</a>
+                            </li>
+                            <li *ngIf="isLoggin;" class="login-link"><a href="index.html" title="Logout" (click)="userLogout()">Logout</a></li>
                             <li class="cart-outer">
                                 <a href="#" title="Add to Cart" class="add-to-cart"></a>
                                 <div class="cart-wrap">

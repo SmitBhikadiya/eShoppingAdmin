@@ -384,22 +384,30 @@ class ProductHandler extends DBConnection
         return $error;
     }
 
-    function addProduct($name, $desc, $catid, $subcatid, $price, $qty, $colors, $sizes, $imagesArr, $trending)
+    function addProduct($name, $desc, $catid, $subcatid, $price, $qty, $colors, $sizes, $imagesArr, $trending, $sku)
     {
+        $name = mysqli_real_escape_string($this->getConnection(), $name);
+        $desc = mysqli_real_escape_string($this->getConnection(), $desc);
+        $sku = mysqli_real_escape_string($this->getConnection(), $sku);
         $images = implode(',', $imagesArr);
         $colorIds = implode(',', $colors);
         $sizeIds = implode(',', $sizes);
         $error = "";
-        if (!$this->isProductExits($name, $catid, $subcatid)) {
-            $sql = "INSERT INTO products (productName, productDesc, productPrice, productSizeIds, productColorIds, productImages, totalQuantity, categoryId, subCategoryId, isTrending, createdDate) 
-                    VALUES ('$name', '$desc', $price, '$sizeIds', '$colorIds', '$images', $qty, $catid, $subcatid , $trending, now())";
-            $result = $this->getConnection()->query($sql);
-            if (!$result) {
-                $error = "Somthing went wrong with the $sql";
+        if(!$this->isSKUExits($sku)){
+            if (!$this->isProductExits($name, $catid, $subcatid)) {
+                $sql = "INSERT INTO products (productName, productDesc, productPrice, productSizeIds, productColorIds, productImages, totalQuantity, categoryId, subCategoryId, isTrending, SKU, createdDate) 
+                        VALUES ('$name', '$desc', $price, '$sizeIds', '$colorIds', '$images', $qty, $catid, $subcatid , $trending, '$sku', now())";
+                $result = $this->getConnection()->query($sql);
+                if (!$result) {
+                    $error = "Somthing went wrong with the $sql";
+                }
+            } else {
+                $error = "'$name' is already exits in the selected category!!";
             }
-        } else {
-            $error = "'$name' is already exits in the selected category!!";
+        }else{
+            $error = "SKU must be unique!!!";
         }
+        
         return $error;
     }
 
@@ -481,13 +489,15 @@ class ProductHandler extends DBConnection
         return $count;
     }
 
-    function updateProduct($prdid, $name, $desc, $catid, $subcatid, $price, $qty, $colorsArr, $sizesArr, $imagesArr, $trending)
+    function updateProduct($prdid, $name, $desc, $catid, $subcatid, $price, $qty, $colorsArr, $sizesArr, $imagesArr, $trending, $sku)
     {
+        $name = mysqli_real_escape_string($this->getConnection(), $name);
+        $desc = mysqli_real_escape_string($this->getConnection(), $desc);
         $images = implode(',', $imagesArr);
         $colorIds = implode(',', $colorsArr);
         $sizeIds = implode(',', $sizesArr);
         $error = "";
-        $sql = "UPDATE products SET productName='$name', productDesc='$desc', productPrice=$price, productSizeIds='$sizeIds', productColorIds='$colorIds', productImages='$images', totalQuantity=$qty, categoryId=$catid, subCategoryId=$subcatid, isTrending=$trending, modifiedDate=now() 
+        $sql = "UPDATE products SET productName='$name', productDesc='$desc', productPrice=$price, productSizeIds='$sizeIds', productColorIds='$colorIds', productImages='$images', totalQuantity=$qty, categoryId=$catid, subCategoryId=$subcatid, isTrending=$trending, SKU='$sku', modifiedDate=now() 
                 WHERE id=$prdid";
         $result = $this->getConnection()->query($sql);
         if (!$result) {
@@ -571,6 +581,15 @@ class ProductHandler extends DBConnection
     function isProductExits($name, $catid, $subcatid)
     {
         $sql = "SELECT * FROM products WHERE productName='$name' AND categoryId=$catid AND subCategoryId=$subcatid AND status = 0";
+        $result = $this->getConnection()->query($sql);
+        if ($result->num_rows > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    function isSKUExits($sku){
+        $sql = "SELECT * FROM products WHERE SKU='$sku' AND status = 0";
         $result = $this->getConnection()->query($sql);
         if ($result->num_rows > 0) {
             return true;

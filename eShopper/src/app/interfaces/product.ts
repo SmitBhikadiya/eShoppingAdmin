@@ -15,4 +15,5 @@ export interface IProduct{
     catName:string
     subCatName:string
     isTrending:number
+    SKU:string
 }

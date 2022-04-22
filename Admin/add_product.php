@@ -155,6 +155,11 @@ if (isset($_SESSION["result"])) {
 												<label class="form-label">Total Quantity*</label>
 												<input type="number" name="qty" class="form-control" id="pqty" placeholder="Product Availabel Quantity" value="<?= (isset($result)) ? $result["totalQuantity"] : '' ?>" />
 											</div>
+											
+											<div class="form-group">
+												<label class="form-label">SKU*</label>
+												<input type="text" name="sku" class="form-control" id="psku" placeholder="Enter SKU" value="<?= (isset($result)) ? $result["SKU"] : '' ?>" />
+											</div>
 
 											<div class="form-group">
 												<label for="productcolor">Select Product Color</label>
@@ -201,7 +206,7 @@ if (isset($_SESSION["result"])) {
 												?>
 												<input class="form-check-input" type="checkbox" name="trending" id="ptrending" <?=$check?>>
 												<label class="form-check-label" for="ptrending">
-													Set As Trending
+													set as trending
 												</label>
 											</div>
 

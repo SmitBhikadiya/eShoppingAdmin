@@ -89,7 +89,7 @@
                 <div class="short-description">
                     {{ product["productDesc"] }}
                 </div>
-                <!-- <div class="sku"><span>SKU: </span> mag209_prod1</div> -->
+                <div class="sku"><span>SKU: </span>{{ product["SKU"] }}</div>
                 <p class="availability">
                     Availability:<span class="in-stock" *ngIf="product['totalQuantity'] > 0; else notinstock">In
                         stock</span>
@@ -129,7 +129,7 @@
                     </select>
                     <button type="button" onclick="location.href='cart.html'" title="Add to Cart"
                         class="button btn-cart">
-                        <span><span>Add to Cart</span></span>
+                        <span>Add to Cart</span>
                     </button>
                 </div>
                 <div class="email-addto-box clearfix">

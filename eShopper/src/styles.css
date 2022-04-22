@@ -1,1 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+.spanError{
+    color: red;
+    margin-top: 4px
+}

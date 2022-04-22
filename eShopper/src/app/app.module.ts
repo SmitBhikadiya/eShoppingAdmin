@@ -16,6 +16,8 @@ import { ProductDetailesComponent } from './components/product-detailes/product-
 import { ProductsComponent } from './components/products/products.component';
 import { StrtoarrayPipe } from './pipes/strtoarray.pipe';
 import { TitleCaptilizePipe } from './pipes/title-captilize.pipe';
+import { RegisterComponent } from './components/register/register.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { TitleCaptilizePipe } from './pipes/title-captilize.pipe';
     ProductDetailesComponent,
     ProductsComponent,
     StrtoarrayPipe,
-    TitleCaptilizePipe
+    TitleCaptilizePipe,
+    RegisterComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

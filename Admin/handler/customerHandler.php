@@ -15,6 +15,60 @@ class CustomerHandler extends DBConnection
         return 0;
     }
 
+    function userLogin($username, $password){
+        $sql = "SELECT * FROM users WHERE username='$username' AND status=0";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if($result && $result->num_rows>0){
+            $row = $result->fetch_assoc();
+            if(password_verify($password, $row["password"])){
+                array_push($records, $row);
+            }
+        }
+        return $records;
+    }
+
+    function userRegister($username, $password, $firstname, $lastname, $gender, $mobile, $phone, $email){
+        $password = password_hash($password, PASSWORD_DEFAULT);
+        $sql = "INSERT INTO users (username, email, password, firstname, lastname, gender, mobile, phone, createdDate) VALUES ('$username', '$email', '$password', '$firstname', '$lastname', $gender, '$mobile', '$phone', now())";
+        $result = $this->getConnection()->query($sql);
+        if($result){
+            return [
+                    'id' => mysqli_insert_id($this->getConnection()),
+                    'username' => $username,
+                    'error' => ''
+            ];
+        }
+        return [
+            'error' => ''
+        ];
+    }
+
+    function getUserByEmail($email){
+        $records = [];
+        $sql = "SELECT * FROM users WHERE email='$email' AND status = 0";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            $records = $result->fetch_assoc();
+        } else {
+            $records = [];
+        }
+        return $records; 
+    }
+    function getUserByUsername($username){
+        $records = [];
+        $sql = "SELECT * FROM users WHERE username='$username' AND status = 0";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            $records = $result->fetch_assoc();
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
     function getCustomers($search, $page, $show)
     {
         $search_ = ($search == '') ? 1 : "username LIKE '%" . $search . "%'";

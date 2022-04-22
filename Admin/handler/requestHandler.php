@@ -66,6 +66,7 @@ if (isset($_POST["AddProduct"])) {
     $qty = $_POST["qty"];
     $colorids = $_POST["colors"];
     $sizeids = $_POST["sizes"];
+    $sku = $_POST["sku"];
     $files = $_FILES["file"];
     $images = [];
     $trending = isset($_POST["trending"]) ? 1 : 0;
@@ -80,7 +81,7 @@ if (isset($_POST["AddProduct"])) {
         }
     }
 
-    $error = $productH->addProduct($name, $desc, $catid, $subcatid, $price, $qty, $colorids, $sizeids, $images, $trending);
+    $error = $productH->addProduct($name, $desc, $catid, $subcatid, $price, $qty, $colorids, $sizeids, $images, $trending, $sku);
     if ($error == "") {
         $_SESSION["result"] = ["msg" => "New Product '$name' Added Successfully", "error" => false];
     } else {
@@ -126,6 +127,7 @@ if (isset($_POST["EditProduct"])) {
     $colorids = $_POST["colors"];
     $sizeids = $_POST["sizes"];
     $files = $_FILES["file"];
+    $sku = $_POST["sku"];
     $oldfiles = $_POST["oldimages"];
     $prdid = $_POST["productid"];
     $images = [];
@@ -149,7 +151,7 @@ if (isset($_POST["EditProduct"])) {
         $images = explode(",", $oldfiles);
     }
 
-    $error = $productH->updateProduct($prdid, $name, $desc, $catid, $subcatid, $price, $qty, $colorids, $sizeids, $images, $trending);
+    $error = $productH->updateProduct($prdid, $name, $desc, $catid, $subcatid, $price, $qty, $colorids, $sizeids, $images, $trending, $sku);
     if ($error == "") {
         $_SESSION["result"] = ["msg" => "Product '$name' Updated Successfully", "error" => false];
     } else {
