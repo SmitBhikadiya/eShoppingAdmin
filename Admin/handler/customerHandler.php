@@ -56,6 +56,25 @@ class CustomerHandler extends DBConnection
         }
         return $records; 
     }
+
+    function getUserDetailesByUsername($username){
+        $user = $this->getUserByUsername($username);
+        return ["user"=>$user, "billing"=>$this->getAddressByType($user["id"], 0), "shipping"=>$this->getAddressByType($user["id"], 1)];
+    }
+
+    function getAddressByType($id, $type){
+        $records = [];
+        $sql = "SELECT useraddress.*, cities.city as cityName, states.state as stateName, countries.country as countryName FROM useraddress JOIN cities ON cities.id=useraddress.cityId JOIN states ON states.id=useraddress.stateId JOIN countries ON countries.id=useraddress.countryId WHERE useraddress.userId=$id AND useraddress.addressType=$type AND cities.status=0 AND states.status=0 AND countries.status=0 AND useraddress.status = 0";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            $records = $result->fetch_assoc();
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
     function getUserByUsername($username){
         $records = [];
         $sql = "SELECT * FROM users WHERE username='$username' AND status = 0";
@@ -108,5 +127,40 @@ class CustomerHandler extends DBConnection
             return true;
         }
         return false;
+    }
+
+    function updateUser($id, $username, $firstname, $lastname, $gender, $mobile, $phone, $email){
+        $error = '';
+        $sql = "UPDATE users SET username='$username', firstname='$firstname', lastname='$lastname', email='$email', gender=$gender, mobile='$mobile', phone='$phone', modifiedDate=now() WHERE id=$id";
+        $result = $this->getConnection()->query($sql);
+        if(!$result){
+            $error = "Somthing went wrong with the $sql";
+        }
+        return $error;
+    }
+
+    function updateAddress($userid, $type, $street, $country, $state, $city){
+        $error = '';
+        
+        if(count($this->getAddressByType($userid, $type)) > 0){
+            $sql = "UPDATE useraddress SET streetname='$street', cityId=$city, stateId=$state, countryId=$country, modifiedDate=now() WHERE userId=$userid AND addressType=$type";
+            $result = $this->getConnection()->query($sql);
+            if(!$result){
+                $error = "Somthing went wrong with the $sql";
+            }
+        }else{
+            $error = $this->addAddress($userid, $type, $street, $country, $state, $city);
+        }
+        return $error;
+    }
+
+    function addAddress($userid, $type, $street, $country, $state, $city){
+        $error = '';
+        $sql = "INSERT INTO useraddress (userId, addressType, streetname, cityId, stateId, countryId, createdDate) VALUES ($userid, $type, '$street', $city, $state, $country, now())";
+        $result = $this->getConnection()->query($sql);
+        if(!$result){
+            $error = "Somthing went wrong with the $sql";
+        }
+        return $error;
     }
 }

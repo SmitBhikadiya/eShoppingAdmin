@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -25,8 +25,16 @@ export class UserAuthService {
         return Users;
       }));
   }
+  
+  getUserDetailesByUsername(username:string|null){
+    return this.http.get<any>(`${environment.API_SERVER_URL}/users.php?username=${username}`);
+  }
 
-  isUsernameExits(username:any){
+  updateProfile(data:FormData) : Observable<any>{
+    return this.http.post<any>(`${environment.API_SERVER_URL}/users.php`,data);
+  }
+
+  isUsernameExits(username:string|null){
     return this.http.get<any>(`${environment.API_SERVER_URL}/register.php?username=${username}`);
   }
 
@@ -37,12 +45,15 @@ export class UserAuthService {
   setToken(token: string) {
     localStorage.setItem('token', token);
   }
+
   getToken() {
     return localStorage.getItem('token');
   }
+
   deleteToken() {
     localStorage.removeItem('token');
   }
+
   isLoggedIn() {
     if (this.getToken() == null) {
       return false;
@@ -50,4 +61,5 @@ export class UserAuthService {
       return true;
     }
   }
+
 }

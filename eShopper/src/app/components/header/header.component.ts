@@ -23,6 +23,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.getCategory();
+    this.username = this.userAuth.getToken();
   }
 
   userLogout(){

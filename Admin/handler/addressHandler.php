@@ -35,6 +35,20 @@ class AddressHandler extends DBConnection
         return 0;
     }
 
+    function getCitiesByStateId($id){
+        $sql = "SELECT cities.*, states.state, countries.country FROM cities JOIN states ON cities.stateId=states.id JOIN countries ON countries.id=cities.countryId WHERE cities.stateId=$id AND cities.status=0 AND countries.status=0 AND states.status=0 ORDER BY cities.id DESC";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
     function getAllCity(){
         $sql = "SELECT cities.*, states.state, countries.country FROM cities JOIN states ON cities.stateId=states.id JOIN countries ON countries.id=cities.countryId WHERE cities.status=0 AND countries.status=0 AND states.status=0 ORDER BY cities.id DESC";
         $result = $this->getConnection()->query($sql);
@@ -171,9 +185,9 @@ class AddressHandler extends DBConnection
         return $records;
     }
 
-    function getStatesByCountryId($countryid)
+    function getStatesByCountryId($id)
     {
-        $sql = "SELECT states.*, countries.country FROM states JOIN countries ON countries.id=states.countryId WHERE states.countryId=$countryid AND states.status = 0 AND countries.status = 0";
+        $sql = "SELECT states.*, countries.country FROM states JOIN countries ON countries.id=states.countryId WHERE states.countryId=$id AND states.status = 0 AND countries.status = 0";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result && $result->num_rows > 0) {

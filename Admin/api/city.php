@@ -4,11 +4,15 @@ session_start();
 require_once("../handler/addressHandler.php");
 $obj = new AddressHandler();
 
-$cities = $obj->getAllCity();
-if(count($cities) > 0){
-    echo json_encode($cities);
+$cities = [];
+
+if(isset($_GET["stateid"])){
+    $cities = $obj->getCitiesByStateId($_GET["stateid"]);
 }else{
-    http_response_code(404);
+    $cities = $obj->getAllCity();
 }
+
+echo json_encode(["result"=>$cities]);
+
 
 ?>

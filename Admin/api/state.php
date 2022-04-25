@@ -4,11 +4,14 @@ session_start();
 require_once("../handler/addressHandler.php");
 $obj = new AddressHandler();
 
-$states = $obj->getAllState();
-if(count($states) > 0){
-    echo json_encode($states);
+$states = [];
+
+if(isset($_GET["countryid"])){
+    $states = $obj->getStatesByCountryId($_GET["countryid"]);
 }else{
-    http_response_code(404);
+    $states = $obj->getAllState();
 }
+
+echo json_encode(["result"=>$states]);
 
 ?>

@@ -43,18 +43,17 @@ export class RegisterComponent implements OnInit {
         userdata.append('gender', this.registerForm.get('gender')?.value);
         userdata.append('mobile', this.registerForm.get('mobile')?.value);
         userdata.append('phone', this.registerForm.get('phone')?.value);
-        console.log(userdata);
-        // this.userauth.userRegister(userdata).subscribe((res)=>{
-        //   if(res.error == ''){
-        //     this.isAnyError = true;
-        //     this.message = `${res.username} is registered successfully!!`;
-        //     setTimeout(()=>{
-        //       this.isAnyError = false;
-        //       this.message = '';
-        //     }, 5000);
-        //   }
-        //   this.registerForm.reset();
-        // });
+        this.userauth.userRegister(userdata).subscribe((res)=>{
+          if(res.error == ''){
+            this.isAnyError = true;
+            this.message = `${res.username} is registered successfully!!`;
+            setTimeout(()=>{
+              this.isAnyError = false;
+              this.message = '';
+            }, 5000);
+          }
+          this.registerForm.reset();
+        });
     }
   }
 

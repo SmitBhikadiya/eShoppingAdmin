@@ -13,13 +13,21 @@ export class AddressService {
 
   constructor(private http:HttpClient) {}
 
-  getCities() : Observable<ICity[]>{
+  getCities() : Observable<any>{
     return this.http.get<ICity[]>(`${environment.API_SERVER_URL}/city.php`);
   }
-  getState() : Observable<IState[]>{
+  getState() : Observable<any>{
     return this.http.get<IState[]>(`${environment.API_SERVER_URL}/state.php`);
   }
-  getCountry() : Observable<ICountry[]>{
+  getCountry() : Observable<any>{
     return this.http.get<ICountry[]>(`${environment.API_SERVER_URL}/country.php`);
+  }
+
+  getStatesByCountryId(id:number) : Observable<any>{
+    return this.http.get<IState[]>(`${environment.API_SERVER_URL}/state.php?countryid=${id}`);
+  }
+
+  getCitiesByStateId(id:number) : Observable<any>{
+    return this.http.get<ICity[]>(`${environment.API_SERVER_URL}/city.php?stateid=${id}`);
   }
 }

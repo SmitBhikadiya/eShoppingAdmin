@@ -32,13 +32,11 @@ export class ProductService {
 
   getProductsByCatName(load:number, cat:string, formvalues:any, sortby:string): Observable<any>{
     let query_ = new URLSearchParams(formvalues).toString();
-    //console.log(`${environment.API_SERVER_URL}/product.php?load=${load}&catname=${cat}&${query_}`);
     return this.http.get<IProduct[]>(`${environment.API_SERVER_URL}/product.php?load=${load}&catname=${cat}&${query_}&sortby=${sortby}`);
   }
 
   getProductsBySubCatName(load:number, cat:string, subcat:string, formvalues:string, sortby:string): Observable<any>{
     let query_ = new URLSearchParams(formvalues).toString();
-    //console.log(`${environment.API_SERVER_URL}/product.php?load=${load}&catname=${cat}&subcatname=${subcat}&${query_}`);
     return this.http.get<IProduct[]>(`${environment.API_SERVER_URL}/product.php?load=${load}&catname=${cat}&subcatname=${subcat}&${query_}&sortby=${sortby}`);
   }
 

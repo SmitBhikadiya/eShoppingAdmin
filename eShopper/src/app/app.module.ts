@@ -8,7 +8,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddressService } from './services/address.service';
 import { CategoryService } from './services/category.service';
 import { ProductService } from './services/product.service';
-import { CustomerService } from './services/customer.service';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HomeComponent } from './components/home/home.component';
@@ -18,6 +17,8 @@ import { StrtoarrayPipe } from './pipes/strtoarray.pipe';
 import { TitleCaptilizePipe } from './pipes/title-captilize.pipe';
 import { RegisterComponent } from './components/register/register.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { FilterStringPipe } from './pipes/filter-string.pipe';
+import { UserAuthService } from './services/user-auth.service';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { ProfileComponent } from './components/profile/profile.component';
     StrtoarrayPipe,
     TitleCaptilizePipe,
     RegisterComponent,
-    ProfileComponent
+    ProfileComponent,
+    FilterStringPipe
   ],
   imports: [
     BrowserModule,
@@ -43,7 +45,7 @@ import { ProfileComponent } from './components/profile/profile.component';
     AddressService,
     CategoryService,
     ProductService,
-    CustomerService
+    UserAuthService
   ],
   bootstrap: [AppComponent]
 })
