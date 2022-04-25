@@ -155,17 +155,23 @@ if (isset($_SESSION["result"])) {
 															</a>
 														</li>
 														<?php
-														for ($i = $currntPage; $i <= $currntPage + 2; $i++) {
-															$active = "";
-															$disabled = '';
-															if ($i == $currntPage) {
-																$active = "active";
+														$temp = $currntPage+1;
+														$totalPage = ceil($totalRecords / $showRecords);
+														if($totalPage==1){
+															echo '<li class="page-item active"><a class="page-link">1</a></li>';
+														}else if($totalPage==2){
+															echo '<li class="page-item '.(($currntPage==1 || $currntPage=='' || $currntPage==0)?"active":"").'"><a class="page-link">1</a></li>';
+															echo '<li class="page-item '.(($currntPage==2)?"active":"").'"><a class="page-link">2</a></li>';
+														}else if($totalPage>=3){
+															for($i=$temp-1;$i<($temp+2);$i++){
+																if($i>$totalPage){
+																	break;
+																}else{
+																	echo '<li class="page-item '.(($i==$currntPage)?"active":"").'"><a class="page-link">'.$i.'</a></li>';
+																}
 															}
-															if (ceil($totalRecords / $showRecords) < $i) {
-																$disabled = "disabled";
-															}
-															echo '<li class="page-item ' . $active . '"><a class="page-link ' . $disabled . '">' . $i . '</a></li>';
 														}
+
 														?>
 
 														<li class="page-item">
