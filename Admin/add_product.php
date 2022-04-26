@@ -55,6 +55,30 @@ if (isset($_SESSION["result"])) {
 	<link rel="stylesheet" href="vendor/froala_editor_3.1.1/css/plugins/fullscreen.css" />
 	<link rel="stylesheet" href="vendor/froala_editor_3.1.1/css/plugins/file.css" />
 	<link rel="stylesheet" href="../../../cdnjs.cloudflare.com/ajax/libs/codemirror/5.3.0/codemirror.min.css" />
+	<style>
+		.add-cate-img-1 {
+			position: relative;
+			margin-right: 5px;
+		}
+
+		.add-cate-img-1 .fa-trash {
+			font-size: 15px;
+		}
+
+		.add-cate-img-1 a {
+			color: #f55d2c;
+			text-decoration: none;
+			background-color: transparent;
+			position: absolute;
+			z-index: 1;
+			background: while;
+			top: -9px;
+			right: -8px;
+			padding: 0.5px 6px;
+			/* border: 1px solid #007bff;
+			border-radius: 50%; */
+		}
+	</style>
 </head>
 
 <body class="sb-nav-fixed">
