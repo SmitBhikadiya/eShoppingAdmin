@@ -1,5 +1,110 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.css");
+
 /* You can add global styles to this file, and also import other style files */
-.spanError{
-    color: red;
-    margin-top: 4px
+.spanError {
+  color: red;
+  margin-top: 4px
+}
+
+.wrapper1 {
+  position: relative;
+  height: 508px;
+}
+
+.wrapper2 {
+  position: relative;
+  height: 150px;
+}
+
+owl-carousel-o {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
+
+.owl-item {
+  max-height: 498px;
+  min-height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 50%;
+  position: relative;
+}
+
+.wrapper2 .owl-item{
+  padding: 0 2px;
+}
+
+.owl-prev {
+  position: absolute;
+  top: 78px;
+  left: 4px;
+  transform: translateY(-50%);
+}
+
+.owl-next {
+  position: absolute;
+  top: 78px;
+  right: 4px;
+  transform: translateY(-50%);
+}
+
+.owl-next .fa, .owl-prev .fa {
+  font-weight: 900;
+  font-size: 35px;
+  color: white;
+}
+
+
+/* img {
+    width: 100%;
+    height: auto;
+    max-width: 99vh;
+  } */
+
+/* Feel free to change duration  */
+.animated {
+  -webkit-animation-duration: 1000 ms;
+  animation-duration: 1000 ms;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+/* .owl-animated-out - only for current item */
+/* This is very important class. Use z-index if you want move Out item above In item */
+.owl-animated-out {
+  z-index: 1
+}
+
+/* .owl-animated-in - only for upcoming item
+  /* This is very important class. Use z-index if you want move In item above Out item */
+.owl-animated-in {
+  z-index: 0
+}
+
+/* .fadeOut is style taken from Animation.css and this is how it looks in owl.carousel.css:  */
+.fadeOut {
+  -webkit-animation-name: fadeOut;
+  animation-name: fadeOut;
+}
+
+@-webkit-keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }

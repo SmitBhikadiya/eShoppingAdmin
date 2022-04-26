@@ -21,6 +21,9 @@ import { FilterStringPipe } from './pipes/filter-string.pipe';
 import { UserAuthService } from './services/user-auth.service';
 import { ErrorComponent } from './components/error/error.component';
 
+import { CarouselModule } from 'ngx-owl-carousel-o';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -41,7 +44,9 @@ import { ErrorComponent } from './components/error/error.component';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CarouselModule,
+    BrowserAnimationsModule
   ],
   providers: [
     AddressService,

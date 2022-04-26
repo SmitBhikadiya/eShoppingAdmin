@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { OwlOptions, SlidesOutputData } from 'ngx-owl-carousel-o';
 import { IColor } from 'src/app/interfaces/color';
 import { IProduct } from 'src/app/interfaces/product';
 import { ISize } from 'src/app/interfaces/size';
 import { ProductService } from 'src/app/services/product.service';
 import { environment } from 'src/environments/environment';
+declare let $:any;
 
 @Component({
   selector: 'app-product-detailes',
@@ -21,7 +23,61 @@ export class ProductDetailesComponent implements OnInit {
   imgURL = environment.IMAGES_SERVER_URL;
   show:boolean = false;
   productImages!:string[];
+  noImageURL = environment.IMAGES_SERVER_URL+"/noimage.jpg";
 
+  limit: number = 10; // <==== Edit this number to limit API results
+  
+  customOptions1: OwlOptions = {
+    loop: false,
+    mouseDrag: true,
+    touchDrag: true,
+    pullDrag: true,
+    dots: true,
+    navSpeed: 700,
+    dotsData:true,
+    navText: [ '', '' ],
+    responsive: {
+      0: {
+        items: 1
+      },
+      400: {
+        items: 1
+      },
+      740: {
+        items: 1
+      },
+      940: {
+        items: 1
+      }
+    },
+    nav: true,
+  }
+  customOptions2: OwlOptions = {
+    loop: false,
+    center:false,
+    mouseDrag: true,
+    touchDrag: true,
+    pullDrag: true,
+    navSpeed: 700,
+    dots:true,
+    dotsData:true,
+    navText: [ '<i class="fa fa-caret-left"></i>', '<i class="fa fa-caret-right"></i>' ],
+    responsive: {
+      0: {
+        items: 4
+      },
+      400: {
+        items: 4
+      },
+      740: {
+        items: 4
+      },
+      940: {
+        items: 4
+      }
+    },
+    nav: true,
+  }
 
   constructor(private productService:ProductService, private router:Router, private route:ActivatedRoute) { 
     router.events.subscribe((ev)=>{
@@ -29,6 +85,10 @@ export class ProductDetailesComponent implements OnInit {
         //this.ngOnInit();
       }
     });
+  }
+
+  getData(data: SlidesOutputData, synk:any){
+    synk.to((data.startPosition)?.toString());
   }
 
   ngOnInit(): void {
@@ -45,8 +105,11 @@ export class ProductDetailesComponent implements OnInit {
   getProductById(){
     this.productService.getProductsById(this.prdid).subscribe((res)=>{
       this.product = res["result"];
-      this.productImages = this.product["productImages"].split(",").map((n) => `${this.imgURL}/product/${n}`);;
-      console.log(this.productImages);
+      this.productImages = this.product["productImages"].split(",").map((n) => `${this.imgURL}/product/${n}`);
+      if(this.product["productImages"]==''){
+        this.productImages = [this.noImageURL];
+        $(".wrapper2").hide();
+      }
       this.getSizeByIds(this.product["productSizeIds"]);
       this.getColorByIds(this.product["productColorIds"]);
     },(err)=>{

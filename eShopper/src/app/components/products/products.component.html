@@ -32,13 +32,14 @@
                   <li class="custom-check" *ngFor="let cat of subcategories;">
                     <label *ngIf="(subcategory==null || subcategory=='') || subcategory==cat['subCatName']">
                       <input type="checkbox" class="subcatcheck icheck" name="subcategories" [value]="cat['id']"
-                        (change)="onCheckboxChange($event, 'subcategories')"
-                        [checked]="subcategory==cat['subCatName']" [disabled]="subcategory==cat['subCatName']" />
+                        (change)="onCheckboxChange($event, 'subcategories')" [checked]="subcategory==cat['subCatName']"
+                        [disabled]="subcategory==cat['subCatName']" />
                       {{ cat["subCatName"] }}
                       <span>({{ cat["totalPrd"] }})</span>
                     </label>
                   </li>
-                  <li *ngIf="subcategory==null"><a (click)="resetFormControl('subcategories')" title="Reset" style="padding-left: 0px;" class="reset-link">Reset</a></li>
+                  <li *ngIf="subcategory==null"><a (click)="resetFormControl('subcategories')" title="Reset"
+                      style="padding-left: 0px;" class="reset-link">Reset</a></li>
                 </ul>
               </div>
             </div>
@@ -51,13 +52,14 @@
                   <li class="custom-check" *ngFor="let color of colors;">
                     <label style="display: flex; width: 100%;">
                       <span [ngStyle]="{'background':color['colorCode']}"></span>
-                      <input type="radio" class="icheck colorcheck" name="colors" (change)="radioChange($event)" [value]="color['id']" style="display: none;"
-                        formControlName="colors" />
+                      <input type="radio" class="icheck colorcheck" name="colors" (change)="radioChange($event)"
+                        [value]="color['id']" style="display: none;" formControlName="colors" />
                       &nbsp;&nbsp;{{ color["colorName"] | uppercase }}&nbsp;<p
                         style="padding-bottom:5px; font-size: 11px;">({{ color["totalPrd"] }})</p>
                     </label>
                   </li>
-                  <li><a (click)="resetFormControl('colors')" title="Reset" style="padding-left: 0px;" class="reset-link">Reset</a></li>
+                  <li><a (click)="resetFormControl('colors')" title="Reset" style="padding-left: 0px;"
+                      class="reset-link">Reset</a></li>
                 </ul>
               </div>
             </div>
@@ -98,7 +100,8 @@
                       <span>({{ size["totalPrd"] }})</span>
                     </label>
                   </li>
-                  <li><a (click)="resetFormControl('sizes')" title="Reset" style="padding-left: 0px;" class="reset-link">Reset</a></li>
+                  <li><a (click)="resetFormControl('sizes')" title="Reset" style="padding-left: 0px;"
+                      class="reset-link">Reset</a></li>
                 </ul>
               </div>
             </div>
@@ -134,7 +137,11 @@
                 <div class="thumb-outer">
                   <a href="#" title="thumb" class="thumb-image"><img style="height: 328px" src="{{ imageURL }}/product/{{
                         (product.productImages | strtoarray: ',')[0]
-                      }}" alt="thumb" /></a>
+                      }}" alt="thumb" *ngIf="(product.productImages | strtoarray: ',')[0] != ''; else noimage" />
+                      <ng-template #noimage>
+                        <img [src]="noImageURL" style="height: 328px" alt="no image available">
+                      </ng-template>
+                    </a>
                   <a title="Add to Cart" class="cart-button">Add to Cart</a>
                 </div>
                 <figcaption>
@@ -147,7 +154,9 @@
           </div>
           <ng-template #elseBlockPrd>
             <div class="grid row">
-              <div class="col-sm-12 col-xs-12"><h2 style="color: gray;">Record Not Found!!!</h2></div>
+              <div class="col-sm-12 col-xs-12">
+                <h2 style="color: gray;">Record Not Found!!!</h2>
+              </div>
             </div>
           </ng-template>
         </div>

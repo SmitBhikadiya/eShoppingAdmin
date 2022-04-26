@@ -28,6 +28,7 @@ export class ProductsComponent implements OnInit {
   sortby:string = 'latest';
   f_subcatIds:number[] = [];
   f_sizeIds:number[] = [];
+  noImageURL = environment.IMAGES_SERVER_URL+"/noimage.jpg";
   defaultLoadProduct:number = environment.DEFAULT_LOAD_PRODUCT;
 
   imageURL:string = environment.IMAGES_SERVER_URL;

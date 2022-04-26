@@ -36,52 +36,26 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-5">
-                <div class="product-imgs">
-                    <div class="img-display" id="slider">
-                        <div class="img-showcase" id="innerslider">
-                            <img *ngFor="let img of productImages" attr.data-fancybox-group="gallery" [src]="img" class="slide" alt="shoe image">
-                        </div>
-                    </div>
-                    <div class="img-select">
-                        <div class="img-item" *ngFor="let img of productImages; let i=index">
-                            <a attr.data-id="{{ i+1 }}">
-                                <img [src]="img" height="120px" alt="shoe image">
-                            </a>
-                        </div>
-                    </div>
+                <div class="wrapper1" style="overflow-x: hidden">
+                    <owl-carousel-o [options]="customOptions1" (changed)="getData($event, synk2)" #synk1>
+                        <ng-container *ngFor="let slide of productImages; let id_ = index">
+                            <ng-template class="slide" carouselSlide [id]="id_.toString()">
+                                <a [href]="slide" target="blank_"><img [src]="slide" height="500px" width="350px"
+                                        [alt]="id_" [title]="slide" /></a>
+                            </ng-template>
+                        </ng-container>
+                    </owl-carousel-o>
                 </div>
-                <!-- <ul [class]="'sync1'">
-                    <li *ngFor="let img of productImages">
-                        <a [class]="'fancybox'" [href]="img" attr.data-fancybox-group="gallery"
-                            title="img"><img [src]="img" alt="" /></a>
-                    </li>
-                </ul>
-                <ul [class]="'sync2'">
-                    <li *ngFor="let img of productImages">
-                        <img [src]="img" alt="" />
-                    </li>
-                </ul> -->
-                <!-- <ul class="sync1">
-                    <li>
-                        <a class="fancybox" href="../../../assets/images/new-thumb-01-big.jpg" data-fancybox-group="gallery" title=""><img src="../../../assets/images/new-thumb-01.jpg" alt="" /></a>
-                    </li>
-                    <li>
-                        <a class="fancybox" href="../../../assets/images/new-thumb-02-big.jpg" data-fancybox-group="gallery" title=""><img src="../../../assets/images/new-thumb-02.jpg" alt="" /></a>
-                    </li>
-                    <li>
-                        <a class="fancybox" href="../../../assets/images/new-thumb-03-big.jpg" data-fancybox-group="gallery" title=""><img src="../../../assets/images/new-thumb-03.jpg" alt="" /></a>
-                    </li>
-                    <li>
-                        <a class="fancybox" href="../../../assets/images/new-thumb-04-big.jpg" data-fancybox-group="gallery" title=""><img src="../../../assets/images/new-thumb-04.jpg" alt="" /></a>
-                    </li>
-                    
-                </ul>
-                <ul class="sync2">
-                    <li><img src="../../../assets/images/new-thumb-01.jpg" alt=""> </li>
-                    <li><img src="../../../assets/images/new-thumb-02.jpg" alt=""></li>
-                    <li><img src="../../../assets/images/new-thumb-03.jpg" alt=""></li>
-                    <li><img src="../../../assets/images/new-thumb-04.jpg" alt=""></li>
-                </ul> -->
+                <div class="wrapper2" style="overflow-x: hidden">
+                    <owl-carousel-o [options]="customOptions2" (changed)="getData($event, synk1)" #synk2>
+                        <ng-container *ngFor="let slide of productImages; let id_ = index">
+                            <ng-template class="slide" carouselSlide [id]="id_.toString()">
+                                <a target="blank_" style="cursor: pointer;" (click)="synk1.to(id_.toString())"><img [src]="slide" height="150px"
+                                        [alt]="id_" [title]="slide" /></a>
+                            </ng-template>
+                        </ng-container>
+                    </owl-carousel-o>
+                </div>
             </div>
             <div class="col-sm-7">
                 <div class="product-name">
