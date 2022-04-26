@@ -20,6 +20,7 @@ export class ProfileComponent implements OnInit {
   shipping!: any;
   tempShipping!: any;
   shipDisabled = false;
+  loaded!: Promise<Boolean>;
   message: { msg: string, isError: boolean, color: string, image: string } = { msg: '', isError: false, color: 'success', image: 'success.svg' };
   user!: IUser;
   bcities!: ICity[];
@@ -129,6 +130,7 @@ export class ProfileComponent implements OnInit {
       this.billing = res["result"].billing;
       this.shipping = res["result"].shipping;
       this.setDefaultResponce();
+      this.loaded = Promise.resolve(true);
     });
   }
 

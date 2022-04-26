@@ -103,6 +103,7 @@ export class RegisterComponent implements OnInit {
     $(".spanError").remove();
     $(".userError").remove();
     $(".emailError").remove();
+    $("#privacy").prop("checked",false);
     this.registerForm.reset();
   }
 

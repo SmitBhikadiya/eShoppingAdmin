@@ -53,7 +53,8 @@
             </a>
             <div class="collapse" id="collapseServiser" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
                 <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link sub_nav_link" href="customers.php">Customers</a>
+                    <a class="nav-link sub_nav_link" href="customers.php">All Users</a>
+                    <a class="nav-link sub_nav_link" href="user_address.php">User Address</a>
                 </nav>
             </div>
 

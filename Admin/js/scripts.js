@@ -25,65 +25,74 @@ $(document).keydown(function (event) {
   }
 });
 
-$(document).ready(function(){
-    setTimeout(function(){
-        $(".alert").remove();
-    }, 5000)
-});
+$(document).ready(function () {
 
-$(document).on("change", "#categtory", function(){
-  var id = $(this).val();
-  $.ajax({
+  setTimeout(function () {
+    $(".alert").remove();
+  }, 5000)
+
+  $(document).on("change", "#categtory", function () {
+    var id = $(this).val();
+    $.ajax({
       type: "POST",
       dataType: "json",
-      data: {categoryId: id},
-      url: './handler/requestHandler.php', 
-      success: function(res){
-          let options = '';
-          res.categories.forEach(cat => {
-              options+=`
-                  <option value='${cat["id"]}'>${cat["subCatName"]}</option>
-              `;
-          });
-          $("#subcategtory").html(options);
+      data: { categoryId: id },
+      url: './handler/requestHandler.php',
+      success: function (res) {
+        let options = '';
+        res.categories.forEach(cat => {
+          options += `
+                    <option value='${cat["id"]}'>${cat["subCatName"]}</option>
+                `;
+        });
+        $("#subcategtory").html(options);
       }
+    });
   });
-});
 
-$(document).ready(function(){
-  
-  $(document).on("click",".page-link", function(){
+  $(document).on("click", ".page-link", function () {
     var data = $(this).data("action");
     var totalrecords = +$("#totalrecords").text();
     var show = +$("#show-record").val();
     var search = $("#searchRec").parent().find("input").val();
     var page = 1;
-    if(data=="left"){
-      page = +$(".page-item.active").find(".page-link").text()-1;
-      if(page<=0){ page=1; return; }
-    }else if(data=="right"){
-      page = +$(".page-item.active").find(".page-link").text()+1;
-      if(page > Math.ceil(totalrecords/show)) { page=Math.ceil(totalrecords/show); return; }
-    }else{
+    if (data == "left") {
+      page = +$(".page-item.active").find(".page-link").text() - 1;
+      if (page <= 0) { page = 1; return; }
+    } else if (data == "right") {
+      page = +$(".page-item.active").find(".page-link").text() + 1;
+      if (page > Math.ceil(totalrecords / show)) { page = Math.ceil(totalrecords / show); return; }
+    } else {
       page = $(this).text();
     }
-    var url = document.URL.split("?")[0] +"?search="+search+"&page="+page+"&show="+show;
+    var url = document.URL.split("?")[0] + "?search=" + search + "&page=" + page + "&show=" + show;
     window.location.href = url;
   });
 
-  $(document).on("change","#show-record", function(){
+  $(document).on("change", "#show-record", function () {
     var page = 1;//$(".page-item.active").find(".page-link").text();
     var show = $(this).val();
+    var sortBy = $("#sortBy").val();
     var search = $("#searchRec").parent().find("input").val();
-    var url = document.URL.split("?")[0] +"?search="+search+"&page="+page+"&show="+show;
+    var url = document.URL.split("?")[0] + "?search=" + search + "&page=" + page + "&show=" + show+ "&sortBy=" + sortBy;
     window.location.href = url;
   });
 
-  $(document).on("click", "#searchRec", function(){
+  $(document).on("click", "#searchRec", function () {
     var search = $(this).parent().find("input").val();
     var page = $(".page-item.active").find(".page-link").text();
     var show = +$("#show-record").val();
-    var url = document.URL.split("?")[0] +"?search="+search+"&page="+page+"&show="+show;
+    var sortBy = $("#sortBy").val();
+    var url = document.URL.split("?")[0] + "?search=" + search + "&page=" + page + "&show=" + show+ "&sortBy=" + sortBy;
+    window.location.href = url;
+  });
+
+  $(document).on("change", "#sortBy", function(){
+    var sortBy = $(this).val();
+    var search = $("#searchRec").parent().find("input").val();
+    var page = $(".page-item.active").find(".page-link").text();
+    var show = +$("#show-record").val();
+    var url = document.URL.split("?")[0] + "?search=" + search + "&page=" + page + "&show=" + show+ "&sortBy=" + sortBy;
     window.location.href = url;
   });
 });

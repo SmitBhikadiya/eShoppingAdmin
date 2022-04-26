@@ -13,8 +13,14 @@ if (isset($_GET["page"])) {
 	$search = isset($_GET["search"]) ? $_GET["search"] : $search;
 }
 
-$totalRecords = $obj->TotalCustomers($search);
-$customers = $obj->getCustomers($search, (($currntPage - 1) * $showRecords), $showRecords);
+// for sorting
+$sortBy = "all";
+if(isset($_GET["sortBy"])){
+	$sortBy = $_GET["sortBy"];
+}
+
+$totalRecords = $obj->TotalUserAddress($search, $sortBy);
+$addresses = $obj->getUserAddress($search, (($currntPage - 1) * $showRecords), $showRecords, $sortBy);
 
 // for error or success message
 $msg = '';
@@ -56,10 +62,11 @@ if (isset($_SESSION["result"])) {
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid">
-					<h2 class="mt-30 page-title">Users</h2>
+					<h2 class="mt-30 page-title">User Address</h2>
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-						<li class="breadcrumb-item active">Users</li>
+						<li class="breadcrumb-item"><a href="customers.php">Users</a></li>
+						<li class="breadcrumb-item active">User Address</li>
 					</ol>
 
 					<?php
@@ -74,7 +81,13 @@ if (isset($_SESSION["result"])) {
 					?>
 
 					<nav class="navbar navbar-light bg-light justify-content-between">
-						<div></div>
+						<div>
+							<select name="sortBy" class="form-control" id="sortBy">
+								<option value="all" <?=($sortBy=="all")?"selected":""?>>All</option>
+								<option value="shipping" <?=($sortBy=="shipping")?"selected":""?>>Shipping</option>
+								<option value="billing" <?=($sortBy=="billing")?"selected":""?>>Billing</option>
+							</select>
+						</div>
 						<div class="form-inline">
 							<input class="form-control mr-sm-2" type="search" placeholder="Search By Name" aria-label="Search" value="<?= $search ?>">
 							<button class="status-btn hover-btn my-2 my-sm-0" id="searchRec" type="submit">Search</button>
@@ -85,7 +98,7 @@ if (isset($_SESSION["result"])) {
 						<div class="col-lg-12 col-md-12">
 							<div class="card card-static-2 mb-30">
 								<div class="card-title-2">
-									<h4><b>All Users</b></h4>
+									<h4><b>All Address</b></h4>
 								</div>
 								<div class="card-body-table px-3">
 									<div class="table-responsive">
@@ -94,27 +107,32 @@ if (isset($_SESSION["result"])) {
 												<tr>
 													<th style="width:60px">ID</th>
 													<th>UserName</th>
-													<th>Email</th>
-													<th>Created Date</th>
+													<th>AddressType</th>
+													<th>Street</th>
+													<th>Country</th>
+													<th>State</th>
+													<th>City</th>
 													<th>Modified Date</th>
 													<th>Action</th>
 												</tr>
 											</thead>
 											<tbody>
 												<?php
-												if (count($customers) > 0) {
+												if (count($addresses) > 0) {
 													$srno = 1;
-													foreach ($customers as $cust) {
+													foreach ($addresses as $add) {
 												?>
 														<tr>
-															<td><?= $cust["id"] ?></td>
-															<td><?= $cust["username"] ?></a></td>
-															<td><?= $cust["email"] ?></td>
-															<td><?= $cust["modifiedDate"] ?></td>
-															<td><?= $cust["createdDate"] ?></td>
+															<td><?= $add["id"] ?></td>
+															<td><?= $add["username"] ?></a></td>
+															<td><?= ($add["addressType"]==0)? "Billing" : "Shipping"?></td>
+															<td><?= $add["streetname"] ?></td>
+															<td><?= $add["country"] ?></td>
+															<td><?= $add["state"] ?></td>
+															<td><?= $add["city"] ?></td>
+															<td><?= $add["modifiedDate"] ?></td>
 															<td class="action-btns">
-																<a href="./view_customer.php?view=<?= $cust["id"] ?>" class="view-shop-btn" title="View"><i class="fas fa-eye"></i></a>
-																<a href="./handler/requestHandler.php?dCustomer=<?= $cust["id"] ?>" class="delete-btn deleteRow" title="Edit"><i class="fas fa-trash-alt"></i></a>
+																<a href="./handler/requestHandler.php?dUserAddress=<?= $add["id"] ?>" class="delete-btn deleteRow" title="Edit"><i class="fas fa-trash-alt"></i></a>
 															</td>
 														</tr>
 												<?php

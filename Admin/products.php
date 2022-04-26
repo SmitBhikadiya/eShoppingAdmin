@@ -5,7 +5,7 @@ $obj = new ProductHandler();
 
 // for pagination and searching
 $currntPage = 1;
-$showRecords = 5;
+$showRecords = 2;
 $search = '';
 if (isset($_GET["page"])) {
 	$currntPage = $_GET["page"];
@@ -107,13 +107,23 @@ if (isset($_SESSION["result"])) {
 												if (count($products) > 0) {
 													$srno = 1;
 													foreach ($products as $product) {
-														$images = explode(",", $product["productImages"]);
 												?>
 														<tr>
 															<td><?= $product["id"] ?></td>
 															<td>
 																<div class="cate-img-5">
-																	<img width="100" height="60" src="images/product/<?= $images[0] ?>" alt="">
+																	<?php
+																	if($product["productImages"]!=''){
+																		$images = explode(",", $product["productImages"]);
+																	?>
+																		<img width="100" height="60" src="images/product/<?= $images[0] ?>" alt="">
+																	<?php
+																	}else{
+																		?>
+																		<img width="100" height="60" style="border: 1px solid red;" title="Image not available" src="images/noimage.jpg" alt="">
+																		<?php
+																	}
+																	?>
 																</div>
 															</td>
 															<td><?= $product["productName"] ?></td>
@@ -139,7 +149,7 @@ if (isset($_SESSION["result"])) {
 												show&nbsp;
 												<select style="height: 35px; width:60px; border:1px solid #0056b3; color:#0056b3; border-radius:4px" name="" id="show-record">
 													<?php
-													foreach ([5, 10, 25, 50] as $rec) {
+													foreach ([2, 10, 25, 50] as $rec) {
 														$selected = '';
 														if ($rec == $showRecords) {
 															$selected = "selected";

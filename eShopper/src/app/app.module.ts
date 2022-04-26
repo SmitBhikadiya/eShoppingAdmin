@@ -19,6 +19,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { FilterStringPipe } from './pipes/filter-string.pipe';
 import { UserAuthService } from './services/user-auth.service';
+import { ErrorComponent } from './components/error/error.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { UserAuthService } from './services/user-auth.service';
     TitleCaptilizePipe,
     RegisterComponent,
     ProfileComponent,
-    FilterStringPipe
+    FilterStringPipe,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,

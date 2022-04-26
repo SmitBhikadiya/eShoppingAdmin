@@ -102,7 +102,7 @@ if (isset($_SESSION["result"])) {
 								<div class="card-body-table px-3">
 									<div class="news-content-right pd-20">
 										<form action="./handler/requestHandler.php" id="formAddNewProduct" method="POST" enctype="multipart/form-data">
-											<input type="hidden" name="productid" value="<?= isset($result) ? $result["id"] : '' ?>">
+											<input type="hidden" name="productid" id="prdid" value="<?= isset($result) ? $result["id"] : '' ?>">
 											<div class="form-group">
 												<label class="form-label">Name*</label>
 												<input type="text" name="name" class="form-control" id="pname" placeholder="Product Name" value="<?= (isset($result)) ? $result["productName"] : '' ?>" />
@@ -155,7 +155,7 @@ if (isset($_SESSION["result"])) {
 												<label class="form-label">Total Quantity*</label>
 												<input type="number" name="qty" class="form-control" id="pqty" placeholder="Product Availabel Quantity" value="<?= (isset($result)) ? $result["totalQuantity"] : '' ?>" />
 											</div>
-											
+
 											<div class="form-group">
 												<label class="form-label">SKU*</label>
 												<input type="text" name="sku" class="form-control" id="psku" placeholder="Enter SKU" value="<?= (isset($result)) ? $result["SKU"] : '' ?>" />
@@ -202,9 +202,9 @@ if (isset($_SESSION["result"])) {
 
 											<div class="form-check form-check-inline my-3">
 												<?php
-													$check = (isset($result)) ? (($result['isTrending']==0) ? '' : 'checked')  : '';
+												$check = (isset($result)) ? (($result['isTrending'] == 0) ? '' : 'checked')  : '';
 												?>
-												<input class="form-check-input" type="checkbox" name="trending" id="ptrending" <?=$check?>>
+												<input class="form-check-input" type="checkbox" name="trending" id="ptrending" <?= $check ?>>
 												<label class="form-check-label" for="ptrending">
 													set as trending
 												</label>
@@ -214,20 +214,31 @@ if (isset($_SESSION["result"])) {
 												<label class="form-label">Profile Image*</label>
 												<div class="input-group">
 													<div class="custom-file">
-														<input type="hidden" name="oldimages" value="<?= isset($result) ? $result["productImages"] : "" ?>">
+														<input type="hidden" name="oldimages" id="oldimages" value="<?= isset($result) ? $result["productImages"] : "" ?>">
 														<input type="file" class="custom-file-input" name="file[]" id="pimages" accept=".jpg, .jpeg, .png" aria-describedby="inputGroupFileAddon04" data-action="<?= $btn ?>" multiple>
-														<label class="custom-file-label" for="pimages">Choose Image</label>
+														<label class="custom-file-label" for="pimages">Add Images</label>
 													</div>
 												</div>
 												<ul class="add-produc-imgs">
 													<?php
 													if (isset($result)) {
-														$images = explode(",", $result["productImages"]);
-														foreach ($images as $image) {
+														if ($result["productImages"] != '') {
+															$images = explode(",", $result["productImages"]);
+															foreach ($images as $image) {
 													?>
-															<li>
+																<li>
+																	<div class="add-cate-img-1">
+																		<img width='70' height='70' style="margin-bottom: 9px;" src="./images/product/<?= $image ?>" alt="" />
+																		<a href='./handler/requestHandler.php/?dImage=<?= $image ?>&prdId=<?= $result["id"] ?>' style="cursor: pointer;" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
+																	</div>
+																</li>
+															<?php
+															}
+														} else {
+															?>
+															<li class="errorImg">
 																<div class="add-cate-img-1">
-																	<img width='70' height='70' src="./images/product/<?= $image ?>" alt="" />
+																	<img width='70' height='70' style="border: 1px solid red;" src="./images/noimage.jpg" title="No image availabel!!" />
 																</div>
 															</li>
 													<?php
@@ -236,30 +247,9 @@ if (isset($_SESSION["result"])) {
 													?>
 												</ul>
 											</div>
-
-											<!-- <div class="form-group">
-												<label class="form-label">Product Images*</label>
-												<input type="hidden" name="oldimages" value="<?= isset($result) ? $result["productImages"] : "" ?>">
-												<input type="file" class="form-control" name="file[]" accept=".jpg, .jpeg, .png" id="pimages" data-action="<?= $btn ?>" multiple />
-												<ul class="add-produc-imgs">
-													<?php
-													if (isset($result)) {
-														$images = explode(",", $result["productImages"]);
-														foreach ($images as $image) {
-													?>
-															<li>
-																<div class="add-cate-img-1">
-																	<img width='70' height='70' src="./images/product/<?= $image ?>" alt="" />
-																</div>
-															</li>
-													<?php
-														}
-													}
-													?>
-												</ul>
-											</div> -->
+											<div class="formtype" style="display: none;"><?= $btn ?></div>
 											<button class="save-btn hover-btn" type="submit" name="<?= $btn ?>Product" value="<?= $btn ?>Product">
-												<?= $btn ?> New Product
+												<?= $btn ?> Product
 											</button>
 										</form>
 									</div>
@@ -318,19 +308,56 @@ if (isset($_SESSION["result"])) {
 				files_ = $(this).get(0).files;
 				var html = '';
 				var relPath = '';
+				let action = $("#pimages").data("action");
+				let prdid = $("#prdid").val();
 				if (files_.length === 0) {
 					html += ``;
 				}
 				for (i = 0; i < files_.length; i++) {
+					$(".errorImg").remove();
 					relPath = (URL || webkitURL).createObjectURL(files_[i]);
-					html += `<li>
-						<div class="add-cate-img-1">
-							<img width='70' height='70' src="${relPath}" alt="" />
-						</div>
-					</li>`;
+					if (action == "Edit" && files_.length > 0) {
+						uploadImage(files_[i], prdid);
+					} else {
+						html += `<li>
+							<div class="add-cate-img-1">
+								<img width='70' height='70' style='margin-bottom:9px' src="${relPath}" alt="" />
+								<a href="#" style="cursor: pointer;" class="edit-btn deleteRow"><i class="fas"></i></a>
+							</div>
+						</li>`;
+					}
 				}
-				$(".add-produc-imgs").html(html);
+				$(".add-produc-imgs").append(html);
 			});
+
+			function uploadImage(file, prdid) {
+				let data = new FormData();
+				data.append("file", file);
+				data.append("prdid", prdid);
+				$.ajax({
+					url: "./handler/requestHandler.php",
+					type: "POST",
+					data: data,
+					enctype: 'multipart/form-data',
+					processData: false, // tell jQuery not to process the data
+					contentType: false, // tell jQuery not to set contentType
+					success: function(res) {
+						var data = JSON.parse(res);
+						let html = ``;
+						if (data.error == '') {
+							html += `
+								<li>
+									<div class="add-cate-img-1">
+										<img width='70' height='70' style="margin-bottom: 9px;" src="./images/product/${data.image}" alt="" />
+										<a href='./handler/requestHandler.php/?dImage=${data.image}&prdId=${data.prdid}' style="cursor: pointer;" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
+									</div>
+								</li>
+							`;
+						}
+						$(".add-produc-imgs").append(html);
+					}
+				});
+			}
 		});
 	</script>
 </body>

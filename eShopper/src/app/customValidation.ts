@@ -4,14 +4,14 @@ export class CustomValidation {
   isFieldChecked(id: string) {
     let is = $(id).is(":checked");
     if (!is) {
-      $(id).parent().after("<span class='spanError'>* Privacy and policy must be selected!!</span>");
+      $(id).parent().after("<span class='spanError'>*Privacy and policy must be selected!!</span>");
     }
   }
 
   isNumberValid(id: string, reg: RegExp, range: string) {
     let value = $(id).val();
     if (value.length == 0) {
-      $(id).after("<span class='spanError'>* field can't be empty!!</span>");
+      $(id).after("<span class='spanError'>*Field can't be empty!!</span>");
     } else if (!reg.test(value)) {
       $(id).after("<span class='spanError'>*Mobile must be " + range + " charcters long</span>");
     }
@@ -20,7 +20,7 @@ export class CustomValidation {
   isFieldEmpty(id: string) {
     let value = $(id).val();
     if (value.length == 0) {
-      $(id).after("<span class='spanError'>* field can't be empty!!</span>");
+      $(id).after("<span class='spanError'>*Field can't be empty!!</span>");
     }
   }
 
@@ -28,7 +28,7 @@ export class CustomValidation {
     var reg = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&])[a-zA-Z\d@$!%*#?&]{6,14}$/;
     let value = $(id).val();
     if (value.length == 0) {
-      $(id).after("<span class='spanError'>* field can't be empty!!</span>");
+      $(id).after("<span class='spanError'>*Field can't be empty!!</span>");
     } else if (!reg.test(value)) {
       $(id).after("<span class='spanError'>*At least one uppercase, lowercase, special char, numbers and 6 to 14 characters longer</span>");
     }
@@ -37,14 +37,14 @@ export class CustomValidation {
   isRadioSelected(id: string, name: string) {
     var gender = document.querySelectorAll("input[name=" + name + "]:checked");
     if (!gender.length) {
-      $(id).after("<span class='spanError'>* please select a gender!!</span>");
+      $(id).after("<span class='spanError'>*Please select a gender!!</span>");
     }
   }
 
   isFieldSelected(id:string, fieldName:string){
     var value = $(id).val();
     if(value==0 || value==undefined || value==''){
-      $(id).after("<span class='spanError'>*"+fieldName+" must be selected!!</span>");
+      $(id).after("<span class='spanError'>*"+fieldName.toUpperCase()+" must be selected!!</span>");
     }
   }
 
@@ -52,7 +52,7 @@ export class CustomValidation {
     var reg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
     let value = $(id).val();
     if (value.length == 0) {
-      $(id).after("<span class='spanError'>* field can't be empty!!</span>");
+      $(id).after("<span class='spanError'>*Field can't be empty!!</span>");
     } else if (!reg.test(value)) {
       $(id).after("<span class='spanError'>*Enter a valid email!!</span>");
     }

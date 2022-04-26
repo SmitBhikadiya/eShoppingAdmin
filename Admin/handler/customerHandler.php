@@ -15,6 +15,26 @@ class CustomerHandler extends DBConnection
         return 0;
     }
 
+    function TotalUserAddress($search = '', $sortBy="all")
+    {
+        $sort = '(0,1)';
+        switch($sortBy){
+            case "billing":
+                $sort = '(0)';
+                break;
+            case "shipping":
+                $sort = '(1)';
+                break;
+        }
+        $search_ = ($search == '') ? 1 : "users.username LIKE '%" . $search . "%'";
+        $sql = "SELECT COUNT(*) AS total FROM useraddress JOIN users ON users.id=useraddress.userId JOIN cities ON cities.id=useraddress.cityId JOIN countries ON countries.id=useraddress.countryId JOIN states ON states.id=useraddress.stateId WHERE $search_ AND useraddress.addressType IN $sort AND useraddress.status=0 ORDER BY useraddress.id DESC";
+        $result = $this->getConnection()->query($sql);
+        if ($result && $result->num_rows > 0) {
+            return $result->fetch_assoc()["total"];
+        }
+        return 0;
+    }
+
     function userLogin($username, $password){
         $sql = "SELECT * FROM users WHERE username='$username' AND status=0";
         $result = $this->getConnection()->query($sql);
@@ -104,6 +124,31 @@ class CustomerHandler extends DBConnection
         return $records;
     }
 
+    function getUserAddress($search, $page, $show, $sortBy="all")
+    {
+        $sort = '(0,1)';
+        switch($sortBy){
+            case "billing":
+                $sort = '(0)';
+                break;
+            case "shipping":
+                $sort = '(1)';
+                break;
+        }
+        $search_ = ($search == '') ? 1 : "users.username LIKE '%" . $search . "%'";
+        $sql = "SELECT useraddress.*, users.username, cities.city, states.state, countries.country FROM useraddress JOIN users ON users.id=useraddress.userId JOIN cities ON cities.id=useraddress.cityId JOIN countries ON countries.id=useraddress.countryId JOIN states ON states.id=useraddress.stateId WHERE $search_ AND useraddress.addressType IN $sort AND useraddress.status=0 ORDER BY useraddress.id DESC LIMIT $page, $show";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
     function getCustomerById($id)
     {
         $records = [];
@@ -122,6 +167,15 @@ class CustomerHandler extends DBConnection
     function deleteCustomer($id)
     {
         $sql = "UPDATE users SET status=1, modifiedDate=now() WHERE id=$id";
+        $result = $this->getConnection()->query($sql);
+        if ($result) {
+            return true;
+        }
+        return false;
+    }
+
+    function deleteUserAddress($id){
+        $sql = "UPDATE useraddress SET status=1, modifiedDate=now() WHERE id=$id";
         $result = $this->getConnection()->query($sql);
         if ($result) {
             return true;

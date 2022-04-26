@@ -546,7 +546,7 @@ class ProductHandler extends DBConnection
     {
         $name = mysqli_real_escape_string($this->getConnection(), $name);
         $desc = mysqli_real_escape_string($this->getConnection(), $desc);
-        $images = implode(',', $imagesArr);
+        $images = trim(implode(',', $imagesArr), ",");
         $colorIds = implode(',', $colorsArr);
         $sizeIds = implode(',', $sizesArr);
         $error = "";
@@ -555,6 +555,16 @@ class ProductHandler extends DBConnection
         $result = $this->getConnection()->query($sql);
         if (!$result) {
             $error = "Somthing went wrong with the $sql";
+        }
+        return $error;
+    }
+
+    function updateProductImages($prdid, $images){
+        $error = "";
+        $sql = "UPDATE products SET productImages='$images', modifiedDate=now() WHERE id=$prdid";
+        $result = $this->getConnection()->query($sql);
+        if (!$result) {
+            $error = "Somthing went wrong with the sql";
         }
         return $error;
     }

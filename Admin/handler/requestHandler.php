@@ -16,6 +16,26 @@ $orderH = new OrderHandler();
 $error = '';
 $success = '';
 
+if(isset($_FILES["file"]["name"]) && isset($_POST["prdid"])){
+    // upload files to local directory
+    $prdid = (int) $_POST["prdid"];
+    $targetDir = "../images/product/";
+    $files = $_FILES["file"];
+    $image = "product_" . time() . rand(0, 1000) . '.png';
+    $target = $targetDir . $image;
+    $error = '';
+    if (move_uploaded_file($files["tmp_name"], $target)) {
+        $product = $productH->getProductById($prdid);
+        $images = explode(",",$product["productImages"]);
+        array_push($images, $image);
+        $images = trim(implode(",", $images), ",");
+        $error = $productH->updateProductImages($prdid, $images);
+    }else{
+        $error = "Error while file is uploading!!";
+    }
+    echo json_encode(["error"=>$error, "image"=>$image, "prdid"=>$prdid]);
+    exit();
+}
 
 /*------------- Admin Signin -------------*/
 if (isset($_POST["signin"])) {
@@ -54,6 +74,17 @@ if (isset($_GET["dCustomer"])) {
         $_SESSION["result"] = ["msg" => "Somthing went wrong!!!", "error" => true];
     }
     header("Location: ../customers.php");
+}
+
+/*------------- Delete Customer Address -------------*/
+if (isset($_GET["dUserAddress"])) {
+    $id = (int) $_GET["dUserAddress"];
+    if ($customerH->deleteUserAddress($id)) {
+        $_SESSION["result"] = ["msg" => "Deleted Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => "Somthing went wrong!!!", "error" => true];
+    }
+    header("Location: ../user_address.php");
 }
 
 /*------------- Add Product -------------*/
@@ -136,9 +167,6 @@ if (isset($_POST["EditProduct"])) {
 
     // remove oldimages if new images are selected
     if ($files["name"][0] != "") {
-        foreach (explode(",", $oldfiles) as $image) {
-            unlink($targetDir . $image);
-        }
         // upload files to local directory
         for ($i = 0; $i < count($files["name"]); $i++) {
             $imgname = "product_" . time() . rand(0, 1000) . '.png';
@@ -147,6 +175,7 @@ if (isset($_POST["EditProduct"])) {
                 array_push($images, $imgname);
             }
         }
+        $images = array_merge($images, explode(",", $oldfiles));
     } else {
         $images = explode(",", $oldfiles);
     }
@@ -231,7 +260,7 @@ if (isset($_POST["AddCategory"])) {
     } else {
         $_SESSION["result"] = ["msg" => $error, "error" => true];
     }
-    header("Location: ../add_category.php");
+    header("Location: ../category.php");
 }
 
 /*------------- Add Sub Category -------------*/
@@ -245,7 +274,7 @@ if (isset($_POST["AddSubCategory"])) {
     } else {
         $_SESSION["result"] = ["msg" => $error, "error" => true];
     }
-    header("Location: ../add_sub_category.php");
+    header("Location: ../sub_category.php");
 }
 
 /*------------- Update Category -------------*/
@@ -316,7 +345,7 @@ if (isset($_POST["AddCity"])) {
     } else {
         $_SESSION["result"] = ["msg" => $error, "error" => true];
     }
-    header("Location: ../add_city.php");
+    header("Location: ../cities.php");
 }
 
 /*------------- Add State -------------*/
@@ -329,7 +358,7 @@ if (isset($_POST["AddState"])) {
     } else {
         $_SESSION["result"] = ["msg" => $error, "error" => true];
     }
-    header("Location: ../add_state.php");
+    header("Location: ../states.php");
 }
 
 /*------------- Add Country -------------*/
@@ -341,7 +370,7 @@ if (isset($_POST["AddCountry"])) {
     } else {
         $_SESSION["result"] = ["msg" => $error, "error" => true];
     }
-    header("Location: ../add_country.php");
+    header("Location: ../countries.php");
 }
 
 /*------------- Update City -------------*/
@@ -423,4 +452,23 @@ if (isset($_GET["dCountry"])) {
 if (isset($_POST["countryid"])) {
     $records = $addressH->getStatesByCountryId($_POST["countryid"]);
     echo json_encode(["states" => $records]);
+}
+
+/*----------- Delete Image -------------*/
+if(isset($_GET["dImage"]) && isset($_GET["prdId"])){
+    $image = $_GET["dImage"];
+    $prdid = $_GET["prdId"];
+    $targetDir = "../images/product/";
+    $product = $productH->getProductById($prdid);
+    $images = explode(",",$product["productImages"]);
+    $images = array_diff($images, [$image]);
+    $images = implode(",", $images);
+    $error = $productH->updateProductImages($prdid, $images);
+    if($error==''){
+        unlink($targetDir . $image);
+        $_SESSION["result"] = ["msg" => "Deleted Successfully", "error" => false];
+    }else{
+        $_SESSION["result"] = ["msg" => "Somthing went wrong!!!", "error" => true];
+    }
+    header("Location: ../../add_product.php?edit=$prdid"); 
 }

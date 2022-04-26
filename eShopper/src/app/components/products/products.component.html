@@ -50,7 +50,7 @@
                 <ul class="colour_family_list">
                   <li class="custom-check" *ngFor="let color of colors;">
                     <label style="display: flex; width: 100%;">
-                      <span class="{{ color['colorName'] }}-color"></span>
+                      <span [ngStyle]="{'background':color['colorCode']}"></span>
                       <input type="radio" class="icheck colorcheck" name="colors" (change)="radioChange($event)" [value]="color['id']" style="display: none;"
                         formControlName="colors" />
                       &nbsp;&nbsp;{{ color["colorName"] | uppercase }}&nbsp;<p

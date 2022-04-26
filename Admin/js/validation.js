@@ -128,7 +128,7 @@ $(document).ready(function(){
 
     function isMulOptionSelected(id){
         if($(id).val().length===0){
-            $(id).after("<span class='error'>*must select one or more color from list</span>");
+            $(id).after("<span class='error'>*Must select one or more color from list</span>");
             window.isValid = false;
             return;
         }
@@ -136,14 +136,22 @@ $(document).ready(function(){
 
     function isImagesSelected(id, format, action){
         files_ = $(id).get(0).files;
+        if(action=="Edit"){
+            let oldimages = $("#oldimages").val();
+            if(files_.length===0 && (oldimages=='' || oldimages==undefined || oldimages==null)){
+                $(id).parent().parent().after("<span class='error'>*Add at-least one image</span>");
+                window.isValid = false;
+                return;
+            }
+        }
         if(files_.length===0 && action!="Edit"){
-            $(id).after("<span class='error'>*Please select product image</span>");
+            $(id).parent().parent().after("<span class='error'>*Please select product image</span>");
             window.isValid = false;
             return;
         }
         for(i=0;i<files_.length;i++){
             if(format.indexOf(files_[i].type.split('/')[1]) === -1){
-                $(id).after("<span class='error'>*Only png, jpeg and jpg format are allowed</span>");
+                $(id).parent().parent().after("<span class='error'>*Only png, jpeg and jpg format are allowed</span>");
                 window.isValid = false;
                 return;
             }

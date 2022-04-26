@@ -1,12 +1,11 @@
 $(document).on("change", ".price-slider", function(){
     sliderChange();
 })
-$(document).on("change", "input[type=range]", function(){
+$(document).on("mouseover", "input[type=range]", function(){
     sliderChange();
 })
 
 function sliderChange() {
-    //alert();
   var parent = document.querySelector(".price-slider");
   if (!parent) return;
 

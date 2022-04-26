@@ -30,7 +30,7 @@
                         <span>{{ message.msg }}</span>
                     </div>
                 </div>
-                <form class="form-block" id="profileform" [formGroup]="profileForm" (ngSubmit)="profileUpdate()">
+                <form class="form-block" id="profileform" *ngIf="loaded | async" [formGroup]="profileForm" (ngSubmit)="profileUpdate()">
                     <div class="profileDiv">
                         <div class="row">
                             <div class="col-sm-6">
@@ -147,7 +147,7 @@
                         <div class="col-sm-6">
                             <div class="billing-address-block" formGroupName="billing">
                                 <div class="form-group">
-                                    <a class="btn-tertiary" data-toggle="collapse" data-target=".billing-form">Edit
+                                    <a class="btn-tertiary" style="cursor: pointer;" data-toggle="collapse" data-target=".billing-form">Edit
                                         Billing Address</a>
                                 </div>
 
@@ -201,7 +201,7 @@
                         <div class="col-sm-6">
                             <div class="shipping-address-block" formGroupName="shipping">
                                 <div class="form-group">
-                                    <a class="btn-tertiary" data-toggle="collapse" data-target=".shipping-form">Edit
+                                    <a class="btn-tertiary" style="cursor: pointer;" data-toggle="collapse" data-target=".shipping-form">Edit
                                         Shipping Address</a>&nbsp;
                                     <label class="billing-label"><input type="checkbox" id="sameasbilling"
                                             (change)="sameasbilling($event)" class="icheck">&nbsp;Same as Billing
