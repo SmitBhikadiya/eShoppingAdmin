@@ -28,14 +28,16 @@ export class ProductDetailesComponent implements OnInit {
   limit: number = 10; // <==== Edit this number to limit API results
   
   customOptions1: OwlOptions = {
-    loop: false,
+    loop: true,
+    center:true,
     mouseDrag: true,
     touchDrag: true,
     pullDrag: true,
-    dots: true,
     navSpeed: 700,
-    dotsData:true,
+    dots: false,
+    dotsData:false,
     navText: [ '', '' ],
+    nav: false,
     responsive: {
       0: {
         items: 1
@@ -49,18 +51,19 @@ export class ProductDetailesComponent implements OnInit {
       940: {
         items: 1
       }
-    },
-    nav: true,
+    }
   }
   customOptions2: OwlOptions = {
-    loop: false,
-    center:false,
+    loop: true,
+    center:true,
     mouseDrag: true,
     touchDrag: true,
     pullDrag: true,
+    autoWidth:true,
     navSpeed: 700,
-    dots:true,
-    dotsData:true,
+    dots:false,
+    dotsData:false,
+    nav: true,
     navText: [ '<i class="fa fa-caret-left"></i>', '<i class="fa fa-caret-right"></i>' ],
     responsive: {
       0: {
@@ -76,7 +79,6 @@ export class ProductDetailesComponent implements OnInit {
         items: 4
       }
     },
-    nav: true,
   }
 
   constructor(private productService:ProductService, private router:Router, private route:ActivatedRoute) { 

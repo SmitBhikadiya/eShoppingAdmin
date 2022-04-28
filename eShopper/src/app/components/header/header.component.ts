@@ -14,7 +14,7 @@ export class HeaderComponent implements OnInit {
   categories!:ICategory[];
   subcategories!:ISubCategory[];
   error!:string;
-  username:string | null = '';
+  username:any = '';
   isLoggin:boolean = false;
 
   constructor(private catService:CategoryService, private userAuth:UserAuthService) { 
@@ -23,11 +23,12 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.getCategory();
-    this.username = this.userAuth.getToken();
+    const token = JSON.parse(this.userAuth.getToken());
+    this.username = token.user.username;
   }
 
   userLogout(){
-    this.userAuth.deleteToken();
+    this.userAuth.logout();
   }
 
   getCategory(){

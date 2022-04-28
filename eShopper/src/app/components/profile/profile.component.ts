@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CustomValidation } from 'src/app/customValidation';
 import { ICity } from 'src/app/interfaces/city';
 import { ICountry } from 'src/app/interfaces/country';
@@ -30,7 +31,7 @@ export class ProfileComponent implements OnInit {
   countries!: ICountry[];
   profileForm!: FormGroup;
   validator = new CustomValidation();
-  constructor(private userAuth: UserAuthService, private builder: FormBuilder, private addressService: AddressService) { }
+  constructor(private userAuth: UserAuthService, private router:Router, private builder: FormBuilder, private addressService: AddressService) {}
 
   ngOnInit(): void {
     this.profileForm = this.builder.group({
@@ -84,6 +85,7 @@ export class ProfileComponent implements OnInit {
           this.message.isError = false;
           this.message.color = 'success';
           this.message.image = 'success.svg';
+          this.updateUserToken(res["result"]);
         } else {
           this.message.msg = res["error"];
           this.message.isError = true;
@@ -95,6 +97,21 @@ export class ProfileComponent implements OnInit {
         }, 5000)
       });
     }
+  }
+
+  updateUserToken(userdetailes:any){
+    let token = JSON.parse(this.userAuth.getToken());
+    let userToken = token.user;
+    let user = userdetailes["user"];
+    userToken.username = user["username"];
+    userToken.gender = user["gender"];
+    userToken.email = user["email"];
+    userToken.firstname = user["firstname"];
+    userToken.lastname = user["lastname"];
+    userToken.mobile = user["mobile"];
+    userToken.phone = user["phone"];
+    token.user = userToken;
+    this.userAuth.setToken(JSON.stringify(token));
   }
 
   sameasbilling(e: any) {
@@ -124,7 +141,8 @@ export class ProfileComponent implements OnInit {
   }
 
   getUserDetailes() {
-    this.userAuth.getUserDetailesByUsername(this.userAuth.getToken()).subscribe((res) => {
+    const token = JSON.parse(this.userAuth.getToken());
+    this.userAuth.getUserDetailesByUsername(token.user.username).subscribe((res) => {
       console.log(res["result"]);
       this.user = res["result"].user;
       this.billing = res["result"].billing;

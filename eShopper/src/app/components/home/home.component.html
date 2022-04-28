@@ -61,7 +61,13 @@
                                 <div class="thumb-outer">
                                     <a href="#" title="{{ product.productName }}" class="thumb-image">
                                         <img style="height: 328px;" src="{{ imageURL }}/product/{{(product.productImages | strtoarray: ',')[0]}}"
-                                            alt="thumb" />
+                                            alt="thumb" *ngIf="
+                                            (product.productImages | strtoarray: ',')[0] != '';
+                                            else noimage
+                                          " />
+                                        <ng-template #noimage>
+                                          <img [src]="noImageURL" style="height: 328px" alt="no image available" />
+                                        </ng-template>
                                     </a>
                                     <a href="cart.html" title="Add to Cart" class="cart-button">Add to Cart</a>
                                 </div>

@@ -126,3 +126,7 @@
   .custom-check label.active{
     color: #ea4748;
   }
+
+  .reset-link{
+    cursor: pointer;
+  }

@@ -146,7 +146,11 @@ class ProductHandler extends DBConnection
                 $sortby_ = 'products.id';
         }
 
-        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND $colorid_ AND $subcatids_ AND products.isTrending IN $trending_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND products.status=0 AND category.status=0 ORDER BY $sortby_ DESC LIMIT $page, $show";
+        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId 
+        WHERE $search_ AND $colorid_ AND $subcatids_ AND products.isTrending IN $trending_ AND 
+        (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND products.status=0 AND
+         category.status=0 ORDER BY $sortby_ DESC LIMIT $page, $show";
+
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {

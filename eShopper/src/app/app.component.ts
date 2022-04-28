@@ -23,13 +23,7 @@ export class AppComponent implements OnInit {
   message: {msg:string, isError:boolean, color:string, image:string} = {msg:'', isError:false, color:'success', image:'success.svg'};
   validator = new CustomValidation();
 
-  constructor(private userAuth:UserAuthService, private router:Router, private builder:FormBuilder){
-    router.events.subscribe((ev)=>{
-      if(ev instanceof NavigationEnd){
-        // when navigation changed
-      }
-    })
-  }
+  constructor(private userAuth:UserAuthService, private router:Router, private builder:FormBuilder){}
   
   ngOnInit() {
     this.loginForm = this.builder.group({
@@ -44,15 +38,17 @@ export class AppComponent implements OnInit {
     formData.append('password',this.loginForm.get('password')?.value);
     if(this.formValidate()){
       this.userAuth.userLogin(formData).subscribe(res=>{
-        if(res.length!=0){
+        const isLogin = this.userAuth.isLoggedIn();
+        if(isLogin){
+          let token = JSON.parse(this.userAuth.getToken());
           document.getElementById("Login-popup")?.click();
           this.headerCMP.isLoggin = true;
-          this.headerCMP.username = res[0]["username"];
+          this.headerCMP.username = token.user.username;
           if(this.router.url.includes('/register')){
             this.router.navigate(['/']);
           }
         }else{
-          this.message.msg = "Invalid username or password!!!";
+          this.message.msg = "Username or password are invalid!!";
           this.message.isError = true;
           this.message.color = 'danger';
           this.message.image = 'error.svg';

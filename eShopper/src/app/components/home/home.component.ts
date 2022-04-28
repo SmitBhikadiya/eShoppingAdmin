@@ -14,6 +14,7 @@ export class HomeComponent implements OnInit {
   error:string = '';
   imageURL = environment.IMAGES_SERVER_URL;
   defaultLoadProduct = environment.DEFAULT_LOAD_PRODUCT;
+  noImageURL = environment.IMAGES_SERVER_URL+"/noimage.jpg";
 
   constructor(private productService:ProductService) { }
 

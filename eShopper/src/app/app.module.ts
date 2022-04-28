@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddressService } from './services/address.service';
 import { CategoryService } from './services/category.service';
@@ -23,6 +23,8 @@ import { ErrorComponent } from './components/error/error.component';
 
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AuthGuard } from './guards/auth.guard';
+import { AuthInterceptorService } from './services/auth-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AddressService,
     CategoryService,
     ProductService,
-    UserAuthService
+    UserAuthService,
+    AuthGuard,
+    {
+      provide: [HTTP_INTERCEPTORS],
+      useClass: AuthInterceptorService,
+      multi: true
+    },
   ],
   bootstrap: [AppComponent]
 })

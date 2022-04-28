@@ -69,6 +69,11 @@ export class ProductsComponent implements OnInit {
       this.render.removeClass(label, 'active');
     });
     this.render.addClass(e.target.parentNode, 'active');
+    this.getProductsBy();
+  }
+
+  priceChange(){
+    this.getProductsBy();
   }
 
   onCheckboxChange(e:any, controlname:string){
@@ -92,15 +97,11 @@ export class ProductsComponent implements OnInit {
         this.filterForm.controls["sizes"].setValue(this.f_sizeIds);
         break;
     }
-    this.filterUpdate();
+    this.getProductsBy();
   }
 
   sortProduct(sortby:string){
     this.sortby = sortby;
-    this.ngOnInit();
-  }
-
-  filterUpdate(){
     this.getProductsBy();
   }
 
@@ -142,7 +143,6 @@ export class ProductsComponent implements OnInit {
     if(cat==null){
       this.productService.getProducts(load, formvalues, this.sortby).subscribe((res)=>{
         this.products = res["result"];
-        console.log(this.products);
       }, (err)=>{
         this.error=err;
       });
