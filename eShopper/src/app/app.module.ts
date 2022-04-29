@@ -57,9 +57,7 @@ import { AuthInterceptorService } from './services/auth-interceptor.service';
     UserAuthService,
     AuthGuard,
     {
-      provide: [HTTP_INTERCEPTORS],
-      useClass: AuthInterceptorService,
-      multi: true
+      provide: HTTP_INTERCEPTORS,useClass: AuthInterceptorService, multi: true 
     },
   ],
   bootstrap: [AppComponent]

@@ -1,13 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { HeaderComponent } from '../components/header/header.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserAuthService {
-  logincred!:any;
+  logincred!: any;
   constructor(private http: HttpClient) { }
 
   userLogin(loginCred: any) {
@@ -15,7 +16,7 @@ export class UserAuthService {
       .pipe(map(res => {
         this.setToken(JSON.stringify(res));
         this.logincred = loginCred;
-        //this.refreshTokenTimer();
+        this.refreshTokenTimer();
         return res;
       }));
   }
@@ -27,58 +28,102 @@ export class UserAuthService {
       }));
   }
 
-  // refreshToken(){
-  //   return this.http.post(`${environment.API_SERVER_URL}/auth.php`, {'refreshToken':'refreshToken'}, {headers: new HttpHeaders({'Content-Type': 'application/json'})}).
-  //   pipe(map((res)=>{
-  //     this.userLogin(this.logincred).subscribe();
-  //     if(res!=null){
-  //       this.setRefreshToken(JSON.stringify(res));
-  //     }
-  //     this.refreshTokenTimer();
-  //     console.log(res);
-  //     return res;
-  //   }));
-  // }
+  refreshToken() {
+    let refreshToken_ = this.getRefreshToken();
+    let header_ = {'Content-Type': 'application/json'};
+    //console.log("FromRefreshToken Method "+refreshToken_);
+    return this.http.post<any>(`${environment.API_SERVER_URL}/refreshToken.php`, {'refreshToken': refreshToken_},{ headers : header_}).
+      pipe(map((res: any) => {
+        this.setAccessToken(res["result"]);
+        this.setTokenExpiry(res["expiry"]);
+        this.refreshTokenTimer();
+        console.log("Refresh Res " + res["result"]);
+        return res["result"];
+      }));
+  }
 
-  // setRefreshToken(token:any){
-  //   localStorage.removeItem("REFRESH_TOKEN");
-  //   localStorage.setItem("REFRESH_TOKEN", token);
-  // }
+  private setTokenExpiry(time:any){
+    const data = localStorage.getItem("token");
+    if (data != null) {
+      const obj = JSON.parse(data);
+      obj.expiry = time;
+      localStorage.setItem("token", JSON.stringify(obj));
+    }
+  }
 
-  // private refreshTokenTimeOut:any;
+  getRefreshToken() {
+    const data = localStorage.getItem("token");
+    if (data != null) {
+      return JSON.parse(data).refresh_token;
+    } else {
+      return null;
+    }
+  }
 
-  // refreshTokenTimer(){
-  //   const data = JSON.parse(this.getToken());
+  setRefreshToken(token: any) {
+    const data = localStorage.getItem("token");
+    if (data != null) {
+      const obj = JSON.parse(data);
+      obj.refresh_token = token;
+      localStorage.setItem("token", JSON.stringify(obj));
+    }
+  }
 
-  //   //set a timeout to refresh token
-  //   const expires = new Date(data.expiry);
-  //   const timeout = expires.getTime() - Math.ceil(Date.now()/1000);
-  //   console.log(timeout);
-  //   this.refreshTokenTimeOut = setTimeout(()=>{
-  //     if(true){
-  //       this.refreshToken().subscribe();
-  //       console.log("called");
-  //     }
-  //   }, (timeout+1)*1000);
-  // }
+  getAccessToken() {
+    const data = localStorage.getItem("token");
+    if (data != null) {
+      return JSON.parse(data).access_token;
+    } else {
+      return null;
+    }
+  }
 
-  // private stopRefreshToken(){
-  //   clearTimeout(this.refreshTokenTimeOut);
-  // }
-  
-  getUserDetailesByUsername(username:string|null){
+  setAccessToken(token: any) {
+    const data = localStorage.getItem("token");
+    if (data != null) {
+      const obj = JSON.parse(data);
+      obj.access_token = token;
+      localStorage.setItem("token", JSON.stringify(obj));
+    }
+  }
+
+  refreshTokenTimeOut:any;
+
+  refreshTokenTimer(){
+    const token = this.getToken();
+    if(token!==null){
+      //set a timeout to refresh token
+      const data = JSON.parse(token);
+      const exp_time = new Date(data.expiry).getTime();
+      const curr_time = Math.ceil(Date.now()/1000)
+      const timeout = exp_time - curr_time;
+      console.log("timeout: "+timeout);
+      this.refreshTokenTimeOut = setTimeout(()=>{
+        this.refreshToken().subscribe();
+        console.log("set Timeout called");
+        this.stopRefreshToken();
+      }, (timeout+1)*1000);
+    }
+  }
+
+  private stopRefreshToken(){
+    clearTimeout(this.refreshTokenTimeOut);
+    console.log("time out cleared!!");
+  }
+
+  getUserDetailesByUsername(username: string | null) {
     return this.http.get<any>(`${environment.API_SERVER_URL}/users.php?username=${username}`);
   }
 
-  updateProfile(data:FormData) : Observable<any>{
-    return this.http.post<any>(`${environment.API_SERVER_URL}/users.php`,data);
+  updateProfile(data: FormData): Observable<any> {
+    return this.http.post<any>(`${environment.API_SERVER_URL}/users.php`, data);
   }
 
-  isUsernameExits(username:string|null){
+  isUsernameExits(username: string | null) {
     return this.http.get<any>(`${environment.API_SERVER_URL}/register.php?username=${username}`);
   }
 
-  isEmailExits(email:any){
+  isEmailExits(email: any) {
     return this.http.get<any>(`${environment.API_SERVER_URL}/register.php?email=${email}`);
   }
 
@@ -86,25 +131,25 @@ export class UserAuthService {
     localStorage.setItem('token', token);
   }
 
-  getToken() : any {
+  getToken(): any {
     return localStorage.getItem('token');
   }
 
-  private deleteToken() {
+  deleteToken() {
     localStorage.removeItem('token');
   }
 
-  logout(){
+  logout() {
     this.deleteToken();
-    //this.stopRefreshToken();
+    this.stopRefreshToken();
   }
 
   isLoggedIn() {
     let token = this.getToken();
-    if(token==null || token=='' || token==undefined){
+    if (token == null || token == '' || token == undefined) {
       return false;
-    }else{
-      if(JSON.parse(token).error){
+    } else {
+      if (JSON.parse(token).error) {
         return false;
       }
       return true;

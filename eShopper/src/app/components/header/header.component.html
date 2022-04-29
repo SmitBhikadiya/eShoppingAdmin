@@ -44,7 +44,7 @@
                             <li *ngIf="isLoggin;">
                                 <a [routerLink]="['/profile']" title="My Profile">Profile</a>
                             </li>
-                            <li *ngIf="isLoggin;" class="login-link"><a href="index.html" title="Logout" (click)="userLogout()">Logout</a></li>
+                            <li *ngIf="isLoggin;" class="login-link"><a title="Logout" style="cursor: pointer;" (click)="userLogout()">Logout</a></li>
                             <li class="cart-outer">
                                 <a href="#" title="Add to Cart" class="add-to-cart"></a>
                                 <div class="cart-wrap">

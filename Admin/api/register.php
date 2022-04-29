@@ -2,6 +2,7 @@
 
 session_start();
 require_once("../handler/customerHandler.php");
+require_once("verifyToken.php");
 $obj = new CustomerHandler();
 
 if(isset($_GET["username"])){

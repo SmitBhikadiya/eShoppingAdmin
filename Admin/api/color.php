@@ -2,6 +2,7 @@
 
 session_start();
 require_once("../handler/productHandler.php");
+require_once("verifyToken.php");
 $obj = new ProductHandler();
 
 $colors = [];
