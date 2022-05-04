@@ -7,11 +7,10 @@ $obj = new OrderHandler();
 $currntPage = 1;
 $showRecords = 5;
 $search = '';
-if (isset($_GET["page"])) {
-    $currntPage = $_GET["page"];
-    $showRecords = isset($_GET["show"]) ? $_GET["show"] : $showRecords;
-    $search = isset($_GET["search"]) ? $_GET["search"] : $search;
-}
+
+$currntPage = (isset($_GET["page"]) && $_GET["page"]!='') ? $_GET["page"] : $currntPage;
+$showRecords = (isset($_GET["show"]) && $_GET["show"]!='') ? $_GET["show"] : $showRecords;
+$search = (isset($_GET["search"]) && $_GET["search"]!='') ? $_GET["search"] : $search;
 
 $totalRecords = $obj->TotalOrderHistory($search);
 $orders = $obj->getOrdersHistory($search, (($currntPage - 1) * $showRecords), $showRecords);

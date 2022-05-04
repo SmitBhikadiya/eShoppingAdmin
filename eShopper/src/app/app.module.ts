@@ -25,6 +25,9 @@ import { CarouselModule } from 'ngx-owl-carousel-o';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
+import { AddToCartBtnComponent } from './components/add-to-cart-btn/add-to-cart-btn.component';
+import { CartDetailesComponent } from './components/cart-detailes/cart-detailes.component';
+import { CurrencyPipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -39,7 +42,9 @@ import { AuthInterceptorService } from './services/auth-interceptor.service';
     RegisterComponent,
     ProfileComponent,
     FilterStringPipe,
-    ErrorComponent
+    ErrorComponent,
+    AddToCartBtnComponent,
+    CartDetailesComponent
   ],
   imports: [
     BrowserModule,
@@ -56,6 +61,7 @@ import { AuthInterceptorService } from './services/auth-interceptor.service';
     ProductService,
     UserAuthService,
     AuthGuard,
+    CurrencyPipe,
     {
       provide: HTTP_INTERCEPTORS,useClass: AuthInterceptorService, multi: true 
     },

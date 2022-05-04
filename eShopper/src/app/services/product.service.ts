@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IColor } from '../interfaces/color';
 import { IProduct } from '../interfaces/product';
@@ -62,5 +62,25 @@ export class ProductService {
 
   getSizesBy(cat:string, subcat:string) : Observable<any>{
     return this.http.get<any>(`${environment.API_SERVER_URL}/size.php?cat=${cat}&subcat=${subcat}`);
+  }
+
+  getColorsByProduct(prdId:number){
+    return this.http.get<any>(`${environment.API_SERVER_URL}/color.php?prdId=${prdId}`).pipe(map((res)=>{
+      if(res!=''){
+        return res.split(",");
+      }else{
+        return [];
+      }
+    }));
+  }
+
+  getSizesByProduct(prdId:number){
+    return this.http.get<any>(`${environment.API_SERVER_URL}/size.php?prdId=${prdId}`).pipe(map((res)=>{
+      if(res!=''){
+        return res.split(",");
+      }else{
+        return [];
+      }
+    }));
   }
 }

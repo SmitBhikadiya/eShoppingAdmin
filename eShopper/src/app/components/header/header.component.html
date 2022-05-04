@@ -13,7 +13,7 @@
                     </button>
                 </div>
                 <div class="col-sm-1">
-                    <a href="index.html" title="eShopper" class="logo"><img src="../assets/images/logo.svg" alt="eShopper"></a>
+                    <a [routerLink]="['/']" title="eShopper" class="logo"><img src="../assets/images/logo.svg" alt="eShopper"></a>
                 </div>
                 <div class="col-sm-5 col-xs-12">
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -45,69 +45,46 @@
                                 <a [routerLink]="['/profile']" title="My Profile">Profile</a>
                             </li>
                             <li *ngIf="isLoggin;" class="login-link"><a title="Logout" style="cursor: pointer;" (click)="userLogout()">Logout</a></li>
-                            <li class="cart-outer">
-                                <a href="#" title="Add to Cart" class="add-to-cart"></a>
+                            <li *ngIf="isCartVisisble;" class="cart-outer" id="cart-outer">
+                                <a title="Add to Cart" style="cursor: pointer;" class="add-to-cart" (click)="getCartItems()"></a>
                                 <div class="cart-wrap">
                                     <p>Recently added item(s)</p>
-                                    <ul>
-                                        <li>
-                                            <a class="cart-product" title="consectetur adipiscing elit" href="product-detail.html"><img alt="" src="../assets/images/new-thumb-01.jpg"></a>
+                                    <ul *ngIf="cartItems!=null; else noitem">
+                                        <li *ngFor="let item of cartItems">
+                                            <a class="cart-product" [title]="item.productName"><img [width]="58" src="{{ imgServerURL+'/product/'+item.productImage }}"></a>
 
                                             <div class="cart-details">
-                                                <a class="btn-remove" title="Remove item" href="#"><img src="../assets/images/cross.svg" alt=""></a>
-                                                <a class="btn-edit" title="Edit item" href="cart.html">
+                                                <a class="btn-remove" title="Remove item" (click)="removeItemFromCart(item.id)" style="cursor: pointer;"><img src="../assets/images/cross.svg" alt=""></a>
+                                                <a class="btn-edit" title="Edit item" [routerLink]="['/productInfo/'+item.productId]">
                                                     <img src="../assets/images/edit.svg" alt="">
                                                 </a>
-                                                <p class="product-name"><a href="product-detail.html">U.S. Polo Assn. Full Sleeve Plain T-Shirts...</a></p>
-                                                <p class="price">$120.00 </p>
+                                                <p class="product-name"><a [routerLink]="['/productInfo/'+item.productId]">{{ item.productName }}</a></p>
+                                                <p class="price">{{ item.subTotal | currency: 'USD' }} </p>
                                                 <p class="qty-wrapper">
                                                     <span>Qty :  </span>
-                                                    <span>1</span>
+                                                    <span>{{ item.quantity }}</span>
                                                 </p>
                                                 <div class="size-wrap">
                                                     <dl class="item-options">
                                                         <dt>Size :</dt>
                                                         <dd>
-                                                            Medium/Large    
-                                                        </dd>
-                                                    </dl>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <a class="cart-product" title="consectetur adipiscing elit" href="product-detail.html"><img alt="" src="../assets/images/new-thumb-02.jpg"></a>
-                                            <div class="cart-details">
-                                                <a class="btn-remove" title="Remove item" href="#"><img src="../assets/images/cross.svg" alt=""></a>
-                                                <a class="btn-edit" title="Edit item" href="cart.html">
-                                                    <img src="../assets/images/edit.svg" alt="">
-                                                </a>
-                                                <p class="product-name"><a href="product-detail.html">U.S. Polo Assn. Full Sleeve Plain T-Shirts for Men</a></p>
-                                                <p class="price">$120.00</p>     
-                                                
-                                                <p class="qty-wrapper">
-                                                    <span>Qty :  </span>
-                                                    <span>
-                                                        1
-                                                    </span>
-                                                </p>      
-                                                <div class="size-wrap">
-                                                    <dl class="item-options">
-                                                        <dt>Size :</dt>
-                                                        <dd>
-                                                            Medium/Large    
+                                                            {{item.size}}   
                                                         </dd>
                                                     </dl>
                                                 </div>
                                             </div>
                                         </li>
                                     </ul>
+                                    <ng-template #noitem>
+                                        <div><h3>No Item Found!!!</h3></div>
+                                    </ng-template>
                                     <div class="summary">           
                                         <p class="subtotal">
-                                            <span>Cart Subtotal:</span> <span class="price">$168.00</span>
+                                            <span>Cart Subtotal:</span>&nbsp;<span class="price">{{ subTotal }}</span>
                                         </p>
                                     </div>
                                     <div class="cart-action">
-                                        <a href="cart.html" title="View Cart"  class="btn-secondary">View Cart</a>
+                                        <a [routerLink]="['cart']" title="View Cart"  class="btn-secondary">View Cart</a>
                                     </div>
                                 </div>
                             </li>

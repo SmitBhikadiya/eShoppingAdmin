@@ -13,6 +13,7 @@ import { HeaderComponent } from '../header/header.component';
 })
 export class HomeComponent implements OnInit {
 
+  @ViewChild(HeaderComponent) headerCMP!:HeaderComponent;
   products!:IProduct[];
   error:string = '';
   imageURL = environment.IMAGES_SERVER_URL;

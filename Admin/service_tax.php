@@ -1,7 +1,7 @@
 <?php
 session_start();
-require("./handler/categoryHandler.php");
-$obj = new CategoryHandler();
+require("./handler/taxHandler.php");
+$obj = new TaxHandler();
 
 // for pagination and searching
 $currntPage = 1;
@@ -12,8 +12,8 @@ $currntPage = (isset($_GET["page"]) && $_GET["page"]!='') ? $_GET["page"] : $cur
 $showRecords = (isset($_GET["show"]) && $_GET["show"]!='') ? $_GET["show"] : $showRecords;
 $search = (isset($_GET["search"]) && $_GET["search"]!='') ? $_GET["search"] : $search;
 
-$totalRecords = $obj->TotalSubCategory($search);
-$categories = $obj->getSubCategory($search, (($currntPage - 1) * $showRecords), $showRecords);
+$totalRecords = $obj->TotalTaxRecords($search);
+$taxes = $obj->getTaxRecords($search, (($currntPage - 1) * $showRecords), $showRecords);
 
 // for error or success message
 $msg = '';
@@ -34,7 +34,7 @@ if (isset($_SESSION["result"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description-gambolthemes" content="">
     <meta name="author-gambolthemes" content="">
-    <title>eShopping - Admin</title>
+    <title>eShopper - Admin</title>
     <link href="css/styles.css" rel="stylesheet">
     <link href="css/admin-style.css" rel="stylesheet">
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -55,10 +55,12 @@ if (isset($_SESSION["result"])) {
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid">
-                    <h2 class="mt-30 page-title">Sub Category</h2>
+                    <h2 class="mt-30 page-title">Service Tax</h2>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Sub Category</li>
+                        <li class="breadcrumb-item">
+                            <a href="index.php">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item active">Service Tax</li>
                     </ol>
 
                     <?php
@@ -73,20 +75,19 @@ if (isset($_SESSION["result"])) {
                     ?>
 
                     <nav class="navbar navbar-light bg-light justify-content-between">
-                        <a href="add_sub_category.php" class="add-btn hover-btn">Add New</a>
+                        <a href="add_tax.php" class="add-btn hover-btn">Add New</a>
                         <div class="form-inline">
-                            <input class="form-control mr-sm-2" type="search" placeholder="Search By Name" aria-label="Search" value="<?= $search ?>">
+                            <input class="form-control mr-sm-2" type="search" placeholder="Search By State, Country" aria-label="Search" value="<?= $search ?>">
                             <button class="status-btn hover-btn my-2 my-sm-0" id="searchRec" type="submit">Search</button>
                         </div>
                     </nav>
 
                     <div class="row justify-content-between">
-
                         <div class="col-lg-12 col-md-12">
-                            <div class="card card-static-2 mb-30">
+                            <div class="card card-static-2 mt-30 mb-30">
                                 <div class="card-title-2">
                                     <h4 style="width:100%;display: flex; justify-content: space-between;align-items: center;">
-                                        <p><b>Sub Category</b></p>
+                                        <p><b>Service Tax List</b></p>
                                     </h4>
                                 </div>
                                 <div class="card-body-table px-3">
@@ -94,68 +95,68 @@ if (isset($_SESSION["result"])) {
                                         <table class="table ucp-table table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th style="width:60px">ID</th>
-                                                    <th>Sub Category</th>
-                                                    <th>Description</th>
-                                                    <th>Category</th>
+                                                    <th>ID.</th>
+                                                    <th>Service Tax ($)</th>
+                                                    <th>State</th>
+                                                    <th>Country</th>
+                                                    <th>Updated Date</th>
                                                     <th>Created Date</th>
-                                                    <th>Modified Date</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <?php
-                                                if (count($categories) > 0) {
+                                                if (count($taxes) > 0) {
                                                     $srno = 1;
-                                                    foreach ($categories as $cat) {
+                                                    foreach ($taxes as $tax) {
                                                 ?>
                                                         <tr>
-                                                            <td><?= $cat["id"] ?></td>
-                                                            <td><?= $cat["subCatName"] ?></td>
-                                                            <td><?= $cat["subCatDesc"] ?></td>
-                                                            <td><?= $cat["catName"] ?></td>
-                                                            <td><?= $cat["createdDate"] ?></td>
-                                                            <td><?= $cat["modifiedDate"] ?></td>
+                                                            <th><?= $tax["id"] ?></th>
+                                                            <td><?= $tax["tax"] ?></td>
+                                                            <td><?= $tax["country"] ?></td>
+                                                            <td><?= $tax["state"] ?></td>
+                                                            <td><?= $tax["modifiedDate"] ?></td>
+                                                            <td><?= $tax["createdDate"] ?></td>
                                                             <td class="action-btns">
-                                                                <a href="add_sub_category.php?edit=<?= $cat["id"] ?>" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
-                                                                <a href="./handler/requestHandler.php?dSubCategory=<?= $cat["id"] ?>" style="cursor: pointer;" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
+                                                                <a href="add_tax.php?edit=<?= $tax["id"] ?>" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
+                                                                <a href="./handler/requestHandler.php?dTax=<?= $tax["id"] ?>" style="cursor: pointer;" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
                                                             </td>
                                                         </tr>
                                                 <?php
                                                     }
                                                 } else {
-                                                    echo "<tr><td colspan=5>No Record Found!!</td></tr>";
+                                                    echo "<tr><td colspan=6>No Record Found!!</td></tr>";
                                                 }
                                                 ?>
                                             </tbody>
                                         </table>
                                         <div class="div-pagination mt-3 d-flex justify-content-between">
-                                            <div class="page-select">
-                                                show&nbsp;
-                                                <select style="height: 35px; width:60px; border:1px solid #0056b3; color:#0056b3; border-radius:4px" name="" id="show-record">
-                                                    <?php
-                                                    foreach ([5, 10, 25, 50] as $rec) {
-                                                        $selected = '';
-                                                        if ($rec == $showRecords) {
-                                                            $selected = "selected";
-                                                        }
-                                                        echo "<option value='$rec' $selected>$rec</option>";
-                                                    }
-                                                    ?>
+											<div class="page-select">
+												show&nbsp;
+												<select style="height: 35px; width:60px; border:1px solid #0056b3; color:#0056b3; border-radius:4px" name="" id="show-record">
+													<?php
+													foreach ([5, 10, 25, 50] as $rec) {
+														$selected = '';
+														if ($rec == $showRecords) {
+															$selected = "selected";
+														}
+														echo "<option value='$rec' $selected>$rec</option>";
+													}
+													?>
 
-                                                </select>&nbsp;&nbsp;entries, Total Records: <span id="totalrecords"><?= $totalRecords ?></span>
-                                            </div>
-                                            <div>
-                                                <nav aria-label="Page navigation example">
-                                                    <ul class="pagination">
-                                                        <li class="page-item">
-                                                            <a class="page-link" aria-label="Previous" data-action="left">
-                                                                <span aria-hidden="true">&laquo;</span>
-                                                                <span class="sr-only">Previous</span>
-                                                            </a>
-                                                        </li>
-                                                        <?php
-                                                        $temp = $currntPage+1;
+												</select>&nbsp;&nbsp;entries, Total Records: <span id="totalrecords"><?= $totalRecords ?></span>
+											</div>
+											<div>
+												<nav aria-label="Page navigation example">
+													<ul class="pagination">
+														<li class="page-item">
+															<a class="page-link" aria-label="Previous" data-action="left">
+																<span aria-hidden="true">&laquo;</span>
+																<span class="sr-only">Previous</span>
+															</a>
+														</li>
+														<?php
+														$temp = $currntPage+1;
 														$totalPage = ceil($totalRecords / $showRecords);
 														if($totalPage==1){
 															echo '<li class="page-item active"><a class="page-link">1</a></li>';
@@ -172,18 +173,18 @@ if (isset($_SESSION["result"])) {
 															}
 														}
 
-                                                        ?>
+														?>
 
-                                                        <li class="page-item">
-                                                            <a class="page-link" aria-label="Next" data-action="right">
-                                                                <span aria-hidden="true">&raquo;</span>
-                                                                <span class="sr-only">Next</span>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </nav>
-                                            </div>
-                                        </div>
+														<li class="page-item">
+															<a class="page-link" aria-label="Next" data-action="right">
+																<span aria-hidden="true">&raquo;</span>
+																<span class="sr-only">Next</span>
+															</a>
+														</li>
+													</ul>
+												</nav>
+											</div>
+										</div>
                                     </div>
                                 </div>
                             </div>

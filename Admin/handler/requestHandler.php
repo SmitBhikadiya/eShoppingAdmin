@@ -6,6 +6,7 @@ require_once("categoryHandler.php");
 require_once("productHandler.php");
 require_once("customerHandler.php");
 require_once("orderHandler.php");
+require_once("taxHandler.php");
 
 $addressH = new AddressHandler();
 $adminuserH = new AdminUser();
@@ -13,6 +14,7 @@ $categoryH = new CategoryHandler();
 $productH = new ProductHandler();
 $customerH = new CustomerHandler();
 $orderH = new OrderHandler();
+$taxH = new TaxHandler();
 $error = '';
 $success = '';
 
@@ -85,6 +87,43 @@ if (isset($_GET["dUserAddress"])) {
         $_SESSION["result"] = ["msg" => "Somthing went wrong!!!", "error" => true];
     }
     header("Location: ../user_address.php");
+}
+
+if(isset($_POST["AddTax"])){
+    $tax = $_POST["tax"];
+    $countryId = $_POST["country"];
+    $stateId = $_POST["state"];
+    $error = $taxH->addTax($tax, $stateId, $countryId);
+    if ($error == "") {
+        $_SESSION["result"] = ["msg" => "New Tax ('$tax') Added Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => $error, "error" => true];
+    }
+    header("Location: ../service_tax.php");
+}
+
+if(isset($_POST["EditTax"])){
+    $taxId = (int) $_POST["taxId"];
+    $tax = $_POST["tax"];
+    $countryId = $_POST["country"];
+    $stateId = $_POST["state"];
+    $error = $taxH->updateTax($taxId, $tax, $stateId, $countryId);
+    if ($error == "") {
+        $_SESSION["result"] = ["msg" => "Updated Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => $error, "error" => true];
+    }
+    header("Location: ../service_tax.php");
+}
+
+if(isset($_GET["dTax"])){
+    $id = (int) $_GET["dTax"];
+    if ($taxH->deleteTaxRecords($id)) {
+        $_SESSION["result"] = ["msg" => "Deleted Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => "Somthing went wrong!!!", "error" => true];
+    }
+    header("Location: ../service_tax.php");
 }
 
 /*------------- Add Product -------------*/

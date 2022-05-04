@@ -15,9 +15,9 @@ if($_SERVER["REQUEST_METHOD"]=='POST' && isset($_POST["username"]) && isset($_PO
         $audience_claim = "audience";
         $issuedat_claim = time();  
         $notbefore_claim = $issuedat_claim + 10; 
-        $expire_claim = $issuedat_claim + (60); 
+        $expire_claim = $issuedat_claim + (60*15); 
         $access_token = $jwtH->createToken($issuedat_claim, $notbefore_claim, $expire_claim, $res[0]);
-        $refresh_token = $jwtH->createToken($issuedat_claim, $notbefore_claim, $expire_claim + (60*60*24));
+        $refresh_token = $jwtH->createToken($issuedat_claim, $notbefore_claim, $expire_claim + (60*60*24) - (60*15));
         echo json_encode(
             array(
                 "error"=>false,

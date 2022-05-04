@@ -74,12 +74,13 @@
                     <ng-template #notinstock><span class="not-in-stock">Not Available</span></ng-template>
                 </p>
                 <div class="price-box">$120.00</div>
+                <form [formGroup]="cartForm" id="cartForm" (ngSubmit)="addTocart()">
                 <div class="product-options">
                     <label class="required"><em>*</em> Size</label>
-                    <p class="required">* Required Fields</p>
+                    <!-- <p class="required">* Required Fields</p> -->
                     <div class="form-group">
-                        <select>
-                            <option>-- Please Select --</option>
+                        <select formControlName="psize" id="psize">
+                            <option value="0">-- Please Select --</option>
                             <option *ngFor="let size of sizes" value="{{ size['id'] }}">
                                 {{ size["size"] | uppercase }}
                             </option>
@@ -88,28 +89,25 @@
                 </div>
                 <div class="product-options">
                     <label class="required"><em>*</em> Color</label>
-                    <p class="required">* Required Fields</p>
+                    <!-- <p class="required">* Required Fields</p> -->
                     <div class="form-group">
-                        <select>
-                            <option>-- Please Select --</option>
+                        <select formControlName="pcolor" id="pcolor">
+                            <option value="0">-- Please Select --</option>
                             <option *ngFor="let color of colors" value="{{ color['id'] }}">
                                 {{ color["colorName"] | uppercase }}
                             </option>
                         </select>
                     </div>
                 </div>
-                <div class="add-to-cart-btn clearfix">
+                <div class="add-to-cart-btn clearfix" style="display: flex;">
                     <label>Qty:</label>
-                    <select>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                    </select>
-                    <button type="button" onclick="location.href='cart.html'" title="Add to Cart"
+                    <input class="form-control" id="pqty" formControlName="pqty" style="width: 70px;" [min]="1" [max]="product['totalQuantity']" [value]="1" type="number">&nbsp;&nbsp;
+                    <button type="submit" title="Add to Cart"
                         class="button btn-cart">
-                        <span>Add to Cart</span>
+                        <span>{{ btn }}</span>
                     </button>
                 </div>
+                </form>
                 <div class="email-addto-box clearfix">
                     <ul class="add-to-links">
                         <li><a href="#" class="link-wishlist">Add to Wishlist</a></li>

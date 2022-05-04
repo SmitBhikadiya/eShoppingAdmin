@@ -17,6 +17,13 @@ export class CustomValidation {
     }
   }
 
+  isTypeNumberFieldValid(id: string, min:number, max:number, fieldName:string){
+    let num = $(id).val();
+    if(num < min && num > max){
+      $(id).after(`<span class='spanError'>*${fieldName} must have range between ${min} to ${max} </span>`);
+    }
+  }
+
   isFieldEmpty(id: string) {
     let value = $(id).val();
     if (value.length == 0) {
@@ -44,7 +51,7 @@ export class CustomValidation {
   isFieldSelected(id:string, fieldName:string){
     var value = $(id).val();
     if(value==0 || value==undefined || value==''){
-      $(id).after("<span class='spanError'>*"+fieldName.toUpperCase()+" must be selected!!</span>");
+      $(id).after("<span class='spanError'>*"+fieldName+" must be selected!!</span>");
     }
   }
 

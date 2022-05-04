@@ -69,7 +69,7 @@
                                           <img [src]="noImageURL" style="height: 328px" alt="no image available" />
                                         </ng-template>
                                     </a>
-                                    <a href="cart.html" title="Add to Cart" class="cart-button">Add to Cart</a>
+                                    <app-add-to-cart-btn [prd]="product"></app-add-to-cart-btn>
                                 </div>
                                 <figcaption>
                                     <a [routerLink]="['/productInfo/'+product['id']]" title="{{ product.productName }}" class="heading">{{

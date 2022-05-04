@@ -1,71 +1,77 @@
-$(document).ready(function() {
-
+$(document).ready(function () {
     // Fancybox
-    $('.fancybox').fancybox({
-        padding : 0,
-        openEffect  : 'elastic'
+    $(".fancybox").fancybox({
+        padding: 0,
+        openEffect: "elastic",
     });
 
-    //cart
-    $(".add-to-cart").click(function() {
-        $(this).toggleClass("active");
-        $(".cart-wrap").slideToggle(500);
-    })
+    // //cart
+    // $(".add-to-cart").click(function() {
+    //     $(this).toggleClass("active");
+    //     $(".cart-wrap").slideToggle(500);
+    // })
 
+    var ignoreClickOnMeElement = document.getElementById("cart-outer");
+
+    document.addEventListener("click", function (event) {
+        var isClickInsideElement = ignoreClickOnMeElement.contains(event.target);
+        if (!isClickInsideElement) {
+            if ($(".add-to-cart").hasClass("active")) {
+                $(".add-to-cart").toggleClass("active");
+                $(".cart-wrap").slideToggle(500);
+            }
+        }
+    });
 
     //Prevent Page Reload on all # links
-    $("a[href='#']").click(function(e) {
+    $("a[href='#']").click(function (e) {
         e.preventDefault();
     });
 
-    $('.back-to-top').click(function () {
-        $("html, body").animate({
-            scrollTop: 0
-        }, 600);
+    $(".back-to-top").click(function () {
+        $("html, body").animate(
+            {
+                scrollTop: 0,
+            },
+            600
+        );
         return false;
     });
 
-    if($(window).width() < 768){
-        $(".menu-link").click(function(){
-            $(this).closest(".menu-item").toggleClass("active")
-            $(this).closest(".menu-item").find(".sub-menu").slideToggle()
-        })
+    if ($(window).width() < 768) {
+        $(".menu-link").click(function () {
+            $(this).closest(".menu-item").toggleClass("active");
+            $(this).closest(".menu-item").find(".sub-menu").slideToggle();
+        });
     }
 
-    $(window).scroll(function(e) {
-        if($(window).scrollTop() > 200)
-            $("body").addClass('top-arrow');
-        else
-            $("body").removeClass('top-arrow');
+    $(window).scroll(function (e) {
+        if ($(window).scrollTop() > 200) $("body").addClass("top-arrow");
+        else $("body").removeClass("top-arrow");
     });
 
-    $(window).scroll(function(e) {
-        if ($(window).scrollTop() > 0)
-            $(".wrapper").addClass('small-header');
-        else
-            $(".wrapper").removeClass('small-header');
+    $(window).scroll(function (e) {
+        if ($(window).scrollTop() > 0) $(".wrapper").addClass("small-header");
+        else $(".wrapper").removeClass("small-header");
     });
 
     //search
-    $(".search-link a").click(function() {
+    $(".search-link a").click(function () {
         $(this).closest(".search-link").toggleClass("active");
     });
 
-
     //placeholder
 
-    $("[placeholder]").each(function() {
+    $("[placeholder]").each(function () {
         $(this).attr("data-placeholder", this.placeholder);
 
-        $(this).bind("focus", function() {
-            this.placeholder = '';
+        $(this).bind("focus", function () {
+            this.placeholder = "";
         });
-        $(this).bind("blur", function() {
+        $(this).bind("blur", function () {
             this.placeholder = $(this).attr("data-placeholder");
         });
     });
-
-
 
     // Slider
     var sync1 = $("#sync1");
@@ -88,26 +94,24 @@ $(document).ready(function() {
         itemsMobile: [479, 3],
         pagination: false,
         responsiveRefreshRate: 100,
-        afterInit: function(el) {
+        afterInit: function (el) {
             el.find(".owl-item").eq(0).addClass("synced");
-        }
+        },
     });
 
     function syncPosition(el) {
         var current = this.currentItem;
         $("#sync2")
-        .find(".owl-item")
-        .removeClass("synced")
-        .eq(current)
-        .addClass("synced")
+            .find(".owl-item")
+            .removeClass("synced")
+            .eq(current)
+            .addClass("synced");
         if ($("#sync2").data("owlCarousel") !== undefined) {
-            center(current)
+            center(current);
         }
-
     }
 
-
-    $("#sync2").on("click", ".owl-item", function(e) {
+    $("#sync2").on("click", ".owl-item", function (e) {
         e.preventDefault();
         var number = $(this).data("owlItem");
         sync1.trigger("owl.goTo", number);
@@ -126,7 +130,7 @@ $(document).ready(function() {
 
         if (found === false) {
             if (num > sync2visible[sync2visible.length - 1]) {
-                sync2.trigger("owl.goTo", num - sync2visible.length + 2)
+                sync2.trigger("owl.goTo", num - sync2visible.length + 2);
             } else {
                 if (num - 1 === -1) {
                     num = 0;
@@ -134,12 +138,11 @@ $(document).ready(function() {
                 sync2.trigger("owl.goTo", num);
             }
         } else if (num === sync2visible[sync2visible.length - 1]) {
-            sync2.trigger("owl.goTo", sync2visible[1])
+            sync2.trigger("owl.goTo", sync2visible[1]);
         } else if (num === sync2visible[0]) {
-            sync2.trigger("owl.goTo", num - 1)
+            sync2.trigger("owl.goTo", num - 1);
         }
     }
-
 
     //testimonial slider
     $(".testimonial-slider").owlCarousel({
@@ -147,12 +150,11 @@ $(document).ready(function() {
         slideSpeed: 1000,
         navigation: false,
         pagination: true,
-        autoPlay: true
+        autoPlay: true,
     });
 
     // Fastclick
     FastClick.attach(document.body);
-
 
     var sync1 = $(".sync1");
     var sync2 = $(".sync2");
@@ -179,24 +181,24 @@ $(document).ready(function() {
         pagination: false,
         navigation: true,
         responsiveRefreshRate: 100,
-        afterInit: function(el) {
+        afterInit: function (el) {
             el.find(".owl-item").eq(0).addClass("synced");
-        }
+        },
     });
 
     function syncPosition(el) {
         var current = this.currentItem;
         $(".sync2")
-        .find(".owl-item")
-        .removeClass("synced")
-        .eq(current)
-        .addClass("synced")
+            .find(".owl-item")
+            .removeClass("synced")
+            .eq(current)
+            .addClass("synced");
         if ($(".sync2").data("owlCarousel") !== undefined) {
-            center(current)
+            center(current);
         }
     }
 
-    $(".sync2").on("click", ".owl-item", function(e) {
+    $(".sync2").on("click", ".owl-item", function (e) {
         e.preventDefault();
         var number = $(this).data("owlItem");
         sync1.trigger("owl.goTo", number);
@@ -214,7 +216,7 @@ $(document).ready(function() {
 
         if (found === false) {
             if (num > sync2visible[sync2visible.length - 1]) {
-                sync2.trigger("owl.goTo", num - sync2visible.length + 2)
+                sync2.trigger("owl.goTo", num - sync2visible.length + 2);
             } else {
                 if (num - 1 === -1) {
                     num = 0;
@@ -222,11 +224,10 @@ $(document).ready(function() {
                 sync2.trigger("owl.goTo", num);
             }
         } else if (num === sync2visible[sync2visible.length - 1]) {
-            sync2.trigger("owl.goTo", sync2visible[1])
+            sync2.trigger("owl.goTo", sync2visible[1]);
         } else if (num === sync2visible[0]) {
-            sync2.trigger("owl.goTo", num - 1)
+            sync2.trigger("owl.goTo", num - 1);
         }
-
     }
 
     $(".owl-example1").owlCarousel({
@@ -236,11 +237,9 @@ $(document).ready(function() {
         center: true,
         loop: true,
         margin: 10,
-
-
     });
 
-    $(".review-tag").click(function() {
+    $(".review-tag").click(function () {
         $(".review-open").slideToggle();
     });
 });

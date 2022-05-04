@@ -14,7 +14,7 @@ if(isset($postdata) && !empty($postdata))
     if(!$jwtH->isTokenExpired($request->refreshToken)){
         $iat = time();  
         $nbf = $iat + 10; 
-        $exp = $iat + (60);
+        $exp = $iat + (60*15);
         $newToken = $jwtH->createToken($iat, $nbf, $exp);
         echo json_encode(["result"=>$newToken, "expiry"=>$exp]);
     }else{

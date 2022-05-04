@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 import { HeaderComponent } from './components/header/header.component';
 import { RegisterComponent } from './components/register/register.component';
 import { CustomValidation } from './customValidation';
@@ -23,13 +24,24 @@ export class AppComponent implements OnInit {
   message: { msg: string, isError: boolean, color: string, image: string } = { msg: '', isError: false, color: 'success', image: 'success.svg' };
   validator = new CustomValidation();
 
-  constructor(private userAuth: UserAuthService, private router: Router, private builder: FormBuilder) { }
+  constructor(private userAuth: UserAuthService, private router: Router, private route:ActivatedRoute, private builder: FormBuilder) {
+    this.router.events.subscribe((ev) => {
+      if (ev instanceof NavigationEnd) {
+        this.ngOnInit();
+        if(router.url==='/cart'){
+          this.headerCMP.isCartVisisble = false;
+        }else{
+          this.headerCMP.isCartVisisble = true;
+        }
+      }
+    });
+  }
 
   ngOnInit() {
     this.loginForm = this.builder.group({
       username: ['', Validators.required],
       password: ['', Validators.maxLength(8)]
-    });
+    });    
   }
 
   userLogin() {

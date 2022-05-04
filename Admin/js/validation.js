@@ -88,6 +88,18 @@ $(document).ready(function(){
         }
     });
 
+    $("#formAddTax").on("submit", function(e){
+        window.isValid = true;
+        $('.error').remove();
+        $('.alert').remove();
+        isFieldEmpty("#addtax");
+        isOptionSelected("#countrylist");
+        isOptionSelected("#statelist");
+        if(!window.isValid){
+            e.preventDefault();
+        }
+    })
+
     $("#formAddState").on("submit", function(e){
         window.isValid = true;
         $('.error').remove();

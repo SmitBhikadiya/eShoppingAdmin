@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CartDetailesComponent } from './components/cart-detailes/cart-detailes.component';
 import { ErrorComponent } from './components/error/error.component';
 import { HomeComponent } from './components/home/home.component';
 import { ProductDetailesComponent } from './components/product-detailes/product-detailes.component';
@@ -38,6 +39,11 @@ const routes: Routes = [
   {
     path: 'product/:category/:subcategory',
     component:ProductsComponent
+  },
+  {
+    path: 'cart',
+    component: CartDetailesComponent,
+    canActivate: [AuthGuard]
   },{
     path: '**',
     component:ErrorComponent

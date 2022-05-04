@@ -33,6 +33,17 @@
                 </nav>
             </div>
 
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTax" aria-expanded="false" aria-controls="collapseTax">
+                <div class="sb-nav-link-icon"><i class="fas fa-rupee-sign"></i></div>
+                Service Tax
+                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+            </a>
+            <div class="collapse" id="collapseTax" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                <nav class="sb-sidenav-menu-nested nav">
+                    <a class="nav-link sub_nav_link" href="service_tax.php">Service Tax</a>
+                </nav>
+            </div>
+
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrders" aria-expanded="false" aria-controls="collapseOrders">
                 <div class="sb-nav-link-icon"><i class="fas fa-cart-arrow-down	"></i></div>
                 Orders
