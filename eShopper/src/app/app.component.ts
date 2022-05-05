@@ -1,3 +1,4 @@
+import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -6,6 +7,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { RegisterComponent } from './components/register/register.component';
 import { CustomValidation } from './customValidation';
 import { IProduct } from './interfaces/product';
+import { CartService } from './services/cart.service';
 import { UserAuthService } from './services/user-auth.service';
 declare let $: any;
 
@@ -23,8 +25,14 @@ export class AppComponent implements OnInit {
   loginForm!: FormGroup;
   message: { msg: string, isError: boolean, color: string, image: string } = { msg: '', isError: false, color: 'success', image: 'success.svg' };
   validator = new CustomValidation();
+  cartItems!:any;
+  subTotal!:any;
 
-  constructor(private userAuth: UserAuthService, private router: Router, private route:ActivatedRoute, private builder: FormBuilder) {
+  constructor(
+    private userAuth: UserAuthService, 
+    private router: Router, 
+    private route:ActivatedRoute, 
+    private builder: FormBuilder) {
     this.router.events.subscribe((ev) => {
       if (ev instanceof NavigationEnd) {
         this.ngOnInit();
@@ -42,6 +50,10 @@ export class AppComponent implements OnInit {
       username: ['', Validators.required],
       password: ['', Validators.maxLength(8)]
     });    
+  }
+
+  checkEvents(data:any){
+    console.log("123"+data);
   }
 
   userLogin() {
@@ -91,5 +103,4 @@ export class AppComponent implements OnInit {
       return false;
     }
   }
-
 }

@@ -5,23 +5,23 @@ $(document).ready(function () {
         openEffect: "elastic",
     });
 
-    // //cart
-    // $(".add-to-cart").click(function() {
-    //     $(this).toggleClass("active");
-    //     $(".cart-wrap").slideToggle(500);
-    // })
+    //cart
+    $(".add-to-cart").click(function() {
+        $(this).toggleClass("active");
+        $(".cart-wrap").slideToggle(500);
+    })
 
-    var ignoreClickOnMeElement = document.getElementById("cart-outer");
+    // var ignoreClickOnMeElement = document.getElementById("cart-outer");
 
-    document.addEventListener("click", function (event) {
-        var isClickInsideElement = ignoreClickOnMeElement.contains(event.target);
-        if (!isClickInsideElement) {
-            if ($(".add-to-cart").hasClass("active")) {
-                $(".add-to-cart").toggleClass("active");
-                $(".cart-wrap").slideToggle(500);
-            }
-        }
-    });
+    // document.addEventListener("click", function (event) {
+    //     var isClickInsideElement = ignoreClickOnMeElement.contains(event.target);
+    //     if (!isClickInsideElement) {
+    //         if ($(".add-to-cart").hasClass("active")) {
+    //             $(".add-to-cart").toggleClass("active");
+    //             $(".cart-wrap").slideToggle(500);
+    //         }
+    //     }
+    // });
 
     //Prevent Page Reload on all # links
     $("a[href='#']").click(function (e) {

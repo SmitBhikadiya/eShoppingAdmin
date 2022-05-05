@@ -19,7 +19,7 @@ class CartHandler extends DBConnection
     }
 
     function getCartItemBy($userId, $prdId){
-        $sql = "SELECT cart.*, productcolor.colorName, products.productColorIds, products.productSizeIds, products.productPrice, products.totalQuantity, productsize.size, products.totalQuantity FROM cart JOIN productcolor ON productcolor.id=cart.productColorId JOIN productsize ON productsize.id = cart.productSizeId JOIN products ON products.id = cart.productId WHERE cart.userId=$userId AND products.id=$prdId AND cart.status=0 ORDER BY cart.id DESC";
+        $sql = "SELECT cart.*, productcolor.colorName, products.productColorIds, products.productSizeIds, products.productPrice, products.totalQuantity, productsize.size FROM cart JOIN productcolor ON productcolor.id=cart.productColorId JOIN productsize ON productsize.id = cart.productSizeId JOIN products ON products.id = cart.productId WHERE cart.userId=$userId AND products.id=$prdId AND cart.status=0 ORDER BY cart.id DESC";
         $result = $this->getConnection()->query($sql);
         $record = [];
         if ($result && $result->num_rows > 0) {
@@ -28,6 +28,39 @@ class CartHandler extends DBConnection
             $record = [];
         }
         return $record;
+    }
+
+    function getItemQtyById($cartId){
+        $sql = "SELECT products.totalQuantity AS pqty, cart.quantity AS cqty FROM cart JOIN products ON products.id = cart.productId WHERE cart.id=$cartId AND cart.status=0";
+        $result = $this->getConnection()->query($sql);
+        $error = '';
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $pqty = $row['pqty'];  
+            $cqty = $row['cqty'];  
+        } else {
+            $error = "Somthing went wrong with the sql";
+        }
+        return [ 'productQty'=>$pqty, 'cartQty'=>$cqty, 'error'=>$error ];
+    }
+
+    function incrementItemQty($cartId){
+        $result = $this->getItemQtyById($cartId);
+        $error = '';
+        if($result["error"]==''){
+            if($result["productQty"] > $result["cartQty"]){
+                $sql = "UPDATE cart JOIN products ON products.id=cart.productId SET cart.quantity=cart.quantity+1, cart.subTotal = (cart.unitPrize*cart.quantity), cart.modifiedDate = now() WHERE products.totalQuantity >= cart.quantity AND cart.id=$cartId";
+                $res = $this->getConnection()->query($sql);
+                if(!$res){
+                    $error = "Somthing went wrong with the sql";
+                }
+            }else{
+                $error = "Item is out of stock";
+            }
+        }else{
+            $error = $result["error"];
+        }
+        return $error;
     }
 
     function addToCart($prdId, $userId, $prdName, $colorId, $sizeId, $image, $unitPrize, $quantity, $subTotal){
@@ -45,11 +78,21 @@ class CartHandler extends DBConnection
     }
 
     function updateCart($cartId, $colorId, $sizeId, $quantity, $subTotal){
-        $error = "";
-        $sql = "UPDATE cart SET productColorId=$colorId, productSizeId=$sizeId, quantity=$quantity, subTotal=$subTotal, modifiedDate=now() WHERE id=$cartId";
-        $result = $this->getConnection()->query($sql);
-        if (!$result) {
-            $error = "Somthing went wrong with the $sql";
+        
+        $error = '';
+        $result = $this->getItemQtyById($cartId);
+        if($result["error"]==''){
+            if($result["productQty"] >= $quantity){
+                $sql = "UPDATE cart SET productColorId=$colorId, productSizeId=$sizeId, quantity=$quantity, subTotal=$subTotal, modifiedDate=now() WHERE id=$cartId";
+                $result = $this->getConnection()->query($sql);
+                if (!$result) {
+                    $error = "Somthing went wrong with the $sql";
+                }
+            }else{
+                $error = "Item is out of stock";
+            }
+        }else{
+            $error = $result["error"];
         }
         return $error;
     }

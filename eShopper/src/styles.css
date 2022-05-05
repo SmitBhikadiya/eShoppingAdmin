@@ -1,9 +1,13 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.css");
-
+@import '~ngx-toastr/toastr';
 /* You can add global styles to this file, and also import other style files */
 .spanError {
   color: red;
   margin-top: 4px
+}
+
+#toast-container{
+  margin-top: 74px;
 }
 
 .wrapper1 {

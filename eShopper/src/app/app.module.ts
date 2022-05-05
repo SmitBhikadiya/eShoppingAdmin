@@ -29,6 +29,9 @@ import { AddToCartBtnComponent } from './components/add-to-cart-btn/add-to-cart-
 import { CartDetailesComponent } from './components/cart-detailes/cart-detailes.component';
 import { CurrencyPipe } from '@angular/common';
 
+// for toster message
+import { ToastrModule } from 'ngx-toastr';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -53,7 +56,8 @@ import { CurrencyPipe } from '@angular/common';
     FormsModule,
     ReactiveFormsModule,
     CarouselModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     AddressService,

@@ -1,11 +1,10 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { AppComponent } from 'src/app/app.component';
+import { Component, OnInit } from '@angular/core';
 import { ICategory } from 'src/app/interfaces/category';
 import { ISubCategory } from 'src/app/interfaces/subcategory';
 import { CartService } from 'src/app/services/cart.service';
 import { CategoryService } from 'src/app/services/category.service';
+import { NotificationService } from 'src/app/services/notification.service';
 import { UserAuthService } from 'src/app/services/user-auth.service';
 import { environment } from 'src/environments/environment';
 declare let $: any;
@@ -26,9 +25,19 @@ export class HeaderComponent implements OnInit {
   isCartVisisble: boolean = true;
   subTotal: any;
   imgServerURL = environment.IMAGES_SERVER_URL;
-  @ViewChild(AppComponent) appComponent!: AppComponent;
+  cartData!:{cartItems:any,subTotal:any};
 
-  constructor(private cartService: CartService, private currPipe: CurrencyPipe, private catService: CategoryService, private router: Router, private userAuth: UserAuthService) { }
+  constructor(
+    private cartService: CartService, 
+    private currPipe: CurrencyPipe, 
+    private catService: CategoryService, 
+    private toast: NotificationService, 
+    private userAuth: UserAuthService) { 
+      cartService.cartItemSubject.subscribe(data => {
+        this.cartItems = data.cartItems;
+        this.subTotal = data.subTotal;
+      });
+    }
 
   ngOnInit(): void {
     this.getCategory();
@@ -50,7 +59,7 @@ export class HeaderComponent implements OnInit {
       this.categories = res["result"];
     },
       (err) => {
-        this.error = err;
+        this.toast.showError("Error: "+err);
       });
   }
 
@@ -59,7 +68,7 @@ export class HeaderComponent implements OnInit {
       this.subcategories = res["result"];
     },
       (err) => {
-        this.error = err;
+        this.toast.showError("Error: "+err);
       });
   }
 
@@ -73,24 +82,23 @@ export class HeaderComponent implements OnInit {
         this.subTotal = 0;
       }
       this.subTotal = this.currPipe.transform(this.subTotal, 'USD');
-      $(".add-to-cart").toggleClass("active");
-      $(".cart-wrap").slideToggle(500);
     }, (err) => {
-      console.log(err);
+      this.toast.showError("Error: "+err);
     });
   }
 
   removeItemFromCart(cartId: any) {
+    console.log("Removing Cart Item!!!");
+    
     this.cartService.removeItemFromCart(cartId).subscribe((res) => {
       if (res.error == '') {
+        this.toast.showSuccess("Item Removed Successfully!!!");
         this.getCartItems();
-        let currentUrl = this.router.url;
-        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-          this.router.navigate([currentUrl]);
-        });
+      }else{
+        this.toast.showError(res.error);
       }
     }, (err) => {
-      console.log(err);
+      this.toast.showError("Error: "+err);
     });
   }
 }

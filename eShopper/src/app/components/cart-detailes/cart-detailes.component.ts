@@ -3,10 +3,10 @@ import { CartService } from 'src/app/services/cart.service';
 import { UserAuthService } from 'src/app/services/user-auth.service';
 import { environment } from 'src/environments/environment';
 import { CurrencyPipe } from '@angular/common';
-import { Router } from '@angular/router';
 import { AddressService } from 'src/app/services/address.service';
 import { ServicetaxService } from 'src/app/services/servicetax.service';
 import { ProductService } from 'src/app/services/product.service';
+import { Subject } from 'rxjs';
 declare let $: any;
 
 @Component({
@@ -26,6 +26,7 @@ export class CartDetailesComponent implements OnInit {
   colors = [];
   sizes = [];
   tax = 0;
+  alertMsg:{ error:boolean, message:string } = {error:false, message:''};
   updateItem_:{ isEditable:boolean, itemId:any } = { isEditable:false, itemId:0 }
   constructor(
     private cartService: CartService,
@@ -121,9 +122,10 @@ export class CartDetailesComponent implements OnInit {
     this.cartService.removeItemFromCart(cartId).subscribe((res)=>{
       if(res.error==''){
         this.getCartItems();
+        this.showAlertMsg(false, "Item removed Successfully!!");
       }
     }, (err) => {
-      console.log(err);
+      this.showAlertMsg(false, "Somthing went wrong : "+err);
     });
   }
 
@@ -131,9 +133,10 @@ export class CartDetailesComponent implements OnInit {
     this.cartService.removeAllItemFromCart(this.userId).subscribe((res) => {
       if(res.error==''){
         this.cartItems = null;
+        this.showAlertMsg(false, "Cart cleared succesfully!!");
       }
     }, (err) => {
-      console.log(err);
+      this.showAlertMsg(false, "Somthing went wrong : "+err);
     });
   }
 
@@ -147,23 +150,19 @@ export class CartDetailesComponent implements OnInit {
       let subtotal = qty*item.productPrice;
       this.cartService.updateCartItem(item.id, this.userId, colorId, sizeId, qty, subtotal).subscribe({
         next: (res)=>{
-          console.log(res);
-          this.getCartItems();
+          if(res.error==''){
+            this.showAlertMsg(false,`${item.productName} is updated successfully!!`);
+            this.getCartItems();
+          }else{
+            this.showAlertMsg(true,`Somthing went wrong : ${res.error}`);
+          }
         },error: (err)=>{
-          console.log(err);
+          this.showAlertMsg(true,`Somthing went wrong : ${err}`);
         }
       });
     }else{
       alert("Invalid Qty");
     }
-  }
-
-  updateCart() {
-    // step 1: get data
-
-    // step 2: check product quauntity
-
-    // step 3: store data into database
   }
 
   countItemSubTotal(event: any, unit: any, target1: any, item:any) {
@@ -190,6 +189,15 @@ export class CartDetailesComponent implements OnInit {
     const temp = subTotal;
     $(".summary-table tbody .subtotal").html(this.cuurencyPipe.transform(temp, 'USD'));
     $(".summary-table tbody .summary-price strong").html(this.cuurencyPipe.transform(temp+Number(this.tax), 'USD'));
+  }
+
+  showAlertMsg(error:boolean, message:string){
+    this.alertMsg.error = error;
+    this.alertMsg.message = message;
+    setTimeout(()=>{
+      this.alertMsg.error = false;
+      this.alertMsg.message = '';
+    },3000);
   }
 
 }

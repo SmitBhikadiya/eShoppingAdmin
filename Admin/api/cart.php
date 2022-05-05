@@ -48,6 +48,10 @@ if (isset($postdata) && !empty($postdata)) {
         $prdId = (int) $request->prdId;
         $res = $obj->getCartItemBy($userId, $prdId);
         echo json_encode(["result"=>$res]);
+    }else if(isset($request->incId)){
+        $cartId =(int) $request->incId;
+        $error = $obj->incrementItemQty($cartId);
+        echo json_encode(["error"=>$error]);
     }else {
         http_response_code(404);
     }
