@@ -7,7 +7,7 @@
 <div class="breadcrumb-panel">
   <div class="container">
     <ol class="breadcrumb">
-      <li><a href="index.html" title="Home">Home</a></li>
+      <li><a [routerLink]="['/']" title="Home">Home</a></li>
       <li>
         <a [routerLink]="['/product/' + category]">
           {{ category | titleCaptilize }}</a>
@@ -163,7 +163,7 @@
                 <figcaption>
                   <a [routerLink]="['/productInfo/' + product['id']]" title="{{ product.productName }}"
                     class="heading">{{ product.productName }}</a>
-                  <span>{{ product.productPrice | currency: "USD" }}</span>
+                  <span>{{ product.productPrice | setCurr : currency }}</span>
                 </figcaption>
               </figure>
             </div>

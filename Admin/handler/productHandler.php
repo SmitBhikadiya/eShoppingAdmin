@@ -1,7 +1,52 @@
 <?php
 require_once("dbHandler.php");
+
+// // This is your test secret API key.
+// \Stripe\Stripe::setApiKey('pk_test_51KwIFNSH3d6vW3EyLdBfVi8BHYUSb4EyS4DeTQGL4GxUGhHd7WyDWDzYrk5Z1qToIT7LGuJWvUA9ZmYFLD7YwMXU00ndEZdRcU');
+
 class ProductHandler extends DBConnection
 {
+
+    function addOnStripe($name, $desc, $catid, $subcatid, $price, $qty, $colors, $sizes, $imagesArr, $trending, $sku){
+        include '../vendor/autoload.php';
+        $stripe = new \Stripe\StripeClient('sk_test_51KwIFNSH3d6vW3Ey12LxVuoYreQZgsLcOsLCUqtOttx6XZxqStyLyUw8fytC7yZixdd9ST8oZRG2hFMJxMCcY32r00OIDPZLYI');
+        $res = $stripe->products->create([
+            'name' => $name,
+            'active' => true,
+            'images' => array_map(function($img){ return "http://127.0.0.1/eShoppingAdmin/Admin/images/product/".$img; }, $imagesArr),
+            'default_price_data' => [
+                'currency'=>'inr',
+                'unit_amount_decimal'=>$price*100,
+            ],
+            'metadata' => [
+                'catId' => $catid,
+                'subCatId' => $subcatid,
+                'quantity' => $qty,
+                'colors' => $colors,
+                'sizes' => $sizes,
+                'sku' => $sku
+            ],
+            'description' => $desc,
+        ]);
+        return $res;
+    }
+
+    // function updateOnStripe($name, $prdid, $imagesArr, $price, $desc){
+    //     include '../vendor/autoload.php';
+    //     $stripe = new \Stripe\StripeClient('sk_test_51KwIFNSH3d6vW3Ey12LxVuoYreQZgsLcOsLCUqtOttx6XZxqStyLyUw8fytC7yZixdd9ST8oZRG2hFMJxMCcY32r00OIDPZLYI');
+    //     $res = $stripe->products->update([
+    //         'id' => $prdid,
+    //         'name' => $name,
+    //         'active' => true,
+    //         'images' => array_map(function($img){ return "http://127.0.0.1/eShoppingAdmin/Admin/images/product/".$img; }, $imagesArr),
+    //         'default_price_data' => [
+    //             'currency'=>'inr',
+    //             'unit_amount_decimal'=>$price*100,
+    //         ],
+    //         'description' => $desc,
+    //     ]);
+    //     return $res;
+    // }
 
     function TotalProducts($search = '')
     {
@@ -341,9 +386,6 @@ class ProductHandler extends DBConnection
         } else {
             $records = [];
         }
-        // echo $sql;
-        // echo "<pre>";
-        // print_r($records);
         return $records;
     }
 
@@ -452,11 +494,18 @@ class ProductHandler extends DBConnection
         $error = "";
         if(!$this->isSKUExits($sku)){
             if (!$this->isProductExits($name, $catid, $subcatid)) {
-                $sql = "INSERT INTO products (productName, productDesc, productPrice, productSizeIds, productColorIds, productImages, totalQuantity, categoryId, subCategoryId, isTrending, SKU, createdDate) 
-                        VALUES ('$name', '$desc', $price, '$sizeIds', '$colorIds', '$images', $qty, $catid, $subcatid , $trending, '$sku', now())";
-                $result = $this->getConnection()->query($sql);
-                if (!$result) {
-                    $error = "Somthing went wrong with the $sql";
+                $res = $this->addOnStripe($name, $desc, $catid, $subcatid, $price, $qty, $colorIds, $sizeIds, $imagesArr, $trending, $sku);
+                if(count($res) > 0){
+                    $stripeId = $res->id;
+                    $priceId = $res->default_price;
+                    $sql = "INSERT INTO products (stripeId, stripePriceId, productName, productDesc, productPrice, productSizeIds, productColorIds, productImages, totalQuantity, categoryId, subCategoryId, isTrending, SKU, createdDate) 
+                            VALUES ('$stripeId', '$priceId' ,'$name', '$desc', $price, '$sizeIds', '$colorIds', '$images', $qty, $catid, $subcatid , $trending, '$sku', now())";
+                    $result = $this->getConnection()->query($sql);
+                    if (!$result) {
+                        $error = "Somthing went wrong with the $sql";
+                    }
+                }else{
+                    $error = "Somthing went wrong with the StripeAPI!!";
                 }
             } else {
                 $error = "'$name' is already exits in the selected category!!";

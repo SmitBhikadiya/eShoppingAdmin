@@ -7,6 +7,7 @@ require_once("productHandler.php");
 require_once("customerHandler.php");
 require_once("orderHandler.php");
 require_once("taxHandler.php");
+require_once("couponHandler.php");
 
 $addressH = new AddressHandler();
 $adminuserH = new AdminUser();
@@ -15,6 +16,7 @@ $productH = new ProductHandler();
 $customerH = new CustomerHandler();
 $orderH = new OrderHandler();
 $taxH = new TaxHandler();
+$couponH = new CouponHandler();
 $error = '';
 $success = '';
 
@@ -89,6 +91,7 @@ if (isset($_GET["dUserAddress"])) {
     header("Location: ../user_address.php");
 }
 
+/*------------- Add Tax -------------*/
 if(isset($_POST["AddTax"])){
     $tax = $_POST["tax"];
     $countryId = $_POST["country"];
@@ -102,6 +105,7 @@ if(isset($_POST["AddTax"])){
     header("Location: ../service_tax.php");
 }
 
+/*------------- Update Tax -------------*/
 if(isset($_POST["EditTax"])){
     $taxId = (int) $_POST["taxId"];
     $tax = $_POST["tax"];
@@ -116,6 +120,7 @@ if(isset($_POST["EditTax"])){
     header("Location: ../service_tax.php");
 }
 
+/*------------- Delete Tax -------------*/
 if(isset($_GET["dTax"])){
     $id = (int) $_GET["dTax"];
     if ($taxH->deleteTaxRecords($id)) {
@@ -125,6 +130,61 @@ if(isset($_GET["dTax"])){
     }
     header("Location: ../service_tax.php");
 }
+
+/*------------- Add Coupen -------------*/
+if(isset($_POST["AddCoupon"])){
+    $couponCode = $_POST["couponCode"];
+    $couponExpiryDate = explode("T",$_POST["couponExpiryDate"]);
+    $discount_amount = $_POST["discountAmount"];
+    $requireAmountForApplicable = $_POST["requireAmountForApplicable"];
+    $maximumTotalUsage = $_POST["maximumTotalUsage"];
+    $expTime = $couponExpiryDate[0] ." ". $couponExpiryDate[1];
+
+    $error = $couponH->addCoupon($couponCode, $expTime, $requireAmountForApplicable, $maximumTotalUsage, $discount_amount);
+    if ($error == "") {
+        $_SESSION["result"] = ["msg" => "New Coupon ('$couponCode') Added Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => $error, "error" => true];
+    }
+    header("Location: ../coupons.php");
+
+    //echo $couponCode, " ", $expTime, " ",$discount_amount," ", $requireAmountForApplicable," ", $maximumTotalUsage;
+    //exit();
+}
+
+if(isset($_POST["EditCoupon"])){
+    $id = $_POST["couponId"];
+    $couponCode = $_POST["couponCode"];
+    $couponExpiryDate = explode("T",$_POST["couponExpiryDate"]);
+    $discount_amount = $_POST["discountAmount"];
+    $requireAmountForApplicable = $_POST["requireAmountForApplicable"];
+    $maximumTotalUsage = $_POST["maximumTotalUsage"];
+    $expTime = $couponExpiryDate[0] ." ". $couponExpiryDate[1];
+
+    $error = $couponH->updateCoupon($id, $couponCode, $expTime, $requireAmountForApplicable, $maximumTotalUsage, $discount_amount);
+    if ($error == "") {
+        $_SESSION["result"] = ["msg" => "Coupon ('$couponCode') updated Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => $error, "error" => true];
+    }
+    header("Location: ../coupons.php");
+
+    //echo $couponCode, " ", $expTime, " ",$discount_amount," ", $requireAmountForApplicable," ", $maximumTotalUsage;
+    //exit();
+}
+
+/*------------- Delete Product -------------*/
+if (isset($_GET["dCoupon"])) {
+    $id = (int) $_GET["dCoupon"];
+    if ($couponH->deleteCoupon($id)) {
+        $_SESSION["result"] = ["msg" => "Deleted Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => "Somthing went wrong!!!", "error" => true];
+    }
+    header("Location: ../coupons.php");
+}
+
+
 
 /*------------- Add Product -------------*/
 if (isset($_POST["AddProduct"])) {

@@ -15,4 +15,8 @@ export class NotificationService {
   showError(msg:string, title:string=''){
     this.toast.error(msg, title, { timeOut:2000, closeButton:true, positionClass: 'toast-top-center' });
   }
+
+  showWarning(msg:string, title:string=''){
+    this.toast.warning(msg, title, { timeOut:2000, closeButton:true, positionClass: 'toast-top-center' });
+  }
 }

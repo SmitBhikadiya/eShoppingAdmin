@@ -24,7 +24,7 @@ export class CartService {
       if(res!=undefined && res.result!=''){
         console.log("Getting Cart Items");
         this.calculateSubTotal(res.result);
-        this.cartItemSubject.next({cartItems:res.result, subTotal: this.currPipe.transform(this.subtotal, 'USD')});
+        this.cartItemSubject.next({cartItems:res.result, subTotal: this.subtotal});
       }
       return res;
     }));

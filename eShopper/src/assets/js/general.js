@@ -6,10 +6,10 @@ $(document).ready(function () {
     });
 
     //cart
-    $(".add-to-cart").click(function() {
-        $(this).toggleClass("active");
-        $(".cart-wrap").slideToggle(500);
-    })
+    // $(".add-to-cart").click(function() {
+    //     $(this).toggleClass("active");
+    //     $(".cart-wrap").slideToggle(500);
+    // })
 
     // var ignoreClickOnMeElement = document.getElementById("cart-outer");
 

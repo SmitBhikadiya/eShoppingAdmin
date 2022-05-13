@@ -88,11 +88,25 @@ $(document).ready(function(){
         }
     });
 
+    $("#formAddCoupon").on("submit", function(e){
+        window.isValid = true;
+        $('.error').remove();
+        $('.alert').remove();
+        isFieldEmpty("#couponCode", 5);
+        isFieldEmpty("#couponExpiry");
+        isFieldEmpty("#discountAmount");
+        isFieldEmpty("#requireAmountForApplicable");
+        isFieldEmpty("#maximumTotalUsage");      
+        if(!window.isValid){
+            e.preventDefault();
+        }
+    });
+
     $("#formAddTax").on("submit", function(e){
         window.isValid = true;
         $('.error').remove();
         $('.alert').remove();
-        isFieldEmpty("#addtax");
+        isNumberValid("#addtax", 1, 100);
         isOptionSelected("#countrylist");
         isOptionSelected("#statelist");
         if(!window.isValid){
@@ -120,6 +134,19 @@ $(document).ready(function(){
         }
     });
 
+    function isNumberValid(id, min, max) {
+        let value = $(id).val();
+        if (value.length < 1) {
+          $(id).after("<span class='error'>*Field can't be empty!!</span>");
+          window.isValid = false;
+          return;
+        } else if (value < min || value > max) {
+          $(id).after("<span class='error'>*Number must be beetwen "+min+" and "+max+"</span>");
+          window.isValid = false;
+          return;
+        }
+      }
+
     function isOptionSelected(id){
         var value = $(id).val();
         if(value==0 || value==undefined || value==null){
@@ -129,10 +156,15 @@ $(document).ready(function(){
         }
     }
 
-    function isFieldEmpty(id){
+    function isFieldEmpty(id , len=0){
         var val = $(id).val();
-        if(val.length < 1){
+        if(val.length < 1 || val==='' || val===undefined){
             $(id).after("<span class='error'>*Field can't be empty</span>");
+            window.isValid = false;
+            return;
+        }
+        if(len!=0 && val.length < len){
+            $(id).after("<span class='error'>*Must be "+len+" characters long</span>");
             window.isValid = false;
             return;
         }

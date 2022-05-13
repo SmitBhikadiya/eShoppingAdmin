@@ -90,8 +90,8 @@ if (isset($_SESSION["result"])) {
                                         <div class="card-body-table px-3">
                                             <div class="news-content-right pd-20">
                                                 <div class="form-group">
-                                                    <label class="form-label">Tax*</label>
-                                                    <input type="number" id="addtax" name="tax" min=1 class="form-control" placeholder="Enter Tax" value="<?= isset($result) ? $result["tax"] : "" ?>" />
+                                                    <label class="form-label">Tax ( In % )*</label>
+                                                    <input type="number" id="addtax" name="tax"  class="form-control" placeholder="Enter Tax" value="<?= isset($result) ? $result["tax"] : "" ?>" />
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="form-label">Select Country*</label>

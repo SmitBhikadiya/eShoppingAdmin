@@ -73,7 +73,7 @@
                         stock</span>
                     <ng-template #notinstock><span class="not-in-stock">Not Available</span></ng-template>
                 </p>
-                <div class="price-box">$120.00</div>
+                <div class="price-box">{{ product['productPrice'] | setCurr : currency }}</div>
                 <form [formGroup]="cartForm" id="cartForm" (ngSubmit)="addTocart()">
                 <div class="product-options">
                     <label class="required"><em>*</em> Size</label>

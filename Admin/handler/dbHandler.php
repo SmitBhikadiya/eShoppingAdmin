@@ -11,6 +11,7 @@ class DBConnection
     private $conn;
     function __construct()
     {
+        date_default_timezone_set('Asia/Kolkata');
         $this->conn = new mysqli($this->hostname, $this->username, $this->password, $this->database);
         if ($this->conn->connect_error) {
             die("Connection Failed: " . $this->conn->connect_error);

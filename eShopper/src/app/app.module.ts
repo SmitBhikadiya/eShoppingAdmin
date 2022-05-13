@@ -31,6 +31,7 @@ import { CurrencyPipe } from '@angular/common';
 
 // for toster message
 import { ToastrModule } from 'ngx-toastr';
+import { SetCurrPipe } from './pipes/set-curr.pipe';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { ToastrModule } from 'ngx-toastr';
     FilterStringPipe,
     ErrorComponent,
     AddToCartBtnComponent,
-    CartDetailesComponent
+    CartDetailesComponent,
+    SetCurrPipe
   ],
   imports: [
     BrowserModule,
@@ -66,6 +68,7 @@ import { ToastrModule } from 'ngx-toastr';
     UserAuthService,
     AuthGuard,
     CurrencyPipe,
+    SetCurrPipe,
     {
       provide: HTTP_INTERCEPTORS,useClass: AuthInterceptorService, multi: true 
     },

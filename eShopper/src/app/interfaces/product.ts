@@ -1,5 +1,7 @@
 export interface IProduct{
     id:number
+    stripeId:string
+    stripePriceId:string
     productName:string
     productDesc:string
     productPrice:string

@@ -1,12 +1,11 @@
+
 import { CurrencyPipe } from '@angular/common';
-import { Component, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { IProduct } from 'src/app/interfaces/product';
-import { CartService } from 'src/app/services/cart.service';
+import { CurrencyService } from 'src/app/services/currency.service';
 import { ProductService } from 'src/app/services/product.service';
-import { UserAuthService } from 'src/app/services/user-auth.service';
 import { environment } from 'src/environments/environment';
-import { HeaderComponent } from '../header/header.component';
 
 @Component({
   selector: 'app-home',
@@ -15,34 +14,44 @@ import { HeaderComponent } from '../header/header.component';
 })
 export class HomeComponent implements OnInit {
 
-  products!:IProduct[];
-  error:string = '';
+  products!: IProduct[];
+  ActProducts!: IProduct[];
+  error: string = '';
   imageURL = environment.IMAGES_SERVER_URL;
   defaultLoadProduct = 8;
-  noImageURL = environment.IMAGES_SERVER_URL+"/noimage.jpg";
-  cartItems!:any;
-  subTotal!:any;
+  noImageURL = environment.IMAGES_SERVER_URL + "/noimage.jpg";
+  cartItems!: any;
+  subTotal!: any;
+  currency = 'inr';
 
   constructor(
-    private productService:ProductService,
-    private router:Router
-    ) {
+    private productService: ProductService,
+    private router: Router,
+    private currService: CurrencyService,
+    private currPipe: CurrencyPipe
+  ) {
+
     this.router.events.subscribe((ev) => {
       if (ev instanceof NavigationEnd) {
+        this.currency = currService.getCurrency();
         this.ngOnInit();
       }
     });
+
+    currService.currSubject.subscribe((curr) => {
+      this.currency = curr;
+    });
+
   }
 
   ngOnInit(): void {
     this.getProducts();
   }
 
-  getProducts(){
-    this.productService.getProducts(this.defaultLoadProduct, '', 'latest', '1').subscribe((res)=>{
+  getProducts() {
+    this.productService.getProducts(this.defaultLoadProduct, '', 'latest', '1').subscribe((res) => {
       this.products = res["result"];
-      console.log(res);
-    },(err)=>{
+    }, (err) => {
       this.error = err;
     });
   }

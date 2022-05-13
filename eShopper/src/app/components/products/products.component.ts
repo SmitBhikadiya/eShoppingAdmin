@@ -6,6 +6,7 @@ import { IProduct } from 'src/app/interfaces/product';
 import { ISize } from 'src/app/interfaces/size';
 import { ISubCategory } from 'src/app/interfaces/subcategory';
 import { CategoryService } from 'src/app/services/category.service';
+import { CurrencyService } from 'src/app/services/currency.service';
 import { ProductService } from 'src/app/services/product.service';
 import { environment } from 'src/environments/environment';
 
@@ -28,16 +29,28 @@ export class ProductsComponent implements OnInit {
   sortby:string = 'latest';
   f_subcatIds:number[] = [];
   f_sizeIds:number[] = [];
+  currency = '';
   noImageURL = environment.IMAGES_SERVER_URL+"/noimage.jpg";
   defaultLoadProduct:number = environment.DEFAULT_LOAD_PRODUCT;
 
   imageURL:string = environment.IMAGES_SERVER_URL;
 
-  constructor(private render:Renderer2,private builder:FormBuilder ,private productService:ProductService, private categoryService:CategoryService, private router:Router,private route:ActivatedRoute) {
+  constructor(
+    private render:Renderer2,
+    private builder:FormBuilder,
+    private productService:ProductService, 
+    private categoryService:CategoryService, 
+    private router:Router,private route:ActivatedRoute,
+    private currService:CurrencyService) {
     this.router.events.subscribe((ev) => {
       if (ev instanceof NavigationEnd) {
+        this.currency = currService.getCurrency();
         this.ngOnInit();
       }
+    });
+
+    currService.currSubject.subscribe((curr)=>{
+      this.currency = curr;
     });
   }
 

@@ -7,7 +7,9 @@ import { CustomValidation } from 'src/app/customValidation';
 import { IColor } from 'src/app/interfaces/color';
 import { IProduct } from 'src/app/interfaces/product';
 import { ISize } from 'src/app/interfaces/size';
+import { SetCurrPipe } from 'src/app/pipes/set-curr.pipe';
 import { CartService } from 'src/app/services/cart.service';
+import { CurrencyService } from 'src/app/services/currency.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { ProductService } from 'src/app/services/product.service';
 import { UserAuthService } from 'src/app/services/user-auth.service';
@@ -94,6 +96,8 @@ export class ProductDetailesComponent implements OnInit {
     },
   }
 
+  currency = '';
+
   constructor(
     private productService: ProductService,
     private router: Router,
@@ -102,13 +106,19 @@ export class ProductDetailesComponent implements OnInit {
     private cartService: CartService,
     private route: ActivatedRoute,
     private toast: NotificationService,
-    private currPipe: CurrencyPipe
+    private currPipe: SetCurrPipe,
+    private currService:CurrencyService
   ) {
 
     router.events.subscribe((ev) => {
       if (ev instanceof NavigationEnd) {
+        this.currency = currService.getCurrency();
         this.ngOnInit();
       }
+    });
+
+    currService.currSubject.subscribe((curr)=>{
+      this.currency = curr;
     });
 
     cartService.cartItemSubject.subscribe(data => {
@@ -172,7 +182,7 @@ export class ProductDetailesComponent implements OnInit {
         this.cartItems = null;
         this.subTotal = 0;
       }
-      this.subTotal = this.currPipe.transform(this.subTotal, 'USD');
+      this.subTotal = this.currPipe.transform(this.subTotal, this.currency);
       if(this.cartItems!=null || this.prdid!=null || this.prdid!=undefined){
         const res = this.cartItems.filter((item:any)=>{
           if(item.productId==this.prdid){
@@ -234,25 +244,6 @@ export class ProductDetailesComponent implements OnInit {
     synk.to((data.startPosition)?.toString());
   }
 
-  // getCartDetailesBy(prdId: number) {
-  //   this.cartService.getCartItemsByPrdId(prdId, this.userId).subscribe({
-  //     next: (res) => {
-  //       const data = res.result;
-  //       this.getCartItems();
-  //       if (data.id != undefined) {
-  //         this.cartId = data.id;
-  //         this.btn = "UPDATE CART";
-  //         this.setFormControls(data.productColorId, data.productSizeId, data.quantity);
-  //       } else {
-  //         this.btn = "ADD TO CART";
-  //         this.cartId = null;
-  //       }
-  //     }, error: (err) => {
-  //       console.log(err);
-  //     }
-  //   });
-  // }
-
   setFormControls(colorId: number, sizeId: number, qty: number) {
     this.cartForm.controls["pcolor"].setValue(colorId);
     this.cartForm.controls["psize"].setValue(sizeId);
@@ -268,8 +259,7 @@ export class ProductDetailesComponent implements OnInit {
         $(".wrapper2").hide();
       }
       this.getSizeByIds(this.product["productSizeIds"]);
-      this.getColorByIds(this.product["productColorIds"]);
-      this.getCartItems();
+      
     }, (err) => {
       this.error = err;
     });
@@ -279,6 +269,7 @@ export class ProductDetailesComponent implements OnInit {
     console.log(ids);
     this.productService.getSizeByIds(ids).subscribe((res) => {
       this.sizes = res["result"];
+      this.getColorByIds(this.product["productColorIds"]);
     }, (err) => {
       this.error = err;
     });
@@ -288,6 +279,7 @@ export class ProductDetailesComponent implements OnInit {
     console.log(ids);
     this.productService.getColorByIds(ids).subscribe((res) => {
       this.colors = res["result"];
+      this.getCartItems();
     }, (err) => {
       this.error = err;
     });

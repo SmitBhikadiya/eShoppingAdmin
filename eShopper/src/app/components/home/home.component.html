@@ -74,7 +74,7 @@
                                 <figcaption>
                                     <a [routerLink]="['/productInfo/'+product['id']]" title="{{ product.productName }}" class="heading">{{
                                         product.productName }}</a>
-                                    <span>{{ product.productPrice | currency: "USD" }}</span>
+                                    <span>{{ product.productPrice | setCurr: currency }}</span>
                                 </figcaption>
                             </figure>
                         </div>

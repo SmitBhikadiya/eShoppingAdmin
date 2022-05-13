@@ -96,7 +96,7 @@ if (isset($_SESSION["result"])) {
                                             <thead>
                                                 <tr>
                                                     <th>ID.</th>
-                                                    <th>Service Tax ($)</th>
+                                                    <th>Service Tax (%)</th>
                                                     <th>State</th>
                                                     <th>Country</th>
                                                     <th>Updated Date</th>

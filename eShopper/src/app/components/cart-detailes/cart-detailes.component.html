@@ -114,7 +114,7 @@
                                 </td>
                                 <td>
                                     <span class="orange-text">{{
-                                        item.unitPrize | currency: "USD"
+                                        item.unitPrize | setCurr : currency
                                         }}</span>
                                     <input style="display: none" class="unitprice" value="{{ item.unitPrize }}" #unit />
                                 </td>
@@ -126,7 +126,7 @@
                                 </td>
                                 <td>
                                     <span class="orange-text" #itemsubtotal>{{
-                                        item.subTotal | currency: "USD"
+                                        item.subTotal | setCurr : currency
                                         }}</span>
                                 </td>
                                 <td>
@@ -178,6 +178,10 @@
                                         </option>
                                     </select>
                                 </div>
+                                <div class="form-group">
+                                    <label for="coupon">Coupon</label>
+                                    <input type="text" class="form-control" id="couponInput" (keyup)="couponApply($event)">
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -189,9 +193,17 @@
                                         <td>Subtotal</td>
                                         <td class="subtotal"></td>
                                     </tr>
+                                    <tr style="padding-bottom: 10px; border-bottom: 1px solid rgba(0, 0, 0, 0.344)">
+                                        <td>Discount</td>
+                                        <td class="discount">- {{ discount.toString() | setCurr : currency }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>After Discount</td>
+                                        <td class="tax">{{ (subTotal-discount).toString() | setCurr : currency }}</td>
+                                    </tr>
                                     <tr>
                                         <td>Tax</td>
-                                        <td class="tax">{{ tax | currency: "USD" }}</td>
+                                        <td class="tax">+ {{ (tax).toString() | setCurr : currency }}</td>
                                     </tr>
                                     <tr>
                                         <td class="summary-total"><strong>Total</strong></td>
@@ -199,7 +211,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="2">
-                                            <a href="#" title="Update Shopping Cart" class="btn-secondary">CheckOut</a>
+                                            <a title="Update Shopping Cart" class="btn-secondary" (click)="checkout()" >CheckOut</a>
                                         </td>
                                     </tr>
                                 </tbody>
