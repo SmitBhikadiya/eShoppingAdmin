@@ -32,6 +32,7 @@ import { CurrencyPipe } from '@angular/common';
 // for toster message
 import { ToastrModule } from 'ngx-toastr';
 import { SetCurrPipe } from './pipes/set-curr.pipe';
+import { OrderSuccessComponent } from './components/order-success/order-success.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { SetCurrPipe } from './pipes/set-curr.pipe';
     ErrorComponent,
     AddToCartBtnComponent,
     CartDetailesComponent,
-    SetCurrPipe
+    SetCurrPipe,
+    OrderSuccessComponent,
   ],
   imports: [
     BrowserModule,

@@ -96,7 +96,6 @@ if (isset($_SESSION["result"])) {
 													<th style="width:100px">Client Name</th>
 													<th style="width:400px">Address</th>
 													<th style="width:100px">Order Date</th>
-													<th style="width:100px">Total Quantity</th>
 													<th style="width:80px">Total Bill</th>
 													<th style="width:100px">Action</th>
 												</tr>
@@ -116,9 +115,7 @@ if (isset($_SESSION["result"])) {
 															<td>
 																<span class="delivery-time"><?= $order["createdDate"] ?></span>
 															</td>
-
-															<td><?= $order["totalQuantity"] ?></td>
-															<td><?= $order["totalPrice"] ?></td>
+															<td><?= $order["total"] ?></td>
 															<td class="action-btns">
 																<a href="view_order.php?view=<?= $order["id"] ?>" class="view-shop-btn" title="View"><i class="fas fa-eye"></i></a>
 															</td>

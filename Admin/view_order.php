@@ -110,9 +110,9 @@ if (isset($_SESSION["result"])) {
 																	<th>Item</th>
 																	<th>Item Color</th>
 																	<th>Item Size</th>
-																	<th style="width:150px" class="text-center">Unit Price</th>
+																	<th style="width:150px" class="text-center">Unit Price (₹)</th>
 																	<th style="width:150px" class="text-center">Qty</th>
-																	<th style="width:100px" class="text-center">Total</th>
+																	<th style="width:100px" class="text-center">Total (₹)</th>
 																</tr>
 															</thead>
 															<tbody>
@@ -130,9 +130,9 @@ if (isset($_SESSION["result"])) {
 																			</td>
 																			<td><?= $prd["productColor"] ?></td>
 																			<td><?= strtoupper($prd["productSize"]) ?></td>
-																			<td class="text-center">$<?= $prd["unitPrice"] ?></td>
-																			<td class="text-center"><?= $prd["qunatity"] ?></td>
-																			<td class="text-center">$<?= ($prd["unitPrice"] * $prd["qunatity"]) ?></td>
+																			<td class="text-center"><?= $prd["unitPrice"] ?></td>
+																			<td class="text-center"><?= $prd["quantity"] ?></td>
+																			<td class="text-center"><?= ($prd["unitPrice"] * $prd["quantity"]) ?></td>
 																		</tr>
 																<?php
 																	}
@@ -150,26 +150,34 @@ if (isset($_SESSION["result"])) {
 										<div class="col-lg-5">
 											<div class="order-total-dt">
 												<div class="order-total-left-text">
-													Sub Total
+													Sub Total (₹)
 												</div>
 												<div class="order-total-right-text">
-													$<?= $order["totalPrice"] ?>
+													<?= $order["subTotal"] ?>
 												</div>
 											</div>
 											<div class="order-total-dt">
 												<div class="order-total-left-text">
-													Delivery Fees
+													Discount (₹)
 												</div>
 												<div class="order-total-right-text">
-													$0
+													- <span><?= (($order["discountAmount"]!='') ? $order["discountAmount"]: 0) ?></span>
+												</div>
+											</div>
+											<div class="order-total-dt">
+												<div class="order-total-left-text">
+													Tax (₹)
+												</div>
+												<div class="order-total-right-text">
+													+ <span> <?= ($order['subTotal'] - (($order["discountAmount"]!='') ? $order["discountAmount"]: 0)) * ($order['tax']/100) ?> </span>
 												</div>
 											</div>
 											<div class="order-total-dt">
 												<div class="order-total-left-text fsz-18">
-													Total Amount
+													Total Amount (₹)
 												</div>
 												<div class="order-total-right-text fsz-18">
-													$<?= $order["totalPrice"] ?>
+													<?= $order["total"] ?>
 												</div>
 											</div>
 										</div>

@@ -95,11 +95,11 @@ if (isset($_SESSION["result"])) {
                                                 <tr>
                                                     <th style="width:120px">Order ID</th>
                                                     <th style="width:100px">Client Name</th>
+                                                    <th style="width:80px">Order Status</th>
                                                     <th style="width:400px">Address</th>
                                                     <th style="width:100px">Order Date</th>
+                                                    <th style="width:80px">Total (₹)</th>
                                                     <th style="width:100px">Modified Date</th>
-                                                    <th style="width:80px">Total</th>
-                                                    <th style="width:80px">Order Status</th>
                                                     <th style="width:80px">Action</th>
                                                 </tr>
                                             </thead>
@@ -114,15 +114,16 @@ if (isset($_SESSION["result"])) {
                                                             <td>
                                                                 <a href="view_customer.php?view=<?= $order["userId"] ?>" target="_blank"><?= $order["username"] ?></a>
                                                             </td>
+                                                            <td><?= ($order["orderStatus"] == 1) ? "Completed" : "Cancelled" ?></td>
                                                             <td><?= $order["streetName"] . ", " . $order["city"] . ", " . $order["state"] ?></td>
                                                             <td>
                                                                 <span class="delivery-time"><?= $order["createdDate"] ?></span>
                                                             </td>
+                                        
+                                                            <td><?= $order["total"] ?></td>
                                                             <td>
                                                                 <span class="delivery-time"><?= $order["modifiedDate"] ?></span>
                                                             </td>
-                                                            <td>$<?= $order["totalPrice"] ?></td>
-                                                            <td><?= ($order["orderStatus"] == 1) ? "Completed" : "Cancelled" ?></td>
                                                             <td class="action-btns">
                                                                 <a href="view_order.php?view=<?= $order["id"] ?>" class="view-shop-btn" title="View"><i class="fas fa-eye"></i></a>
                                                             </td>

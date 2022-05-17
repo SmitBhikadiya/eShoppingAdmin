@@ -3,6 +3,7 @@ require '../vendor/autoload.php';
 require '../handler/productHandler.php';
 require '../handler/taxHandler.php';
 require '../handler/couponHandler.php';
+require '../handler/orderHandler.php';
 
 header('Content-Type: application/json');
 
@@ -14,6 +15,7 @@ if (isset($postdata) && !empty($postdata)) {
   $cartErrors = [];
   $errors = [];
   $tax = 0;
+  $taxPercentage = 1;
   $discount = 0;
   $session = [];
   $couponStripeId = '';
@@ -32,7 +34,7 @@ if (isset($postdata) && !empty($postdata)) {
           $taxData =(array) $request->cartDetailes->taxData;
           $taxErrors = checkTax($taxData);
           if(count($taxErrors) < 1){
-            $tax = $taxData["tax"];
+            $taxPercentage = $taxData["tax"];
             $taxStripeId = $taxData["stripeId"];
           }
         }else{
@@ -59,8 +61,28 @@ if (isset($postdata) && !empty($postdata)) {
       $userId = $request->cartDetailes->userId;
       $currency = 'INR';
       $subTotal = countSubTotal($cartData);
-      $total =$subTotal + $tax - $discount;
-      $session = getCheckoutSession($stripe, $cartData,$subTotal, $total, $userId, $currency, $domain, $couponStripeId, $taxStripeId );
+      $tax = ($subTotal - $discount) * ($taxPercentage/100);
+      $total = $subTotal + $tax - $discount;
+
+      $orderH = new OrderHandler();
+      $res = $orderH->createOrder($cartData, $userId, $subTotal, $taxStripeId, $couponStripeId, $total, 0, 0);
+
+      if($res['error']==''){
+        $orderId = $res["orderId"];
+        try{
+          $session = getCheckoutSession($stripe, $cartData, $subTotal, $total, $userId, $currency, $domain, $couponStripeId, $taxStripeId, $orderId );
+          $err = $orderH->updateOrderSession($orderId, $session['id']);
+          // echo json_encode([$session, $err]);
+          // exit();
+          if($err!=''){
+            $errors["orderErrors"] = ["order"=>$err];
+          }
+        }catch(Exception $e){
+          $errors["sessionErrors"] = ["checkout"=>$e->getMessage()];
+        }
+      }else{
+        $errors["orderErrors"] = ["order"=>$res["error"]];
+      }
     }else{
       $errors['extraErrors'] = ['userId' => 'User Id not found!!!'];
     }
@@ -145,23 +167,27 @@ function getLineItems($cartItems, $taxStripeId){
   return $arr;
 }
 
-function getCheckoutSession($stripe, $cartItems, $subTotal, $total, $customerId, $currency, $domain, $couponStripeId, $taxStripeId){
-  return $stripe->checkout->sessions->create([
-    'success_url' => $domain . '/success',
-    'cancel_url' => $domain . '/canceled',
+function getCheckoutSession($stripe, $cartItems, $subTotal, $total, $customerId, $currency, $domain, $couponStripeId, $taxStripeId, $orderId){
+  $config = [
+    'success_url' => $domain . "/success/" . $orderId,
+    'cancel_url' => $domain . "/cancelled/" . $orderId,
     'line_items' => getLineItems($cartItems, $taxStripeId),
     'mode' => 'payment',
     'metadata' => [
       'amount_subtotal' => $subTotal,
       'amount_total' => $total,
       'currency' => $currency,
+      'orderId' => $orderId
     ],
-    'discounts' => [[
-      'coupon' => $couponStripeId,
-    ]],
     'client_reference_id' => $customerId,
     'mode' => 'payment',
-  ]);
+  ];
+
+  if($couponStripeId!=''){
+    $config['discounts'] =  [['coupon' => $couponStripeId]];
+  }
+
+  return $stripe->checkout->sessions->create($config);
 }
 
 

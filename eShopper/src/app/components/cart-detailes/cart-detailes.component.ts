@@ -8,9 +8,10 @@ import { ProductService } from 'src/app/services/product.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { CurrencyService } from 'src/app/services/currency.service';
 import { SetCurrPipe } from 'src/app/pipes/set-curr.pipe';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CouponService } from 'src/app/services/coupon.service';
 import { CheckoutService } from 'src/app/services/checkout.service';
+import { OrdersService } from 'src/app/services/orders.service';
 declare let $: any;
 
 @Component({
@@ -25,7 +26,6 @@ export class CartDetailesComponent implements OnInit {
   imgServerURL = environment.IMAGES_SERVER_URL;
   subTotal!: any;
   userId!: any;
-  coupon!:any;
   countries = [];
   states = [];
   colors = [];
@@ -34,8 +34,10 @@ export class CartDetailesComponent implements OnInit {
   tax = 0;
   taxData!:any;
   discount = 0;
+  couponData!:any;
   currency = 'INR';
   flag: boolean = true;
+  checkoutData = null;
   alertMsg: { error: boolean, message: string } = { error: false, message: '' };
   updateItem_: { isEditable: boolean, itemId: any } = { isEditable: false, itemId: 0 }
   constructor(
@@ -47,8 +49,10 @@ export class CartDetailesComponent implements OnInit {
     private taxservice: ServicetaxService,
     private toast: NotificationService,
     private currService: CurrencyService,
+    private activatedRoute:ActivatedRoute,
     private couponService: CouponService,
     private stripeService: CheckoutService,
+    private orderService: OrdersService,
     private router: Router
   ) {
 
@@ -58,6 +62,16 @@ export class CartDetailesComponent implements OnInit {
     router.events.subscribe((ev) => {
       if (ev instanceof NavigationEnd) {
         this.currency = currService.getCurrency();
+      }
+    });
+
+    activatedRoute.params.subscribe((param)=>{
+      if(param && param["payment"]=='success'){
+        let ordId = param["ordId"];
+        this.checkOrderAvailablity(ordId);
+      }else if(param && param["payment"]=='cancelled'){
+        let ordId = param["ordId"];
+        this.removeOrderIfPaymentNotDone(ordId);
       }
     });
 
@@ -73,13 +87,79 @@ export class CartDetailesComponent implements OnInit {
     this.getCountries();
   }
 
+  checkOrderAvailablity(ordId:number){
+    this.orderService.getOrderById(ordId, this.userId).subscribe({
+      next: (res) => {
+        console.log(res, res.result.length===undefined, res.result.payment=='0');
+        if(res.result.length===undefined && res.result.payment=='0'){
+          this.updatePaymentStatus(ordId);
+        }else{
+          this.router.navigate(['/cart']);
+        }
+      },
+      error: (err) => {
+        this.toast.showError(err, 'Error');
+      }
+    });
+  }
+
+  removeOrderIfPaymentNotDone(ordId:number){
+    this.orderService.removeOrderIfPaymentNotDone(ordId, this.userId, 0).subscribe({
+      next: (res) => {
+        if(res.error == ''){
+          this.toast.showWarning("Order Payment Cancelled!!!");
+          this.router.navigate(['/cart']);
+        }
+      },
+      error: (err) => {
+        this.toast.showError(err,"Error");
+      }
+    });
+  }
+
+  updatePaymentStatus(ordId:number){
+    this.orderService.setPaymentDone(ordId, this.userId, this.couponData).subscribe({
+      next: (res) => {
+        console.log(res);
+        if(res.error == ''){
+          this.toast.showSuccess("Payment Done Successfully!!!");
+          this.clearCart();
+          this.router.navigate(['/cart']);
+        }
+      },
+      error: (err) => {
+        console.log(err);
+        this.toast.showError(err,"Error");
+      }
+    });
+  }
+
   checkout(){
-    this.stripeService.getCheckOutSession(this.cartItems, this.coupon, this.taxData, this.userId).subscribe({
-      next: (res)=>{
-        console.log(123,res);
+    this.stripeService.getCheckOutSession(this.cartItems, this.couponData, this.taxData, this.userId).subscribe({
+      next: (res: any)=>{
+        const responce = res;
+        const errors = responce.errors;
+        console.log("Erros: ",Object.keys(errors).length, errors);
+        if(Object.keys(errors).length === 0){
+          const sessionObj = responce.session;
+          if(sessionObj.id && sessionObj.url ){
+            this.checkoutData = sessionObj;
+            window.location.href = sessionObj.url;
+          }
+        }else{
+          this.checkoutData = null;
+          for(const [key, value] of Object.entries(errors)){
+            let errTitle = key;
+            if(typeof value === 'object'){
+              for(const [key, val] of Object.entries(<object>value)){
+                this.toast.showError(<string>val, errTitle);
+              }
+            }   
+          }
+        }
       },
       error: (err)=>{
-        console.log(456, err);
+        
       }
     });
   }
@@ -90,8 +170,8 @@ export class CartDetailesComponent implements OnInit {
     if(coupon!='' && coupon.length >= 5){
         this.couponService.getCouponByCode(coupon).subscribe({
           next:(res)=>{
-            this.coupon = res.result;
-            this.checkCouponAvailablityAndSet(this.coupon)
+            this.couponData = res.result;
+            this.checkCouponAvailablityAndSet(this.couponData)
           },
           error: (err)=>{
             this.toast.showError("Error: "+err);
@@ -116,7 +196,7 @@ export class CartDetailesComponent implements OnInit {
             this.calculateSubTotal();
             this.toast.showSuccess("Coupon applied successfully!!");
           }else{
-            this.toast.showError(`Cart SubTotal must be greater than ${this.cuurencyPipe.transform(this.coupon.requireAmountForApplicable, this.currency)}!!`);
+            this.toast.showError(`Cart SubTotal must be greater than ${this.cuurencyPipe.transform(this.couponData.requireAmountForApplicable, this.currency)}!!`);
             this.unsetCoupon(true);
           }
         }
@@ -231,11 +311,13 @@ export class CartDetailesComponent implements OnInit {
     });
   }
 
-  clearCart() {
+  clearCart(showMessage=true) {
     this.cartService.removeAllItemFromCart(this.userId).subscribe((res) => {
       if (res.error == '') {
         this.cartItems = null;
-        this.toast.showSuccess("Cart cleared succesfully!!");
+        if(showMessage){
+          this.toast.showSuccess("Cart cleared succesfully!!");
+        }
       }
     }, (err) => {
       this.toast.showError(`Error : ${err}`);
@@ -297,7 +379,7 @@ export class CartDetailesComponent implements OnInit {
     });
     this.subTotal = subTotal;
     $(".summary-table tbody .subtotal").html(this.cuurencyPipe.transform(subTotal.toString(), this.currency));
-    if(this.coupon!=undefined && (this.subTotal < this.coupon.requireAmountForApplicable)){
+    if(this.couponData!=undefined && (this.subTotal < this.couponData.requireAmountForApplicable)){
       this.removedCoupon();
     }
     this.tax = (subTotal - Number(this.discount)) * (Number(this.taxPercentage)/100);
@@ -305,13 +387,13 @@ export class CartDetailesComponent implements OnInit {
   }
 
   removedCoupon(){
-    this.toast.showWarning(`Coupon Removed: Sub Total must be greater or equal then ${this.cuurencyPipe.transform(this.coupon.requireAmountForApplicable, this.currency)}`);
+    this.toast.showWarning(`Coupon Removed: Sub Total must be greater or equal then ${this.cuurencyPipe.transform(this.couponData.requireAmountForApplicable, this.currency)}`);
     this.unsetCoupon(true);
   }
 
   unsetCoupon(isValueRemoved:boolean = false){
     this.discount = 0;
-    this.coupon = undefined;
+    this.couponData = undefined;
     if(isValueRemoved){
       (<HTMLInputElement>document.getElementById("couponInput")).value = '';
     }

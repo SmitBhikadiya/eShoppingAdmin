@@ -92,14 +92,15 @@ if (isset($_SESSION["result"])) {
 										<table class="table ucp-table table-hover">
 											<thead>
 												<tr>
-													<th style="width:120px">Order Id.</th>
-													<th style="width:100px">Client Name</th>
-													<th style="width:400px">Address</th>
-													<th style="width:100px">Order Date</th>
-													<th style="width:100px">Order Status</th>
-													<th style="width:100px">Total Quantity</th>
-													<th style="width:80px">Total Bill</th>
-													<th style="width:100px">Action</th>
+													<th>Order Id.</th>
+													<th>Client Name</th>
+													<th>Address</th>
+													<th>Payment Status</th>
+													<th>Order Status</th>
+													<th>Order Date</th>
+													<th>SubTotal</th>
+													<th>Total</th>
+													<th>Action</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -111,29 +112,40 @@ if (isset($_SESSION["result"])) {
 														<tr>
 															<td><?= $order["id"] ?></td>
 															<td>
-																<a href="view_customer.php?view=<?= $order["userId"] ?>" target="_blank"><?= $order["username"] ?></a>
+																<a style="text-decoration:none;" href="view_customer.php?view=<?= $order["userId"] ?>" target="_blank"><?= $order["username"] ?></a>
 															</td>
+														
 															<td><?= $order["streetName"] . ", " . $order["city"] . ", " . $order["state"] ?></td>
-															<td>
-																<span class="delivery-time"><?= $order["createdDate"] ?></span>
-															</td>
+															<td> <?php
+															switch ($order["payment"]) {
+																case 0:
+																	echo "<strong style='color:#f44336'>Pending</strong>";
+																	break;
+																case 1;
+																	echo "<strong style='color:#4CAF50'>Completed</strong>";
+																	break;
+																}
+															?> </td>
 															<td>
 																<?php
 																switch ($order["orderStatus"]) {
 																	case 0:
-																		echo "Pending";
+																		echo "<strong style='color:#ffeb3b'>Pending</strong>";
 																		break;
 																	case 1;
-																		echo "Delivered";
+																		echo "<strong style='color:#4CAF50'>Delivered</strong>";
 																		break;
 																	case 2;
-																		echo "Cancelled";
+																		echo "<strong style='color:#f44336'>Cancelled</strong>";
 																		break;
 																}
 																?>
 															</td>
-															<td><?= $order["totalQuantity"] ?></td>
-															<td><?= $order["totalPrice"] ?></td>
+															<td>
+																<span class="delivery-time"><?= $order["createdDate"] ?></span>
+															</td>
+															<td><?= $order["subTotal"] ?></td>
+															<td><?= $order["total"] ?></td>
 															<td class="action-btns">
 																<a href="view_order.php?view=<?= $order["id"] ?>" class="view-shop-btn" title="View"><i class="fas fa-eye"></i></a>
 															</td>

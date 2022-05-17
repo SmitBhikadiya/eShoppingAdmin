@@ -5,7 +5,7 @@ class CartHandler extends DBConnection
 
     function getCartItems($userId)
     {
-        $sql = "SELECT cart.*, productcolor.colorName, products.productColorIds, products.productSizeIds, products.stripeId AS productStripeId, products.stripePriceId AS priceStripeId, products.productPrice, products.totalQuantity, productsize.size, products.totalQuantity FROM cart JOIN productcolor ON productcolor.id=cart.productColorId JOIN productsize ON productsize.id = cart.productSizeId JOIN products ON products.id = cart.productId WHERE cart.userId=$userId AND cart.status=0 ORDER BY cart.id DESC";
+        $sql = "SELECT cart.*, productcolor.colorName, productcolor.colorCode, products.productColorIds, products.productSizeIds, products.stripeId AS productStripeId, products.stripePriceId AS priceStripeId, products.productPrice, products.totalQuantity, productsize.size, products.totalQuantity FROM cart JOIN productcolor ON productcolor.id=cart.productColorId JOIN productsize ON productsize.id = cart.productSizeId JOIN products ON products.id = cart.productId WHERE cart.userId=$userId AND cart.status=0 ORDER BY cart.id DESC";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {
@@ -19,7 +19,7 @@ class CartHandler extends DBConnection
     }
 
     function getCartItemBy($userId, $prdId){
-        $sql = "SELECT cart.*, productcolor.colorName, products.productColorIds, products.productSizeIds, products.stripeId AS productStripeId, products.stripePriceId AS priceStripeId, products.productPrice, products.totalQuantity, productsize.size FROM cart JOIN productcolor ON productcolor.id=cart.productColorId JOIN productsize ON productsize.id = cart.productSizeId JOIN products ON products.id = cart.productId WHERE cart.userId=$userId AND products.id=$prdId AND cart.status=0 ORDER BY cart.id DESC";
+        $sql = "SELECT cart.*, productcolor.colorName, productcolor.colorCode, products.productColorIds, products.productSizeIds, products.stripeId AS productStripeId, products.stripePriceId AS priceStripeId, products.productPrice, products.totalQuantity, productsize.size FROM cart JOIN productcolor ON productcolor.id=cart.productColorId JOIN productsize ON productsize.id = cart.productSizeId JOIN products ON products.id = cart.productId WHERE cart.userId=$userId AND products.id=$prdId AND cart.status=0 ORDER BY cart.id DESC";
         $result = $this->getConnection()->query($sql);
         $record = [];
         if ($result && $result->num_rows > 0) {

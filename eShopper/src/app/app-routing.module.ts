@@ -44,7 +44,13 @@ const routes: Routes = [
     path: 'cart',
     component: CartDetailesComponent,
     canActivate: [AuthGuard]
-  },{
+  },
+  {
+    path: 'cart/:payment/:ordId',
+    component: CartDetailesComponent,
+    canActivate: [AuthGuard] 
+  },
+  {
     path: '**',
     component:ErrorComponent
   }
