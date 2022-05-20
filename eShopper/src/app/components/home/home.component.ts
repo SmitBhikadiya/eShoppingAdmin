@@ -3,6 +3,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { IProduct } from 'src/app/interfaces/product';
+import { ApplicationService } from 'src/app/services/application.service';
 import { CurrencyService } from 'src/app/services/currency.service';
 import { ProductService } from 'src/app/services/product.service';
 import { environment } from 'src/environments/environment';
@@ -28,13 +29,13 @@ export class HomeComponent implements OnInit {
     private productService: ProductService,
     private router: Router,
     private currService: CurrencyService,
+    private appService:ApplicationService,
     private currPipe: CurrencyPipe
   ) {
 
     this.router.events.subscribe((ev) => {
       if (ev instanceof NavigationEnd) {
         this.currency = currService.getCurrency();
-        this.ngOnInit();
       }
     });
 
@@ -47,7 +48,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.getProducts();
   }
-
+  
   getProducts() {
     this.productService.getProducts(this.defaultLoadProduct, '', 'latest', '1').subscribe((res) => {
       this.products = res["result"];

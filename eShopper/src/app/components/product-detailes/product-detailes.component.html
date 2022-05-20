@@ -40,8 +40,8 @@
                     <owl-carousel-o [options]="customOptions1" (changed)="getData($event, synk2)" #synk1>
                         <ng-container *ngFor="let slide of productImages; let id_ = index">
                             <ng-template class="slide" carouselSlide [id]="id_.toString()">
-                                <a [href]="slide" class="fancybox" target="blank_"><img [src]="slide" height="500px" width="350px"
-                                        [alt]="id_" [title]="slide" /></a>
+                                <a [href]="slide" class="fancybox" target="blank_"><img [src]="slide" height="500px"
+                                        width="350px" [alt]="id_" [title]="slide" /></a>
                             </ng-template>
                         </ng-container>
                     </owl-carousel-o>
@@ -50,8 +50,8 @@
                     <owl-carousel-o [options]="customOptions2" (changed)="getData($event, synk1)" #synk2>
                         <ng-container *ngFor="let slide of productImages; let id_ = index">
                             <ng-template class="slide" carouselSlide [width]="155" [id]="id_.toString()">
-                                <a target="blank_" style="cursor: pointer;" (click)="synk1.to(id_.toString())"><img [src]="slide" height="150px"
-                                        [alt]="id_" [title]="slide" /></a>
+                                <a target="blank_" style="cursor: pointer;" (click)="synk1.to(id_.toString())"><img
+                                        [src]="slide" height="150px" [alt]="id_" [title]="slide" /></a>
                             </ng-template>
                         </ng-container>
                     </owl-carousel-o>
@@ -75,38 +75,38 @@
                 </p>
                 <div class="price-box">{{ product['productPrice'] | setCurr : currency }}</div>
                 <form [formGroup]="cartForm" id="cartForm" (ngSubmit)="addTocart()">
-                <div class="product-options">
-                    <label class="required"><em>*</em> Size</label>
-                    <!-- <p class="required">* Required Fields</p> -->
-                    <div class="form-group">
-                        <select formControlName="psize" id="psize">
-                            <option value="0">-- Please Select --</option>
-                            <option *ngFor="let size of sizes" value="{{ size['id'] }}">
-                                {{ size["size"] | uppercase }}
-                            </option>
-                        </select>
+                    <div class="product-options">
+                        <label class="required"><em>*</em> Size</label>
+                        <!-- <p class="required">* Required Fields</p> -->
+                        <div class="form-group">
+                            <select formControlName="psize" id="psize">
+                                <option value="0">-- Please Select --</option>
+                                <option *ngFor="let size of sizes" value="{{ size['id'] }}">
+                                    {{ size["size"] | uppercase }}
+                                </option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="product-options">
-                    <label class="required"><em>*</em> Color</label>
-                    <!-- <p class="required">* Required Fields</p> -->
-                    <div class="form-group">
-                        <select formControlName="pcolor" id="pcolor">
-                            <option value="0">-- Please Select --</option>
-                            <option *ngFor="let color of colors" value="{{ color['id'] }}">
-                                {{ color["colorName"] | uppercase }}
-                            </option>
-                        </select>
+                    <div class="product-options">
+                        <label class="required"><em>*</em> Color</label>
+                        <!-- <p class="required">* Required Fields</p> -->
+                        <div class="form-group">
+                            <select formControlName="pcolor" id="pcolor">
+                                <option value="0">-- Please Select --</option>
+                                <option *ngFor="let color of colors" value="{{ color['id'] }}">
+                                    {{ color["colorName"] | uppercase }}
+                                </option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="add-to-cart-btn clearfix" style="display: flex;">
-                    <label>Qty:</label>
-                    <input class="form-control" id="pqty" formControlName="pqty" style="width: 70px;" [min]="1" [max]="product['totalQuantity']" [value]="1" type="number">&nbsp;&nbsp;
-                    <button type="submit" title="Add to Cart"
-                        class="button btn-cart">
-                        <span>{{ btn }}</span>
-                    </button>
-                </div>
+                    <div class="add-to-cart-btn clearfix" style="display: flex;">
+                        <label>Qty:</label>
+                        <input class="form-control" id="pqty" formControlName="pqty" style="width: 70px;" [min]="1"
+                            [max]="product['totalQuantity']" [value]="1" type="number">&nbsp;&nbsp;
+                        <button type="submit" title="Add to Cart" class="button btn-cart">
+                            <span>{{ btn }}</span>
+                        </button>
+                    </div>
                 </form>
                 <div class="email-addto-box clearfix">
                     <ul class="add-to-links">
@@ -199,58 +199,52 @@
                 </div>
                 <div role="tabpanel" class="tab-pane" id="product-review">
                     <p class="write-review">
-                        <a (click)="toggleReview()" title="Write a review" class="review-tag">Write a review</a>
+                        <a title="Write a review" (click)="toggleReview()" style="cursor: pointer;">Write a review</a>
                     </p>
-                    <form class="review-open" *ngIf="show">
-                        <ul class="star-links clearfix">
-                            <li>
-                                <a title="">
-                                    <i class="img-original"><img src="../../../assets/images/star.svg" alt="star" /></i>
-                                    <i class="img-hover"><img src="../../../assets/images/star-h.svg" alt="star" /></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a title="">
-                                    <i class="img-original"><img src="../../../assets/images/star.svg" alt="star" /></i>
-                                    <i class="img-hover"><img src="../../../assets/images/star-h.svg" alt="star" /></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a title="">
-                                    <i class="img-original"><img src="../../../assets/images/star.svg" alt="star" /></i>
-                                    <i class="img-hover"><img src="../../../assets/images/star-h.svg" alt="star" /></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a title="">
-                                    <i class="img-original"><img src="../../../assets/images/star.svg" alt="star" /></i>
-                                    <i class="img-hover"><img src="../../../assets/images/star-h.svg" alt="star" /></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a title="">
-                                    <i class="img-original"><img src="../../../assets/images/star.svg" alt="star" /></i>
-                                    <i class="img-hover"><img src="../../../assets/images/star-h.svg" alt="star" /></i>
-                                </a>
-                            </li>
-                        </ul>
-                        <div class="form-group">
-                            <textarea class="form-control" placeholder="Write a review"></textarea>
+                    <form class="review-open" [formGroup]="reviewForm" id="reviewForm" (ngSubmit)="reviewSubmit()">
+                        <div class="rating">
+                            <label>
+                                <input type="radio" name="stars" class="star-input" value="1" formControlName="stars" />
+                                <span class="icon">★</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="stars" class="star-input" value="2" formControlName="stars" />
+                                <span class="icon">★</span>
+                                <span class="icon">★</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="stars" class="star-input" value="3" formControlName="stars"/>
+                                <span class="icon">★</span>
+                                <span class="icon">★</span>
+                                <span class="icon">★</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="stars" class="star-input" value="4" formControlName="stars" />
+                                <span class="icon">★</span>
+                                <span class="icon">★</span>
+                                <span class="icon">★</span>
+                                <span class="icon">★</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="stars" class="star-input" value="5" formControlName="stars"/>
+                                <span class="icon">★</span>
+                                <span class="icon">★</span>
+                                <span class="icon">★</span>
+                                <span class="icon">★</span>
+                                <span class="icon">★</span>
+                            </label>
                         </div>
-                        <a href="#" title="Submit" class="btn-secondary">Submit</a>
+                        <div class="form-group" style="margin-top: 5px;">
+                            <textarea id="review" class="form-control" placeholder="Write a review" formControlName="review"></textarea>
+                        </div>
+                        <input type="submit" class="btn-secondary" name="submit" formControlName="button" />
                     </form>
-                    <div class="review-detail">
-                        <span>Mark, 26-12-2016 writes:</span>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                            enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                            nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                            nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                            sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    <div class="review-detail" *ngFor="let review of productReviews; trackBy:trackByReview">
+                        <span>{{ review['username'] }}, {{ review['createdDate'] | date }} writes:</span>
+                        <p style="font-weight: 200;">
+                           {{ review['review'] }}
                         </p>
-                    </div>
+                    </div> 
                 </div>
                 <div role="tabpanel" class="tab-pane" id="cms-tab">
                     <p>

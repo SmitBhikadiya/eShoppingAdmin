@@ -12,6 +12,9 @@ $subcat = (isset($_GET["subcat"])) ? (($_GET["subcat"]=='null') ? '' : $_GET["su
 if(isset($_GET["colorids"])){
     $ids = "(".$_GET["colorids"].")";
     $colors = $obj->getColorByIds($ids);
+}if(isset($_GET["catName"])){
+    $cat = $_GET["catName"];
+    $colors = $obj->getAllColorByCat($cat);
 }else{
     $colors = $obj->getAllColor($cat, $subcat);
 }

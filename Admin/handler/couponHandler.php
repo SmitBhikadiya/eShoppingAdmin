@@ -100,6 +100,26 @@ class CouponHandler extends DBConnection
         return $records; 
     }
 
+    function getCouponByAvailiablity($availiablity=1){
+        $comp = 1;
+        switch($availiablity){
+            case 0:
+                $comp = 'CURRENT_TIMESTAMP > couponExpiry OR maximumTotalUsage = 0';
+                break;
+            default:
+                $comp = 'CURRENT_TIMESTAMP < couponExpiry AND maximumTotalUsage > 0';
+        }
+        $records = [];
+        $sql = "SELECT * FROM coupons WHERE $comp";
+        $result = $this->getConnection()->query($sql);
+        if ($result && $result->num_rows > 0) {
+           while($row = $result->fetch_assoc()){
+               array_push($records, $row);
+           }
+        }
+        return $records;
+    }
+
     function addCoupon($coupon, $expiry, $requireAmtForApplicable, $totalUsage, $discountAmount){
         $error = '';
         $coupon = strtoupper($coupon);

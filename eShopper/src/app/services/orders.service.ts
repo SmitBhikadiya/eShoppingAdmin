@@ -29,6 +29,9 @@ export class OrdersService {
     return this.http.post<any>(`${environment.API_SERVER_URL}/order.php`, {removeOrder, userId, ifpayment}, {headers:this.header_});
   }
 
+  getOrderDetailsBy(getOrderDetails:number, userId:number){
+    return this.http.post<any>(`${environment.API_SERVER_URL}/order.php`, {getOrderDetails, userId}, {headers:this.header_});
+  }
 
   getAllOrder(getAll:number){
     return this.http.post<any>(`${environment.API_SERVER_URL}/order.php`, {getAll}, {headers:this.header_});

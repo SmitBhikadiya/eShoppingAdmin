@@ -56,6 +56,12 @@ export class CartDetailesComponent implements OnInit {
     private router: Router
   ) {
 
+    userAuth.isUserLoggedIn.subscribe((res)=>{
+      if(res===false){
+        router.navigate(['/']);
+      }
+    });
+
     const data = JSON.parse(this.userAuth.getToken());
     this.userId = data.user.id;
 

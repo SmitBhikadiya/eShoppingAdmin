@@ -1,0 +1,10 @@
+<div class="wrapper1" style="overflow-x: hidden">
+    <owl-carousel-o [options]="customOptions1" #synk1>
+        <ng-container *ngFor="let slide of bannerImageURLs; let id_ = index">
+            <ng-template class="slide" carouselSlide [id]="id_.toString()">
+                <a [href]="slide" target="blank_"><img [src]="slide" height="500px" width="350px"
+                        [alt]="id_" [title]="slide" /></a>
+            </ng-template>
+        </ng-container>
+    </owl-carousel-o>
+</div>

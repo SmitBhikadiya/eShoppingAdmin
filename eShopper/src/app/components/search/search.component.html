@@ -1,0 +1,172 @@
+
+<section class="product_listing content">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-3">
+          <form [formGroup]="filterForm">
+            <div class="left-panel">
+              <h3>Filter By</h3>
+              <div class="filter-option">
+                <div class="title" data-toggle="collapse" href="#collapse1" aria-expanded="false">
+                  Categories
+                </div>
+                <div class="filter-option-inner collapse in" id="collapse1">
+                  <ul>
+                    <li class="custom-check" *ngFor="let cat of categories">
+                      <label *ngIf="
+                          category == null ||
+                          category == '' ||
+                          category == cat['catName']
+                        ">
+                        <input type="checkbox" class="subcatcheck icheck" name="categories" [value]="cat['id']"
+                          (change)="onCheckboxChange($event, 'categories')"
+                          [checked]="category == cat['catName']" [disabled]="category == cat['catName']" />
+                        {{ cat["catName"] }}
+                        <span>({{ cat["totalPrd"] }})</span>
+                      </label>
+                    </li>
+                    <li *ngIf="subcategory == null">
+                      <a (click)="resetFormControl('subcategories')" title="Reset" style="padding-left: 0px"
+                        class="reset-link">Reset</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="filter-option">
+                <div class="title" data-toggle="collapse" href="#collapse2" aria-expanded="false">
+                  Colour
+                </div>
+                <div class="filter-option-inner collapse in" id="collapse2">
+                  <ul class="colour_family_list">
+                    <li class="custom-check" *ngFor="let color of colors">
+                      <label style="display: flex; width: 100%">
+                        <span [ngStyle]="{ background: color['colorCode'] }"></span>
+                        <input type="radio" class="icheck colorcheck" name="colors" (change)="radioChange($event)"
+                          [value]="color['id']" style="display: none" formControlName="colors" />
+                        &nbsp;&nbsp;{{ color["colorName"] | uppercase }}&nbsp;
+                        <p style="padding-bottom: 5px; font-size: 11px">
+                          ({{ color["totalPrd"] }})
+                        </p>
+                      </label>
+                    </li>
+                    <li>
+                      <a (click)="resetFormControl('colors')" title="Reset" style="padding-left: 0px"
+                        class="reset-link">Reset</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="filter-option">
+                <div class="title" data-toggle="collapse" href="#collapse3" aria-expanded="false">
+                  Price
+                </div>
+                <div class="filter-option-inner collapse in" id="collapse3">
+                  <div class="price-slider">
+                    <span class="inline-span">
+                      from&nbsp;
+                      <input type="number" value="0" min="0" max="12000" style="pointer-events: none" />
+                      &nbsp;to&nbsp;
+                      <input type="number" value="12000" min="0" max="12000" style="pointer-events: none" />
+                    </span>
+                    <input value="0" min="0" name="priceStart" max="12000" step="100" type="range"
+                      formControlName="priceStart" (change)="priceChange()" />
+                    <input value="12000" min="0" name="priceEnd" max="12000" step="100" type="range"
+                      formControlName="priceEnd" (change)="priceChange()" />
+                    <svg width="100%" height="24">
+                      <line x1="4" y1="0" x2="300" y2="0" stroke="#212121" stroke-width="12" stroke-dasharray="1 20">
+                      </line>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div class="filter-option">
+                <div class="title" data-toggle="collapse" href="#collapse4" aria-expanded="false">
+                  Size
+                </div>
+                <div class="filter-option-inner size-filter collapse in" id="collapse4">
+                  <ul>
+                    <li class="custom-check" *ngFor="let size of sizes">
+                      <label>
+                        <input type="checkbox" class="sizecheck icheck" [value]="size['id']"
+                          (change)="onCheckboxChange($event, 'sizes')" />
+                        {{ size["size"] | uppercase }}
+                        <span>({{ size["totalPrd"] }})</span>
+                      </label>
+                    </li>
+                    <li>
+                      <a (click)="resetFormControl('sizes')" title="Reset" style="padding-left: 0px"
+                        class="reset-link">Reset</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="add-block">
+              <a href="product.html" title="Promotion"><img src="../assets/images/promo2.jpg" alt=""
+                  class="img-responsive" /></a>
+            </div>
+          </form>
+        </div>
+        <div class="col-sm-9">
+          <h3>
+            {{ 'Searching For: '+(search=='' ? 'All' : search) | titleCaptilize }}
+          </h3>
+          <div class="toolbar clearfix">
+            <div class="pager_right">
+              <div class="sort-by" *ngIf="products.length > 0">
+                <label>Sort By&nbsp;</label>
+                <div class="form-group">
+                  <select class="custom-dropdown" #sortby (change)="sortProduct(sortby.value)">
+                    <option value="latest">Latest</option>
+                    <option value="name">Name</option>
+                    <option value="price">Price</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-content">
+            <div class="grid row" *ngIf="products.length > 0; else elseBlockPrd">
+              <div class="col-sm-4 col-xs-6" *ngFor="let product of products; trackBy: trackByProduct">
+                <figure class="effect-goliath">
+                  <div class="thumb-outer">
+                    <a href="#" title="thumb" class="thumb-image">
+                      <img style="height: 328px" src="{{ imageURL }}/product/{{
+                          (product.productImages | strtoarray: ',')[0]
+                        }}" alt="thumb" *ngIf="
+                          (product.productImages | strtoarray: ',')[0] != '';
+                          else noimage
+                        " />
+                      <ng-template #noimage>
+                        <img [src]="noImageURL" style="height: 328px" alt="no image available" />
+                      </ng-template>
+                    </a>
+                    <app-add-to-cart-btn [prd]="product"></app-add-to-cart-btn>
+                  </div>
+                  <figcaption>
+                    <a [routerLink]="['/productInfo/' + product['id']]" title="{{ product.productName }}"
+                      class="heading">{{ product.productName }}</a>
+                    <span>{{ product.productPrice | setCurr : currency }}</span>
+                  </figcaption>
+                </figure>
+              </div>
+            </div>
+            <ng-template #elseBlockPrd>
+              <div class="grid row">
+                <div class="col-sm-12 col-xs-12">
+                  <h2 style="color: gray">Record Not Found!!!</h2>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+          <div class="col-sm-12 col-xs-12" *ngIf="products.length >= 9">
+            <span class="button-outer text-center">
+              <a class="btn-tertiary" (click)="loadMoreProduct(defaultLoadProduct)" title="More Products">More
+                Products</a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+  <!-- Content End-->

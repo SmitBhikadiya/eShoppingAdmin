@@ -15,6 +15,8 @@ export class SetCurrPipe implements PipeTransform {
     let val = Number(value);
     if(curr==='USD'){
       return this.currPipe.transform(val/77, 'USD');
+    }else if(curr==='EUR'){
+      return this.currPipe.transform(val/81, 'EUR');
     }else{
       return this.currPipe.transform(val, 'INR');
     }

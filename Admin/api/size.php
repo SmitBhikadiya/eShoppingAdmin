@@ -11,8 +11,10 @@ $subcat = (isset($_GET["subcat"])) ? (($_GET["subcat"]=='null') ? '' : $_GET["su
 
 if(isset($_GET["sizeids"])){
     $ids = "(".$_GET["sizeids"].")";
-    //echo $ids;
     $sizes = $obj->getSizeByIds($ids);
+}else if(isset($_GET["catName"])){
+    $cat = $_GET["catName"];
+    $sizes = $obj->getAllSizeByCat($cat);
 }else{
     $sizes = $obj->getAllSize($cat, $subcat);
 }

@@ -15,7 +15,8 @@
             <div class="collapse" id="collapseProducts" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
                 <nav class="sb-sidenav-menu-nested nav">
                     <a class="nav-link sub_nav_link" href="products.php">All Products</a>
-                    <a class="nav-link sub_nav_link" href="trending_products.php">Trending Products</a>
+                    <a class="nav-link sub_nav_link" href="trending_products.php">Trending</a>
+                    <a class="nav-link sub_nav_link" href="product_review.php">Review</a>
                     <a class="nav-link sub_nav_link" href="product_color.php">Colors</a>
                     <a class="nav-link sub_nav_link" href="product_size.php">Sizes</a>
                 </nav>
@@ -86,6 +87,21 @@
                     <a class="nav-link sub_nav_link" href="countries.php">Countries</a>
                 </nav>
             </div>
+
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseApplication" aria-expanded="false" aria-controls="collapseApplication">
+                <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>
+                Application
+                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+            </a>
+            <div class="collapse" id="collapseApplication" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                <nav class="sb-sidenav-menu-nested nav">
+                    <a class="nav-link sub_nav_link" href="banners.php">Banners</a>
+                </nav>
+                <nav class="sb-sidenav-menu-nested nav">
+                    <a class="nav-link sub_nav_link" href="testimonials.php">Testinomials</a>
+                </nav>
+            </div>
+
         </div>
     </div>
 </nav>

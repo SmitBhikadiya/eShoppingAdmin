@@ -15,4 +15,8 @@ export class CouponService {
   getCouponByCode(couponCode:string){
     return this.http.post<any>(`${environment.API_SERVER_URL}/coupon.php`, {couponCode}, {headers:this.header_});
   }
+
+  getAllCouponBy(availiablity:number){
+    return this.http.post<any>(`${environment.API_SERVER_URL}/coupon.php`, {availiablity}, {headers:this.header_});
+  }
 }

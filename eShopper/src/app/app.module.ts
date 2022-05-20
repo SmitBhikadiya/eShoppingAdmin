@@ -32,7 +32,13 @@ import { CurrencyPipe } from '@angular/common';
 // for toster message
 import { ToastrModule } from 'ngx-toastr';
 import { SetCurrPipe } from './pipes/set-curr.pipe';
-import { OrderSuccessComponent } from './components/order-success/order-success.component';
+import { OrdersComponent } from './components/orders/orders.component';
+import { CouponsComponent } from './components/coupons/coupons.component';
+import { WishlistComponent } from './components/wishlist/wishlist.component';
+import { OrderDetailsComponent } from './components/order-details/order-details.component';
+import { HomebannerComponent } from './components/homebanner/homebanner.component';
+import { HometestiComponent } from './components/hometesti/hometesti.component';
+import { SearchComponent } from './components/search/search.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +57,13 @@ import { OrderSuccessComponent } from './components/order-success/order-success.
     AddToCartBtnComponent,
     CartDetailesComponent,
     SetCurrPipe,
-    OrderSuccessComponent,
+    OrdersComponent,
+    CouponsComponent,
+    WishlistComponent,
+    OrderDetailsComponent,
+    HomebannerComponent,
+    HometestiComponent,
+    SearchComponent,
   ],
   imports: [
     BrowserModule,

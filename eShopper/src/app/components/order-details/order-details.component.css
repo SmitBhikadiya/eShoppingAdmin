@@ -1,0 +1,22 @@
+
+.ordr-date span{
+    padding-top:5px;
+}
+
+.badge{
+    font-size: 15px;
+}
+
+.badge.bill{
+    color: inherit;
+    background-color: inherit;
+    font-size: 20px;
+}
+
+.list-group{
+    box-shadow: none;
+}
+
+.list-group-item{
+    border:none;
+}

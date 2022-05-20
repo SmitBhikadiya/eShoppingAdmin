@@ -1,0 +1,13 @@
+.couponCode{
+    text-align: center;
+    padding: 10px;
+    border-radius: 10px;
+    width: fit-content;
+}
+
+.availableCoupons{
+    background-color: #bceabc;
+}
+.expiredCoupons{
+    background-color: #eac7bc;
+}

@@ -12,7 +12,6 @@ $currntPage = (isset($_GET["page"]) && $_GET["page"]!='') ? $_GET["page"] : $cur
 $showRecords = (isset($_GET["show"]) && $_GET["show"]!='') ? $_GET["show"] : $showRecords;
 $search = (isset($_GET["search"]) && $_GET["search"]!='') ? $_GET["search"] : $search;
 
-
 $totalRecords = $obj->TotalOrders($search);
 $orders = $obj->getAllOrders($search, (($currntPage - 1) * $showRecords), $showRecords);
 

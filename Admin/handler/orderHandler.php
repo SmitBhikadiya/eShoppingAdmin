@@ -318,6 +318,19 @@ class OrderHandler extends DBConnection
         return $records;
     }
 
+    function getOrderAddressBy($ordId, $addType){
+        $records = [];
+        $sql = "SELECT oa.*, cities.city, states.state, countries.country FROM orderaddress AS oa JOIN cities ON oa.cityId=cities.id JOIN states ON oa.stateId=states.id JOIN countries ON countries.id=oa.countryId WHERE oa.status=0 AND oa.addressType=$addType AND cities.status=0 AND states.status=0 AND countries.status=0 AND oa.orderId=$ordId";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            $records = $result->fetch_assoc();
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
     function updateStatus($status, $id)
     {
         $error = "";

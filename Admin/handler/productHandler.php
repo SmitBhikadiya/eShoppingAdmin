@@ -1,9 +1,6 @@
 <?php
 require_once("dbHandler.php");
 
-// // This is your test secret API key.
-// \Stripe\Stripe::setApiKey('pk_test_51KwIFNSH3d6vW3EyLdBfVi8BHYUSb4EyS4DeTQGL4GxUGhHd7WyDWDzYrk5Z1qToIT7LGuJWvUA9ZmYFLD7YwMXU00ndEZdRcU');
-
 class ProductHandler extends DBConnection
 {
 
@@ -48,10 +45,20 @@ class ProductHandler extends DBConnection
     //     return $res;
     // }
 
+    function TotalReview($search = ''){
+        $search_ = ($search == '') ? 1 : "(pr.review LIKE '%" . $search . "%' OR products.productName LIKE '%" . $search . "%' OR pr.productRate = '$search' OR pr.productId = '$search')";
+        $sql = "SELECT COUNT(*) AS total FROM productreview AS pr JOIN products ON products.id = pr.productId WHERE ($search_) AND pr.status=0 AND products.status=0 ORDER BY pr.id DESC";
+        $result = $this->getConnection()->query($sql);
+        if ($result && $result->num_rows > 0) {
+            return $result->fetch_assoc()["total"];
+        }
+        return 0;
+    }
+
     function TotalProducts($search = '')
     {
         $search_ = ($search == '') ? 1 : "productName LIKE '%" . $search . "%'";
-        $sql = "SELECT COUNT(*) AS total FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND products.status=0 AND category.status=0 ORDER BY products.id DESC";
+        $sql = "SELECT COUNT(*) AS total FROM products JOIN category ON category.id = products.categoryId WHERE ($search_) AND products.status=0 AND category.status=0 ORDER BY products.id DESC";
         $result = $this->getConnection()->query($sql);
         if ($result && $result->num_rows > 0) {
             return $result->fetch_assoc()["total"];
@@ -61,7 +68,7 @@ class ProductHandler extends DBConnection
 
     function TotalTrendingProducts($search = ''){
         $search_ = ($search == '') ? 1 : "productName LIKE '%" . $search . "%'";
-        $sql = "SELECT COUNT(*) AS total FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND products.status=0 AND category.status=0 AND isTrending=1 ORDER BY products.id DESC";
+        $sql = "SELECT COUNT(*) AS total FROM products JOIN category ON category.id = products.categoryId WHERE ($search_) AND products.status=0 AND category.status=0 AND isTrending=1 ORDER BY products.id DESC";
         $result = $this->getConnection()->query($sql);
         if ($result && $result->num_rows > 0) {
             return $result->fetch_assoc()["total"];
@@ -72,7 +79,7 @@ class ProductHandler extends DBConnection
     function TotalColors($search = '')
     {
         $search_ = ($search == '') ? 1 : "colorName LIKE '%" . $search . "%'";
-        $sql = "SELECT COUNT(*) AS total FROM productcolor WHERE $search_ AND status=0 ORDER BY id DESC";
+        $sql = "SELECT COUNT(*) AS total FROM productcolor WHERE ($search_) AND status=0 ORDER BY id DESC";
         $result = $this->getConnection()->query($sql);
         if ($result && $result->num_rows > 0) {
             return $result->fetch_assoc()["total"];
@@ -83,12 +90,40 @@ class ProductHandler extends DBConnection
     function TotalSizes($search = '')
     {
         $search_ = ($search == '') ? 1 : "size LIKE '%" . $search . "%'";
-        $sql = "SELECT COUNT(*) AS total FROM productsize WHERE $search_ AND status=0 ORDER BY id DESC";
+        $sql = "SELECT COUNT(*) AS total FROM productsize WHERE ($search_) AND status=0 ORDER BY id DESC";
         $result = $this->getConnection()->query($sql);
         if ($result && $result->num_rows > 0) {
             return $result->fetch_assoc()["total"];
         }
         return 0;
+    }
+
+    function getAllReview(){
+        $sql = "SELECT pr.*, products.productName FROM productreview AS pr JOIN products ON products.id = pr.productId WHERE pr.status=0 AND products.status=0 ORDER BY pr.id DESC";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
+    function getAllReviewByPrdouctId($prdId){
+        $sql = "SELECT pr.*, products.productName FROM productreview AS pr JOIN products ON products.id = pr.productId WHERE productId=$prdId AND pr.status=0 AND products.status=0 ORDER BY pr.id DESC";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
     }
 
     function getAllProduct()
@@ -113,7 +148,40 @@ class ProductHandler extends DBConnection
         $records = [];
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                $totalPrd = $this->countPrdByColorId($row["id"], $cat, $subcat);
+                $totalPrd = $this->countPrdByCatAndSubCatId($row["id"], $cat, $subcat);
+                $row["totalPrd"] = $totalPrd;
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
+    function getAllColorByCat($cat = '')
+    {
+        $sql = "SELECT productcolor.* FROM productcolor WHERE productcolor.status=0 ORDER BY productcolor.id DESC";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $totalPrd = $this->countPrdByCatId($row["id"], $cat);
+                $row["totalPrd"] = $totalPrd;
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
+    function getAllSizeByCat($cat = ''){
+        $sql = "SELECT productsize.* FROM productsize WHERE productsize.status=0 ORDER BY productsize.id DESC";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $totalPrd = $this->countPrdBySizeId($row["id"], $cat);
                 $row["totalPrd"] = $totalPrd;
                 array_push($records, $row);
             }
@@ -140,10 +208,38 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
+    function getReviews($search, $page, $show, $sortby){
+        $search_ = ($search == '') ? 1 : "(pr.review LIKE '%" . $search . "%' OR products.productName LIKE '%" . $search . "%' OR pr.productRate = '$search' OR pr.productId = '$search')";
+
+        $sortby_ = '';
+        switch($sortby){
+            case 'productName':
+                $sortby_ = 'products.productName';
+                break;
+            case 'reviewDate':
+                $sortby_ = 'pr.createdDate';
+                break;
+            default:
+                $sortby_ = 'pr.id';
+        }
+
+        $sql = "SELECT pr.*, products.productName, users.username FROM productreview AS pr JOIN products ON products.id = pr.productId JOIN users ON users.id = pr.userId WHERE ($search_) AND pr.status=0 AND products.status=0 ORDER BY $sortby_ DESC LIMIT $page, $show";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
     function getColors($search, $page, $show)
     {
         $search_ = ($search == '') ? 1 : "colorName LIKE '%" . $search . "%'";
-        $sql = "SELECT * FROM productcolor WHERE $search_ AND status=0 ORDER BY id DESC LIMIT $page, $show";
+        $sql = "SELECT * FROM productcolor WHERE ($search_) AND status=0 ORDER BY id DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {
@@ -159,7 +255,7 @@ class ProductHandler extends DBConnection
     function getSizes($search, $page, $show)
     {
         $search_ = ($search == '') ? 1 : "size LIKE '%" . $search . "%'";
-        $sql = "SELECT * FROM productsize WHERE $search_ AND status=0 ORDER BY id DESC LIMIT $page, $show";
+        $sql = "SELECT * FROM productsize WHERE ($search_) AND status=0 ORDER BY id DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {
@@ -172,11 +268,12 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getProducts($search, $page, $show, $colorid = '', $sizeids = '', $subcatids = '', $priceStart = 0, $priceEnd = 12000, $sortby='latest', $trending='0,1')
+    function getProducts($search, $page, $show, $colorid = '', $sizeids = '', $subcatids = '', $catids = '', $priceStart = 0, $priceEnd = 12000, $sortby='latest', $trending='0,1')
     {
         $colorid_ = ($colorid == '') ? 1 : "products.productColorIds LIKE '%" . $colorid . "%'";
         $subcatids_ = ($subcatids == '') ? 1 : "products.subCategoryId IN (" . $subcatids . ")";
-        $search_ = ($search == '') ? 1 : "products.productName LIKE '%" . $search . "%'";
+        $catids_ = ($catids == '') ? 1 : "products.categoryId IN (" . $catids . ")";
+        $search_ = ($search == '') ? 1 : "products.productName LIKE '%" . $search . "%' OR category.catName = '$search' OR subcategory.subCatName = '$search'";
         $trending_ = "(".$trending.")";
         
         $sortby_ = 1;
@@ -191,10 +288,10 @@ class ProductHandler extends DBConnection
                 $sortby_ = 'products.id';
         }
 
-        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId 
-        WHERE $search_ AND $colorid_ AND $subcatids_ AND products.isTrending IN $trending_ AND 
+        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId 
+        WHERE ($search_) AND $colorid_ AND $subcatids_ AND $catids_ AND products.isTrending IN $trending_ AND 
         (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND products.status=0 AND
-         category.status=0 ORDER BY $sortby_ DESC LIMIT $page, $show";
+         category.status=0 AND subcategory.status=0 ORDER BY $sortby_ DESC LIMIT $page, $show";
 
         $result = $this->getConnection()->query($sql);
         $records = [];
@@ -223,7 +320,7 @@ class ProductHandler extends DBConnection
     {
         $colorid_ = ($colorid == '') ? 1 : "products.productColorIds LIKE '%" . $colorid . "%'";
         $subcatids_ = ($subcatids == '') ? 1 : "products.subCategoryId IN (" . $subcatids . ")";
-        $search_ = ($search == '') ? 1 : "products.productName LIKE '%" . $search . "%'";
+        $search_ = ($search == '') ? 1 : "products.productName LIKE '%" . $search . "%' OR category.catName = '$search' OR subcategory.subCatName = '$search'";
         $trending_ = "(".$trending.")";
         
         $sortby_ = 1;
@@ -238,7 +335,7 @@ class ProductHandler extends DBConnection
                 $sortby_ = 'products.id';
         }
 
-        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId WHERE $search_ AND $colorid_ AND $subcatids_ AND products.isTrending IN $trending_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND products.status=0 AND category.status=0 AND isTrending=1 ORDER BY $sortby_ DESC LIMIT $page, $show";
+        $sql = "SELECT products.*, category.catName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE ($search_) AND $colorid_ AND $subcatids_ AND products.isTrending IN $trending_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND products.status=0 AND category.status=0 AND subcategory.status=0 AND isTrending=1 ORDER BY $sortby_ DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {
@@ -254,6 +351,53 @@ class ProductHandler extends DBConnection
                     }
                     continue;
                 }
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
+    function getReviewById($reviewId){
+        $records = [];
+        $reviewId = (int) $reviewId;
+        $sql = "SELECT pr.*, users.username FROM productreview AS pr JOIN users ON users.id = pr.userId WHERE pr.id=$reviewId AND pr.status = 0";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            $records = $result->fetch_assoc();
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
+    function getReviewsByProduct($prdId){
+        $records = [];
+        $prdId = (int) $prdId;
+        $sql = "SELECT pr.*, users.username FROM productreview AS pr JOIN users ON users.id = pr.userId WHERE pr.productId=$prdId AND pr.status = 0";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            while($row = $result->fetch_assoc()){
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
+    function getReviewByIds($prdId, $userId){
+        $records = [];
+        $prdId = (int) $prdId;
+        $userId = (int) $userId;
+        $sql = "SELECT pr.*, users.username FROM productreview AS pr JOIN users ON users.id = pr.userId WHERE pr.productId=$prdId AND pr.userId=$userId AND pr.status = 0";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            while($row = $result->fetch_assoc()){
                 array_push($records, $row);
             }
         } else {
@@ -307,12 +451,13 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getProductBySubCatName($catname, $subcatname, $page, $show, $colorid = '', $sizeids = '', $subcatids = '', $priceStart = 0, $priceEnd = 12000, $sortby='latest')
+    function getProductBySubCatName($catname, $subcatname, $page, $show, $colorid = '', $sizeids = '', $subcatids = '', $priceStart = 0, $priceEnd = 12000, $sortby='latest', $searchby='')
     {
         $records = [];
         $colorid_ = ($colorid == '') ? 1 : "products.productColorIds LIKE '%" . $colorid . "%'";
         $subcatids_ = ($subcatids == '') ? 1 : "products.subCategoryId IN (" . $subcatids . ")";
-        
+        $search_ = ($searchby== '') ? 1 : "products.productName LIKE '%" . $searchby . "%'";
+
         switch($sortby){
             case 'latest':
                 $sortby_ = 'products.id'; break;
@@ -324,7 +469,7 @@ class ProductHandler extends DBConnection
                 $sortby_ = 'products.id';
         }
 
-        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE $colorid_ AND $subcatids_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND category.catName = '$catname' AND " . (($subcatname == "null") ? 1 : "subcategory.subCatName = '$subcatname'") . " AND products.status=0 AND category.status=0 AND subcategory.status=0 ORDER BY $sortby_ DESC LIMIT $page, $show";
+        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE $colorid_ AND $subcatids_ AND ($search_) AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND category.catName = '$catname' AND " . (($subcatname == "null") ? 1 : "subcategory.subCatName = '$subcatname'") . " AND products.status=0 AND category.status=0 AND subcategory.status=0 ORDER BY $sortby_ DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result && $result->num_rows > 0) {
@@ -348,11 +493,12 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getProductByCatName($catname, $page, $show, $colorid = '', $sizeids = '', $subcatids = '', $priceStart = 0, $priceEnd = 12000, $sortby='latest')
+    function getProductByCatName($catname, $page, $show, $colorid = '', $sizeids = '', $subcatids = '', $priceStart = 0, $priceEnd = 12000, $sortby='latest', $searchby='')
     {
         $records = [];
         $colorid_ = ($colorid == '') ? 1 : "products.productColorIds LIKE '%" . $colorid . "%'";
         $subcatids_ = ($subcatids == '') ? 1 : "products.subCategoryId IN (" . $subcatids . ")";
+        $search_ = ($searchby== '') ? 1 : "products.productName LIKE '%" . $searchby . "%'";
         
         switch($sortby){
             case 'latest':
@@ -365,7 +511,7 @@ class ProductHandler extends DBConnection
                 $sortby_ = 'products.id';
         }
         
-        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE $colorid_ AND $subcatids_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND category.catName = '$catname' AND products.status=0 AND category.status=0 AND subcategory.status=0 ORDER BY $sortby_ DESC LIMIT $page, $show";
+        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE ($search_) AND $colorid_ AND $subcatids_ AND (products.productPrice>=$priceStart AND products.productPrice<=$priceEnd) AND category.catName = '$catname' AND products.status=0 AND category.status=0 AND subcategory.status=0 ORDER BY $sortby_ DESC LIMIT $page, $show";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result && $result->num_rows > 0) {
@@ -389,10 +535,11 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getProductByCategory($catid)
+    function getProductByCategory($catid, $search='')
     {
         $records = [];
-        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE products.categoryId=$catid AND products.status=0 AND category.status=0 AND subcategory.status=0";
+        $search_ = ($search == '') ? 1 : "products.productName LIKE '%" . $search . "%' OR category.catName = '$search' OR subcategory.subCatName = '$search'";
+        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE ($search_) AND products.categoryId=$catid AND products.status=0 AND category.status=0 AND subcategory.status=0";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result && $result->num_rows > 0) {
@@ -405,10 +552,11 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function getProductBySubCategory($subcatid)
+    function getProductBySubCategory($subcatid, $search='')
     {
         $records = [];
-        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE products.subCategoryId=$subcatid AND products.status=0 AND category.status=0 AND subcategory.status=0";
+        $search_ = ($search == '') ? 1 : "products.productName LIKE '%" . $search . "%' OR category.catName = '$search' OR subcategory.subCatName = '$search'";
+        $sql = "SELECT products.*, category.catName, subcategory.subCatName FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id=products.subCategoryId WHERE ($search_) AND products.subCategoryId=$subcatid AND products.status=0 AND category.status=0 AND subcategory.status=0";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result && $result->num_rows > 0) {
@@ -451,6 +599,24 @@ class ProductHandler extends DBConnection
             $records = [];
         }
         return $records;
+    }
+
+    function addReview($userId, $productId, $productRate, $review){
+        $review = mysqli_real_escape_string($this->getConnection(), $review);
+        $error = "";
+        $result = [];
+        if (!$this->isReviewGiven($userId, $productId)) {
+            $sql = "INSERT INTO productreview (userId, productId, productRate, review, createdDate) VALUES ($userId, $productId, $productRate, '$review' , now())";
+            $result = $this->getConnection()->query($sql);
+            if (!$result) {
+                $error = "Somthing went wrong with the sql";
+            }else{
+                $result = $this->getReviewByIds($productId, $userId);
+            }
+        } else {
+            $error = "Review is already given by you for this product!!";
+        }
+        return ['error'=>$error, 'result'=>$result];
     }
 
     function addColor($color, $value)
@@ -557,7 +723,26 @@ class ProductHandler extends DBConnection
         return $records;
     }
 
-    function countPrdByColorId($id, $cat = '', $subcat = '')
+    function countPrdByCatId($id, $cat = '')
+    {
+        $count = 0;
+        $cat_ = (($cat=='') ? 1 : 'category.catName="'.$cat.'"'); // ($subcat=='') ? ( : 'category.catName="'.$cat.'" AND subcategory.subCatName="'.$subcat.'"' ;
+        $sql = "SELECT products.productColorIds FROM products JOIN category ON category.id = products.categoryId WHERE $cat_ AND products.status=0 AND category.status=0 ORDER BY products.id DESC";
+        $result = $this->getConnection()->query($sql);
+        if ($result && $result->num_rows > 0) {
+            while ($result && $product = $result->fetch_assoc()) {
+                $ids = explode(",", $product["productColorIds"]);
+                if (in_array($id, $ids)) {
+                    $count++;
+                }
+            }
+        } else {
+            $count = 0;
+        }
+        return $count;
+    }
+
+    function countPrdByCatAndSubCatId($id, $cat = '', $subcat = '')
     {
         $count = 0;
         $cat_ = ($subcat=='') ? (($cat=='') ? 1 : 'category.catName="'.$cat.'"') : 'category.catName="'.$cat.'" AND subcategory.subCatName="'.$subcat.'"' ;
@@ -576,11 +761,11 @@ class ProductHandler extends DBConnection
         return $count;
     }
 
-    function countPrdBySizeId($id, $cat = '', $subcat = '')
+    function countPrdBySizeId($id, $cat = '')
     {
         $count = 0;
-        $cat_ = ($subcat=='') ? (($cat=='') ? 1 : 'category.catName="'.$cat.'"') : 'category.catName="'.$cat.'" AND subcategory.subCatName="'.$subcat.'"' ;
-        $sql = "SELECT products.productSizeIds FROM products JOIN category ON category.id = products.categoryId JOIN subcategory ON subcategory.id = products.subCategoryId WHERE $cat_ AND products.status=0 AND subcategory.status=0 AND category.status=0 ORDER BY products.id DESC";
+        $cat_ = ($cat=='') ? 1 : 'category.catName="'.$cat.'"';
+        $sql = "SELECT products.productSizeIds FROM products JOIN category ON category.id = products.categoryId WHERE $cat_ AND products.status=0 AND category.status=0 ORDER BY products.id DESC";
         $result = $this->getConnection()->query($sql);
         if ($result && $result->num_rows > 0) {
             while ($result && $product = $result->fetch_assoc()) {
@@ -593,6 +778,18 @@ class ProductHandler extends DBConnection
             $count = 0;
         }
         return $count;
+    }
+
+    function updateReview($reviewId, $productRate, $review){
+
+        $error = "";
+        $review = mysqli_real_escape_string($this->getConnection(), $review);
+        $sql = "UPDATE productreview SET productRate=$productRate, review='$review' WHERE id=$reviewId";
+        $result = $this->getConnection()->query($sql);
+        if (!$result) {
+            $error = "Somthing went wrong with the $sql";
+        }
+        return $error;
     }
 
     function updateProduct($prdid, $name, $desc, $catid, $subcatid, $price, $qty, $colorsArr, $sizesArr, $imagesArr, $trending, $sku)
@@ -644,6 +841,15 @@ class ProductHandler extends DBConnection
         return $error;
     }
 
+    function deleteReview($reviewId){
+        $sql = "UPDATE productreview SET status=1, modifiedDate=now() WHERE id=$reviewId";
+        $result = $this->getConnection()->query($sql);
+        if ($result) {
+            return true;
+        }
+        return false;
+    }
+
     function deleteProduct($id)
     {
         $sql = "UPDATE products SET status=1, modifiedDate=now() WHERE id=$id";
@@ -669,6 +875,15 @@ class ProductHandler extends DBConnection
         $sql = "UPDATE productsize SET status=1, modifiedDate=now() WHERE id=$id";
         $result = $this->getConnection()->query($sql);
         if ($result) {
+            return true;
+        }
+        return false;
+    }
+
+    function isReviewGiven($userId, $prdId){
+        $sql = "SELECT * FROM productreview WHERE userId=$userId AND productId=$prdId AND status = 0";
+        $result = $this->getConnection()->query($sql);
+        if ($result->num_rows > 0) {
             return true;
         }
         return false;

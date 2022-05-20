@@ -8,6 +8,8 @@ require_once("customerHandler.php");
 require_once("orderHandler.php");
 require_once("taxHandler.php");
 require_once("couponHandler.php");
+require_once("bannerHandler.php");
+require_once("testimonialHandler.php");
 
 $addressH = new AddressHandler();
 $adminuserH = new AdminUser();
@@ -17,6 +19,8 @@ $customerH = new CustomerHandler();
 $orderH = new OrderHandler();
 $taxH = new TaxHandler();
 $couponH = new CouponHandler();
+$bannerH = new BannerHandler();
+$testiH = new TestimonialHandler();
 $error = '';
 $success = '';
 
@@ -67,6 +71,156 @@ if (isset($_POST["orderStatus"])) {
         $_SESSION["result"] = ["msg" => "Invalid Request!!!", "error" => true];
         header("Location: ../view_order.php");
     }
+}
+
+/*--------------- Add Testimonial ---------------*/
+if(isset($_POST["AddTestimonial"])){
+    $reviewer = $_POST['reviewer'];
+    $profession = $_POST['profession'];
+    $review = $_POST['review'];
+    $files = $_FILES["file"];
+    $reviewerImageURL = '';
+
+    // upload files to local directory
+    $targetDir = "../images/testimonials/";
+    if($files["name"] != ''){
+        $imgname = "testi_" . time() . rand(0, 1000) . '.png';
+        $target = $targetDir . $imgname;
+        if (move_uploaded_file($files["tmp_name"], $target)) {
+            $reviewerImageURL = $imgname;
+        }
+    }
+
+    $error = $testiH->addTestimonial($reviewer,$profession, $reviewerImageURL, $review);
+
+    if ($error == "") {
+        $_SESSION["result"] = ["msg" => "New Testimonial Added Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => $error, "error" => true];
+    }
+    header("Location: ../testimonials.php");
+}
+
+/*--------------- Update Testimonial ---------------*/
+if(isset($_POST["EditTestimonial"])){
+    $testiId = $_POST["testiId"];
+    $reviewer = $_POST['reviewer'];
+    $profession = $_POST['profession'];
+    $review = $_POST['review'];
+
+    $oldfile = $_POST["oldimage"];
+    $files = $_FILES["file"];
+    $reviewerImageURL = '';
+
+    // remove oldimages if new images are selected
+    $targetDir = "../images/testimonials/";
+    if ($files["name"] != '') {
+        $imgname = "testi_" . time() . rand(0, 1000) . '.png';
+        $target = $targetDir . $imgname;
+        if (move_uploaded_file($files["tmp_name"], $target)) {
+            $reviewerImageURL = $imgname;
+        }
+    } else {
+        $reviewerImageURL = $oldfile;
+    }
+
+    $error = $testiH->updateTestimonial($testiId, $reviewer, $profession, $reviewerImageURL, $review);
+
+    if ($error == "") {
+        $_SESSION["result"] = ["msg" => "Testimonial Updated Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => $error, "error" => true];
+    }
+    header("Location: ../testimonials.php");
+}
+/*--------------- Delete Testimonial ---------------*/
+if(isset($_GET["dTestimonial"])){
+    $id = (int) $_GET["dTestimonial"];
+    if ($testiH->deleteTestimonial($id)) {
+        $_SESSION["result"] = ["msg" => "Deleted Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => "Somthing went wrong!!!", "error" => true];
+    }
+    header("Location: ../testimonials.php");
+}
+
+//
+if(isset($_GET["dReview"])){
+    $id = (int) $_GET["dReview"];
+    if ($productH->deleteReview($id)) {
+        $_SESSION["result"] = ["msg" => "Deleted Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => "Somthing went wrong!!!", "error" => true];
+    }
+    header("Location: ../product_review.php");
+}
+
+
+/*--------------- Add Banner ---------------*/
+if(isset($_POST["AddBanner"])){
+    $bannerName = $_POST["bannerName"];
+    $bannerDesc = $_POST["bannerDesc"];
+    $files = $_FILES["file"];
+    $bannerImageURL = '';
+
+    // upload files to local directory
+    $targetDir = "../images/banners/";
+    if($files["name"] != ''){
+        $imgname = "banner_" . time() . rand(0, 1000) . '.png';
+        $target = $targetDir . $imgname;
+        if (move_uploaded_file($files["tmp_name"], $target)) {
+            $bannerImageURL = $imgname;
+        }
+    }
+
+    $error = $bannerH->addBanner($bannerName, $bannerDesc, $bannerImageURL);
+    if ($error == "") {
+        $_SESSION["result"] = ["msg" => "New Banner ('$bannerName') Added Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => $error, "error" => true];
+    }
+    header("Location: ../banners.php");
+}
+
+/*--------------- Update Banner ---------------*/
+if(isset($_POST["EditBanner"])){
+    $bannerId = $_POST["bannerId"];
+    $bannerName = $_POST["bannerName"];
+    $bannerDesc = $_POST["bannerDesc"];
+    $oldfile = $_POST["oldimage"];
+    $files = $_FILES["file"];
+    $bannerImageURL = '';
+
+    // remove oldimages if new images are selected
+    $targetDir = "../images/banners/";
+    if ($files["name"] != '') {
+        $imgname = "banner_" . time() . rand(0, 1000) . '.png';
+        $target = $targetDir . $imgname;
+        if (move_uploaded_file($files["tmp_name"], $target)) {
+            $bannerImageURL = $imgname;
+        }
+    } else {
+        $bannerImageURL = $oldfile;
+    }
+    
+    $error = $bannerH->updateBanner($bannerId, $bannerName, $bannerDesc, $bannerImageURL);
+    if ($error == "") {
+        $_SESSION["result"] = ["msg" => "Banner ('$bannerName') Updated Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => $error, "error" => true];
+    }
+    header("Location: ../banners.php");
+}
+
+/*--------------- Delete Banner ---------------*/
+if (isset($_GET["dBanner"])) {
+    $id = (int) $_GET["dBanner"];
+    if ($bannerH->deleteBanner($id)) {
+        $_SESSION["result"] = ["msg" => "Deleted Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => "Somthing went wrong!!!", "error" => true];
+    }
+    header("Location: ../banners.php");
 }
 
 /*------------- Delete Customer -------------*/
@@ -183,7 +337,6 @@ if (isset($_GET["dCoupon"])) {
     }
     header("Location: ../coupons.php");
 }
-
 
 
 /*------------- Add Product -------------*/

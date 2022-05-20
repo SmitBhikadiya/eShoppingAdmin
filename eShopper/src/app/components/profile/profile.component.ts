@@ -31,7 +31,18 @@ export class ProfileComponent implements OnInit {
   countries!: ICountry[];
   profileForm!: FormGroup;
   validator = new CustomValidation();
-  constructor(private userAuth: UserAuthService, private router:Router, private builder: FormBuilder, private addressService: AddressService) {}
+  constructor(
+    private userAuth: UserAuthService,
+    private router:Router, 
+    private builder: FormBuilder, 
+    private addressService: AddressService
+  ) {
+    userAuth.isUserLoggedIn.subscribe((res)=>{
+      if(res===false){
+        router.navigate(['/']);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.profileForm = this.builder.group({

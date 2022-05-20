@@ -5,4 +5,5 @@ export interface ICategory{
     modifiedDate:string
     createdDate:string
     status:number
+    totalPrd:number
 }

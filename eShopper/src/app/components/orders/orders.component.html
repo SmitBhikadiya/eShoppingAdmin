@@ -1,0 +1,48 @@
+<div class="container" style="margin-top:30px; margin-bottom: 200px;" *ngIf="orderData!=undefined">
+    <div *ngIf="orderData!=null; else dataLoading">
+        <div class="text-center">
+            <h3>Orders Details</h3>
+        </div>
+        <table class="table orderDetails">
+            <thead>
+                <tr>
+                    <th scope="col">SrNo.</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">OrderDate</th>
+                    <th scope="col">SubTotal</th>
+                    <th scope="col">Discount</th>
+                    <th scope="col">Tax</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">View</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let order of orderData; let i=index"  attr.data-toggle="collapse" attr.data-target="#accordion{{ i }}" class="clickable">
+                    <th scope="row">{{ i+1 }}</th>
+                    <td>
+                        <strong class="arrived" *ngIf="order.orderStatus==0">  Arrived   </strong>
+                        <strong class="delivered" *ngIf="order.orderStatus==1">Delivered </strong>
+                        <strong class="cancelled" *ngIf="order.orderStatus==2">Cancelled </strong>
+                    </td>
+                    <td>{{ order.createdDate }}</td>
+                    <td>{{ order.subTotal.toString() | setCurr : currency }}</td>
+                    <td>{{ ((order.discountAmount==null) ? 0: order.discountAmount).toString() | setCurr : currency }}</td>
+                    <td>{{ ((order.subTotal-((order.discountAmount==null) ? 0: order.discountAmount)) * (order.tax/100)).toString() | setCurr : currency }}</td>
+                    <td>{{ order.total.toString() | setCurr : currency }}</td>
+                    <td>
+                        <a [routerLink]="['/orders/view/'+order.id]" title="Edit item" class="edit-link"
+                            style="cursor: pointer">
+                            <img src="../../../assets/images/eye-solidsvg.svg" alt="edit" />
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <ng-template #dataLoading>
+        <div style="text-align: center">
+            <h2 style="padding-top: 20px">No Order Found!!!</h2>
+            <a [routerLink]="['/']" title="Continue Shopping" class="btn-tertiary">Continue Shopping</a>
+        </div>
+    </ng-template>
+</div>

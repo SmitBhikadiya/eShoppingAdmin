@@ -52,6 +52,15 @@ if (isset($postdata) && !empty($postdata)) {
         $error = $obj->removeOrderIf($userId, $ordId, $ifpayment);
         echo json_encode(["error"=>$error]);
         exit();
+    }else if(isset($request->getOrderDetails) && isset($request->userId)){
+        $ordId = (int) $request->getOrderDetails;
+        $userId = (int) $request->userId;
+        $orderData = $obj->getOrderById($ordId);
+        $orderListData = $obj->getOrderListByOrderId($ordId);
+        $billingData = $obj->getOrderAddressBy($ordId, 0);
+        $shippingData = $obj->getOrderAddressBy($ordId, 1);
+        echo json_encode(["result"=>['orderListData'=>$orderListData, 'orderData'=>$orderData, 'billingAddressData'=>$billingData, 'shippingAddressData'=>$shippingData]]);
+        exit();
     }else if(isset($request->getHistory)){
         $userId = (int) $request->getHistory;
         $res = $obj->getOrdersHistoryBy($userId);

@@ -41,10 +41,13 @@ export class CustomValidation {
     }
   }
 
-  isRadioSelected(id: string, name: string) {
+  isRadioSelected(id: string, name: string, msg='') {
     var gender = document.querySelectorAll("input[name=" + name + "]:checked");
     if (!gender.length) {
-      $(id).after("<span class='spanError'>*Please select a gender!!</span>");
+      if(msg==''){
+        msg = 'Please select a gender!!!';
+      }
+      $(id).after(`<span class='spanError'>*${msg}!!</span>`);
     }
   }
 

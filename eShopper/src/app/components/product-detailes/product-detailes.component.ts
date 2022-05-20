@@ -1,4 +1,3 @@
-import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -32,13 +31,15 @@ export class ProductDetailesComponent implements OnInit {
   show: boolean = false;
   productImages!: string[];
   noImageURL = environment.IMAGES_SERVER_URL + "/noimage.jpg";
-  cartId: any = null;
-  userId: any = null;
-  cartForm!: FormGroup;
+  cartId:any = null;
+  userId:any = null;
+  productReviews:any = null;
   btn = "ADD TO CART";
   cartItems!: any;
   subTotal!: any;
-
+  reviewByUser = null;
+  cartForm!: FormGroup;
+  reviewForm!:FormGroup;
 
   limit: number = 10; // <==== Edit this number to limit API results
 
@@ -97,6 +98,7 @@ export class ProductDetailesComponent implements OnInit {
   }
 
   currency = '';
+  isLoggin = false;
 
   constructor(
     private productService: ProductService,
@@ -121,6 +123,18 @@ export class ProductDetailesComponent implements OnInit {
       this.currency = curr;
     });
 
+    userAuth.isUserLoggedIn.subscribe((res)=>{
+      if(res){
+        this.isLoggin = true;
+      }else{
+        this.isLoggin = false;
+      }
+      this.setAddToCartForm("ADD TO CART",0,0,1);
+      this.setReviewForm("Submit", 0, '');
+      this.productReviews = null;
+      this.cartId = null;
+    });
+
     cartService.cartItemSubject.subscribe(data => {
       this.cartItems = data.cartItems;
       this.subTotal = data.subTotal;
@@ -128,30 +142,51 @@ export class ProductDetailesComponent implements OnInit {
 
     cartService.removeCartSubject.subscribe(data =>{
       if(data==true){
-        this.setDefaultForm();
+        this.setAddToCartForm("ADD TO CART",0,0,1);
       }
-    })
+    });
 
-    this.setDefaultForm();
-  }
-
-  setDefaultForm(){
-    this.cartId = null;
-    this.btn = "ADD TO CART";
-    this.cartForm = this.formBuilder.group(
-      {
-        pcolor: ['0', Validators.required],
-        psize: ['0', Validators.required],
-        pqty: [1, Validators.min(1)]
-      }
-    );
+    this.setAddToCartForm("ADD TO CART",0,0,1);
+    this.setReviewForm("Submit", 0, '');
   }
 
   ngOnInit(): void {
+
+    const token = JSON.parse(this.userAuth.getToken());
+    
+    if(token!=null){
+      this.isLoggin = true;
+      this.userId = token.user.id;
+    }
+
     this.route.params.subscribe((param) => {
       this.prdid = param["id"];
     });
+
     this.getProductById();
+
+  }
+
+  
+
+  setReviewForm(btn:string, rating:number, review:string){
+    this.reviewForm = this.formBuilder.group({
+      stars: [`${rating}`, Validators.required],
+      review: [`${review}`, [Validators.required, Validators.maxLength(255)]],
+      button: [`${btn}`]
+    })
+  }
+
+  setAddToCartForm(btn:string, pcolor:number, psize:number, pqty:number){
+    this.cartId = null;
+    this.btn = btn;
+    this.cartForm = this.formBuilder.group(
+      {
+        pcolor: [`${pcolor}`, Validators.required],
+        psize: [`${psize}`, Validators.required],
+        pqty: [pqty, Validators.min(1)]
+      }
+    );
   }
 
   addTocart() {
@@ -173,8 +208,68 @@ export class ProductDetailesComponent implements OnInit {
     }
   }
 
+  reviewSubmit(){
+    if (this.validateReview()) {
+      console.log(this.reviewForm.value, this.reviewByUser); 
+      if(this.reviewByUser==null){
+        this.addReview(this.reviewForm.value);
+      }else{
+        this.updateReview(this.reviewForm.value);
+      }
+      this.getAllReviewBy(this.prdid);
+    }
+  }
+
+  addReview(formValue:any){
+    if(this.isLoggin){
+      this.productService.insertReview(this.prdid, this.userId, formValue.stars, formValue.review).subscribe({
+        next: (res) => {
+          if(res.error==''){
+            this.reviewByUser = res.result[0];
+            this.setReviewForm('Update', formValue.stars, formValue.review);
+            this.getAllReviewBy(this.prdid);
+            this.toast.showSuccess("Review Added Successfully!!");
+          }else{
+            this.toast.showError(res.error, 'ServerError');
+          }
+        },
+        error: (err) => {
+          this.toast.showError(err.error, 'HttpResponceError');
+        },
+      });
+    }else{
+      this.toast.showError('Login is must required!!!');
+    }
+  }
+
+  updateReview(formValue:any){
+    if(this.isLoggin){
+      if(this.reviewByUser!=null){
+        const reviewId = this.reviewByUser['id'];
+        this.productService.updateReview(reviewId, formValue.stars, formValue.review).subscribe({
+          next: (res) => {
+            if(res.error==''){
+              this.toast.showSuccess("Review Updated Successfully!!");
+              this.getAllReviewBy(this.prdid);
+            }else{
+              this.toast.showError(res.error, 'ServerError');
+            }
+          },
+          error: (err) => {
+            this.toast.showError(err.error, 'HttpResponceError');
+          },
+        });
+      }
+    }else{
+      this.toast.showError('Login is must required!!!');
+    }
+  }
+
   getCartItems() {
-    const data = JSON.parse(this.userAuth.getToken());
+    console.log(this.isLoggin);
+    
+    if(this.isLoggin){
+      const data = JSON.parse(this.userAuth.getToken());
     this.cartService.getCartItems(data.user.id).subscribe((res) => {
       this.cartItems = res["result"];
       this.subTotal = this.cartService.getSubTotal();
@@ -202,42 +297,102 @@ export class ProductDetailesComponent implements OnInit {
     }, (err) => {
       this.toast.showError("Error: " + err);
     });
+    }
   }
 
   updateCartItem(colorId: number, sizeId: number, qty: number, subtotal: number) {
     console.log("Updating...");
-    this.cartService.updateCartItem(this.cartId, this.userId, colorId, sizeId, qty, subtotal).subscribe({
-      next: (res) => {
-        if (res.error == '') {
-          this.getCartItems();
-          this.toast.showSuccess("Item Updated Successfully!!!");
-        } else {
-          this.toast.showError(res.error);
+    if(this.isLoggin){
+      this.cartService.updateCartItem(this.cartId, this.userId, colorId, sizeId, qty, subtotal).subscribe({
+        next: (res) => {
+          if (res.error == '') {
+            this.getCartItems();
+            this.toast.showSuccess("Item Updated Successfully!!!");
+          } else {
+            this.toast.showError(res.error);
+          }
+        }, error: (err) => {
+          this.toast.showError("Error: " + err);
         }
-      }, error: (err) => {
-        this.toast.showError("Error: " + err);
-      }
-    })
+      });
+    }else{
+      this.toast.showError('Login is must required!!!');
+    }
   }
 
   addItemToCart(colorId: number, sizeId: number, qty: number, subtotal: number) {
     console.log("Adding...");
-    this.cartService.addItemToCart(this.product, this.userId, colorId, sizeId, qty, subtotal).subscribe({
-      next: (res) => {
-        if (res.error == '') {
-          this.getCartItems();
-          this.toast.showSuccess("Item Added Successfully!!!");
-        } else {
-          this.toast.showError(res.error);
+    if(this.isLoggin){
+      this.cartService.addItemToCart(this.product, this.userId, colorId, sizeId, qty, subtotal).subscribe({
+        next: (res) => {
+          if (res.error == '') {
+            this.getCartItems();
+            this.toast.showSuccess("Item Added Successfully!!!");
+          } else {
+            this.toast.showError(res.error);
+          }
+        }, error: (err) => {
+          this.toast.showError("Error: " + err);
         }
-      }, error: (err) => {
-        this.toast.showError("Error: " + err);
-      }
-    })
+      });
+    }else{
+      this.toast.showError('Login is must required!!!');
+    }
   }
 
   toggleReview() {
-    this.show = !this.show;
+    const reviewForm = <HTMLElement>document.getElementById('reviewForm');
+    if(reviewForm?.style.getPropertyValue('display') == 'block'){
+      reviewForm.style.display = 'none';
+    }else{
+      const getReviewDetails = () => {
+        console.log("Fetching.. Reviews", new Date().getSeconds());
+        this.getAllReviewBy(this.prdid);
+        this.getReviewByUser(this.userId, this.prdid);
+        console.log("Fetched", new Date().getSeconds());
+        reviewForm.style.display = 'block';
+      }
+      getReviewDetails();
+    }
+  }
+
+  getReviewByUser(userId:number, productId:number){
+    if(this.isLoggin){
+      this.productService.getReviewByIds(productId, userId).subscribe({
+        next: (res)=>{
+          const result = res.result;
+          console.log(result);
+          if(result.length == 1){
+            this.reviewByUser = result[0];
+            this.setReviewForm("Update", result[0].productRate, result[0].review);
+          }else{
+            this.reviewByUser = null;
+            this.setReviewForm("Submit", 0, '');
+          }
+        },
+        error(err) {
+          console.log(err);
+        },
+      });
+    }
+  }
+
+  getAllReviewBy(prdId:number){
+    this.productService.getReviewByProductId(prdId).subscribe({
+      next: (res)=>{
+        const result = res.result;
+        if(result.length > 0){
+          this.productReviews = result;
+        }
+      },
+      error(err) {
+        console.log(err);
+      },
+    });
+  }
+
+  trackByReview(index:number, item:any){
+    return item.id;
   }
 
   getData(data: SlidesOutputData, synk: any) {
@@ -283,6 +438,18 @@ export class ProductDetailesComponent implements OnInit {
     }, (err) => {
       this.error = err;
     });
+  }
+
+  validateReview(){
+    const validator = new CustomValidation();
+    $("#reviewForm .spanError").remove();
+    validator.isRadioSelected(".rating", "stars", 'Give atleast one star');
+    validator.isFieldEmpty("#review");
+    if ($("#reviewForm").find('.spanError').length == 0) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   validateAddtoCart() {

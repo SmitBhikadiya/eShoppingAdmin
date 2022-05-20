@@ -1,0 +1,33 @@
+<div class="container">
+    <h2>Testimonial</h2>
+    <div class="slider-outer testimonial-slider">
+        <div class="wrapper1" style="overflow-x: hidden; height: 200px; min-height:200px">
+            <owl-carousel-o [options]="customOptions1" #synk1>
+                <ng-container *ngFor="let slide of testimonialData; let id_ = index">
+                    <ng-template class="slide" carouselSlide [id]="id_.toString()">
+                        <div class="item">
+                            <div class="row">
+                                <div class="col-sm-3 col-xs-4">
+                                    <div class="media">
+                                        <div class="media-left" style="width: 50%">
+                                            <img style="width: 70px; height: 80px;" src="{{ slide.reviewerImage }}" alt="Testimonial" />
+                                        </div>
+                                        <div class="media-body" style="width: 50%">
+                                            <h5>{{ slide.reviewerName }}</h5>
+                                            <p>{{ slide.reviewerProfession }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-9 col-xs-8">
+                                    <div class="description">
+                                       "{{ slide.review }}"
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </ng-container>
+            </owl-carousel-o>
+        </div>
+    </div>
+</div>

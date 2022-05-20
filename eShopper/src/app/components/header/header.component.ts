@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ICategory } from 'src/app/interfaces/category';
 import { ISubCategory } from 'src/app/interfaces/subcategory';
 import { CartService } from 'src/app/services/cart.service';
 import { CategoryService } from 'src/app/services/category.service';
 import { CurrencyService } from 'src/app/services/currency.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { ProductService } from 'src/app/services/product.service';
 import { UserAuthService } from 'src/app/services/user-auth.service';
 import { environment } from 'src/environments/environment';
 declare let $: any;
@@ -32,7 +34,10 @@ export class HeaderComponent implements OnInit {
     private catService: CategoryService, 
     private toast: NotificationService, 
     private userAuth: UserAuthService,
-    private currService:CurrencyService) {
+    private currService:CurrencyService,
+    private productService:ProductService,
+    private router:Router
+    ) {
       currService.currSubject.subscribe((curr)=>{
         this.currency = curr;
       });
@@ -54,12 +59,13 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  currencyChange(event:any){
-  let val = event.target.value;
+  currencyChange(val:string){
     if(val==='' || val==='inr'){
       this.currService.changeCurrency('inr');
     }else if(val==='usd'){
       this.currService.changeCurrency('usd');
+    }else if(val==='eur'){
+      this.currService.changeCurrency('eur');
     }
   }
 
@@ -119,5 +125,10 @@ export class HeaderComponent implements OnInit {
     }, (err) => {
       this.toast.showError("Error: "+err);
     });
+  }
+
+  searchGlobal(search:HTMLInputElement){
+    this.router.navigate(['search']);
+    this.productService.search.next((search.value).toString().toLowerCase());
   }
 }

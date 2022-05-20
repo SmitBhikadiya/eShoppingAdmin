@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map, Observable, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -8,14 +8,17 @@ import { environment } from 'src/environments/environment';
 })
 export class UserAuthService {
   logincred!: any;
+  isUserLoggedIn = new Subject();
   constructor(private http: HttpClient) { }
 
   userLogin(loginCred: any) {
     return this.http.post<any>(`${environment.API_SERVER_URL}/login.php`, loginCred)
       .pipe(map(res => {
+        console.log(123, res);
         this.setToken(JSON.stringify(res));
         this.logincred = loginCred;
         this.refreshTokenTimer();
+        this.isUserLoggedIn.next(true);
         return res;
       }));
   }
@@ -91,7 +94,6 @@ export class UserAuthService {
   refreshTokenTimer(){
     const token = this.getToken();
     if(token!==null){
-      //set a timeout to refresh token
       const data = JSON.parse(token);
       const exp_time = new Date(data.expiry).getTime();
       const curr_time = Math.ceil(Date.now()/1000)
@@ -99,7 +101,6 @@ export class UserAuthService {
       console.log("timeout: "+timeout);
       this.refreshTokenTimeOut = setTimeout(()=>{
         this.refreshToken().subscribe();
-        console.log("set Timeout called");
         this.stopRefreshToken();
       }, (timeout+1)*1000);
     }
@@ -107,7 +108,6 @@ export class UserAuthService {
 
   private stopRefreshToken(){
     clearTimeout(this.refreshTokenTimeOut);
-    console.log("time out cleared!!");
   }
 
   getUserDetailesByUsername(username: string | null) {
@@ -139,6 +139,7 @@ export class UserAuthService {
   }
 
   logout() {
+    this.isUserLoggedIn.next(false);
     this.deleteToken();
     this.stopRefreshToken();
   }

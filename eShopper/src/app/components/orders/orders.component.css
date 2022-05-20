@@ -1,0 +1,12 @@
+.orderDetails tbody tr th{
+    padding: 10px 5px;
+}
+.orderDetails .arrived{
+    color: #0299e4;
+}
+.orderDetails .delivered{
+    color: #00ae00;
+}
+.orderDetails .cancelled{
+    color: #ff5e14;
+}

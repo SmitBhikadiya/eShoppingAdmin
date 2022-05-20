@@ -52,18 +52,30 @@
                             <li class="hidden-xs" *ngIf="isLoggin">
                                 <span><em>Welcome</em>, {{ username | filterString }}</span>
                             </li>
-                            <li *ngIf="isLoggin">
-                                <a [routerLink]="['/profile']" title="My Profile">Profile</a>
-                            </li>
                             <li *ngIf="isLoggin" class="login-link">
                                 <a title="Logout" style="cursor: pointer" (click)="userLogout()">Logout</a>
                             </li>
                             <li>
-                                <select (change)="currencyChange($event)">
-                                    <option value="">currency</option>
-                                    <option value="usd">USD</option>
-                                    <option value="inr">INR</option>
-                                </select>
+                                <div class="dropdown">
+                                    <button class="dropbtn">Manage&nbsp;<img width="14" style="padding-bottom: 2px" src="../../../assets/images/angle-dwon.png" /></button>
+                                    <div class="dropdown-content">
+                                      <a *ngIf="isLoggin" [routerLink]="['/profile']" title="My Profile">Profile</a>
+                                      <a *ngIf="isLoggin" [routerLink]="['/orders']" title="Orders">Orders</a>
+                                      <a >Change Password</a>
+                                      <a [routerLink]="['/coupons']" title="coupons">Coupons</a>
+                                      <a *ngIf="isLoggin" [routerLink]="['/wishlist']" title="wishlist">WishList</a>
+                                    </div>
+                                  </div>
+                            </li>
+                            <li>
+                                <div class="dropdown">
+                                    <button class="dropbtn">Currencies&nbsp;<img width="14" style="padding-bottom: 2px" src="../../../assets/images/angle-dwon.png" /></button>
+                                    <div class="dropdown-content">
+                                        <a style="cursor: pointer" (click)="currencyChange('inr')">INR</a>
+                                        <a style="cursor: pointer" (click)="currencyChange('usd')">USD</a>
+                                        <a style="cursor: pointer" (click)="currencyChange('eur')">EUR</a>
+                                    </div>
+                                  </div>
                             </li>
                             <li *ngIf="isCartVisisble" class="cart-outer" id="cart-outer">
                                 <a title="Add to Cart" style="cursor: pointer" class="add-to-cart"
@@ -126,7 +138,7 @@
                             <li class="search-link-wrap">
                                 <div class="search-link-outer">
                                     <div class="search-link clearfix">
-                                        <input type="text" class="form-control" placeholder="Search" />
+                                        <input type="text" class="form-control" placeholder="Search Products by name, category, subcategory" #search (keyup)="searchGlobal(search)" />
                                         <a href="#" title="Search"><i><img src="../assets/images/search.svg"
                                                     alt="Search" /></i></a>
                                     </div>

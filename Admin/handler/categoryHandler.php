@@ -47,6 +47,8 @@ class CategoryHandler extends DBConnection
         $records = [];
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
+                $totalPrd = $this->countPrdByCatId($row["id"]);
+                $row["totalPrd"] = $totalPrd;
                 array_push($records, $row);
             }
         } else {
@@ -135,6 +137,16 @@ class CategoryHandler extends DBConnection
 
     function countPrdBySubCatId($id){
         $sql = "SELECT COUNT(*) AS total FROM products WHERE subCategoryId=$id AND status=0";
+        $result = $this->getConnection()->query($sql);
+        if($result && $result->num_rows > 0){
+            return $result->fetch_assoc()["total"];
+        }else{
+            return 0;
+        }
+    }
+
+    function countPrdByCatId($id){
+        $sql = "SELECT COUNT(*) AS total FROM products WHERE categoryId=$id AND status=0";
         $result = $this->getConnection()->query($sql);
         if($result && $result->num_rows > 0){
             return $result->fetch_assoc()["total"];
