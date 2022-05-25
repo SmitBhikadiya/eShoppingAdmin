@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 22, 2022 at 06:41 AM
+-- Generation Time: May 25, 2022 at 09:43 AM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 7.4.20
 
@@ -43,6 +43,37 @@ CREATE TABLE `adminuser` (
 
 INSERT INTO `adminuser` (`id`, `email`, `password`, `username`, `createdDate`, `modifiedDate`, `status`) VALUES
 (1, 'admin123@gmail.com', '$2y$10$B7UJi7F5h9Ta8e5t.RfK3.8F5vdKEypE/3gBz.tGMDKOjWZtXggYG', 'Admin123', '2022-04-05 11:40:12', '2022-04-05 11:40:12', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cart`
+--
+
+CREATE TABLE `cart` (
+  `id` int(11) NOT NULL,
+  `productId` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `productName` varchar(100) NOT NULL,
+  `productColorId` int(11) NOT NULL,
+  `productSizeId` int(11) NOT NULL,
+  `productImage` text NOT NULL,
+  `unitPrize` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `subTotal` int(11) NOT NULL,
+  `createdDate` datetime DEFAULT NULL,
+  `modifiedDate` datetime DEFAULT NULL,
+  `status` tinyint(2) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `cart`
+--
+
+INSERT INTO `cart` (`id`, `productId`, `userId`, `productName`, `productColorId`, `productSizeId`, `productImage`, `unitPrize`, `quantity`, `subTotal`, `createdDate`, `modifiedDate`, `status`) VALUES
+(33, 3, 1, 'cricket bat', 2, 2, 'product_165278027299.png', 20, 1, 20, '2022-05-23 10:08:37', NULL, 0),
+(34, 4, 1, 'supreme jeans', 7, 2, 'product_1653054867477.png', 1099, 3, 3297, '2022-05-23 10:08:38', '2022-05-25 12:44:25', 0),
+(35, 5, 1, 'sneakers', 7, 11, 'product_165305496919.png', 1599, 5, 7995, '2022-05-23 10:08:40', '2022-05-25 13:08:04', 0);
 
 -- --------------------------------------------------------
 
@@ -117,11 +148,63 @@ CREATE TABLE `countries` (
 
 INSERT INTO `countries` (`id`, `country`, `modifiedDate`, `createdDate`, `status`) VALUES
 (1, 'india', '2022-04-07 13:01:35', '2022-04-07 11:08:30', 0),
-(2, 'brazill', '2022-04-07 13:11:42', '2022-04-07 11:08:33', 0),
-(3, 'us', NULL, '2022-04-11 12:24:12', 0),
-(4, 'south korea', NULL, '2022-04-13 17:22:32', 0),
+(2, 'brazill', '2022-05-13 18:39:38', '2022-04-07 11:08:33', 1),
+(3, 'us', '2022-05-13 18:39:42', '2022-04-11 12:24:12', 1),
+(4, 'south korea', '2022-05-13 18:39:35', '2022-04-13 17:22:32', 1),
 (5, 'china', NULL, '2022-04-13 17:22:40', 0),
-(6, 'thailand', NULL, '2022-04-13 17:22:55', 0);
+(6, 'thailand', '2022-05-13 18:39:31', '2022-04-13 17:22:55', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `coupons`
+--
+
+CREATE TABLE `coupons` (
+  `id` int(11) NOT NULL,
+  `stripeId` varchar(150) NOT NULL,
+  `couponCode` varchar(10) NOT NULL,
+  `couponExpiry` datetime NOT NULL,
+  `discountAmount` int(11) NOT NULL,
+  `requireAmountForApplicable` int(11) NOT NULL,
+  `maximumTotalUsage` int(11) NOT NULL,
+  `createdDate` datetime NOT NULL,
+  `modifiedDate` datetime NOT NULL,
+  `status` tinyint(2) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `coupons`
+--
+
+INSERT INTO `coupons` (`id`, `stripeId`, `couponCode`, `couponExpiry`, `discountAmount`, `requireAmountForApplicable`, `maximumTotalUsage`, `createdDate`, `modifiedDate`, `status`) VALUES
+(1, 'GsiJrFkI', 'DIWALI50', '2022-05-04 02:33:00', 599, 1000, 100, '2022-05-17 16:58:13', '2022-05-18 14:55:24', 0),
+(2, 'ZlAElP66', 'HOLI2022', '2022-05-26 14:58:00', 1001, 3000, 15, '2022-05-18 14:59:03', '0000-00-00 00:00:00', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `homebanners`
+--
+
+CREATE TABLE `homebanners` (
+  `id` int(11) NOT NULL,
+  `bannerName` varchar(100) NOT NULL,
+  `bannerDesc` varchar(250) NOT NULL,
+  `bannerImageURL` text NOT NULL,
+  `createdDate` datetime NOT NULL,
+  `modifiedDate` datetime NOT NULL,
+  `status` tinyint(2) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `homebanners`
+--
+
+INSERT INTO `homebanners` (`id`, `bannerName`, `bannerDesc`, `bannerImageURL`, `createdDate`, `modifiedDate`, `status`) VALUES
+(2, 'first', 'testing', 'banner_165293687633.png', '2022-05-19 10:24:43', '2022-05-19 10:39:34', 0),
+(5, 'First Banner', 'fvdnf', 'banner_1652936645502.png', '2022-05-19 10:34:05', '2022-05-19 10:39:39', 0),
+(6, 'Third Banner', 'Testing', 'banner_1652956789151.png', '2022-05-19 16:09:49', '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -132,6 +215,7 @@ INSERT INTO `countries` (`id`, `country`, `modifiedDate`, `createdDate`, `status
 CREATE TABLE `orderaddress` (
   `id` int(11) NOT NULL,
   `orderId` int(11) NOT NULL,
+  `addressType` tinyint(2) NOT NULL,
   `streetName` varchar(50) NOT NULL,
   `cityId` int(11) NOT NULL,
   `countryId` int(11) NOT NULL,
@@ -145,9 +229,13 @@ CREATE TABLE `orderaddress` (
 -- Dumping data for table `orderaddress`
 --
 
-INSERT INTO `orderaddress` (`id`, `orderId`, `streetName`, `cityId`, `countryId`, `stateId`, `modifiedDate`, `createdDate`, `status`) VALUES
-(1, 1, 'shivam', 3, 1, 2, '2022-04-12 15:07:21', '2022-04-12 15:07:21', 0),
-(2, 2, 'Satyam Society, Shanti nagar', 5, 1, 2, '2022-04-13 07:34:03', '2022-04-13 07:34:03', 0);
+INSERT INTO `orderaddress` (`id`, `orderId`, `addressType`, `streetName`, `cityId`, `countryId`, `stateId`, `modifiedDate`, `createdDate`, `status`) VALUES
+(1, 1, 0, 'ganesh', 3, 1, 2, NULL, '2022-05-18 13:51:47', 0),
+(2, 1, 1, 'ramdev', 1, 1, 1, NULL, '2022-05-18 13:51:47', 0),
+(3, 2, 0, 'ganesh', 3, 1, 2, NULL, '2022-05-18 13:54:29', 0),
+(4, 2, 1, 'ramdev', 1, 1, 1, NULL, '2022-05-18 13:54:29', 0),
+(5, 3, 0, 'ganesh', 3, 1, 2, NULL, '2022-05-20 19:27:49', 0),
+(6, 3, 1, 'ramdev', 1, 1, 1, NULL, '2022-05-20 19:27:49', 0);
 
 -- --------------------------------------------------------
 
@@ -159,13 +247,14 @@ CREATE TABLE `orderlist` (
   `id` int(11) NOT NULL,
   `orderId` int(11) NOT NULL,
   `productId` int(11) NOT NULL,
+  `productStripeId` varchar(150) NOT NULL,
   `productName` varchar(50) NOT NULL,
   `productImage` text NOT NULL,
   `productSize` varchar(50) NOT NULL,
   `productColor` varchar(50) NOT NULL,
   `productColorCode` varchar(50) NOT NULL,
   `unitPrice` int(11) NOT NULL,
-  `qunatity` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
   `subTotal` int(11) NOT NULL,
   `modifiedDate` datetime DEFAULT NULL,
   `createdDate` datetime DEFAULT NULL,
@@ -176,10 +265,14 @@ CREATE TABLE `orderlist` (
 -- Dumping data for table `orderlist`
 --
 
-INSERT INTO `orderlist` (`id`, `orderId`, `productId`, `productName`, `productImage`, `productSize`, `productColor`, `productColorCode`, `unitPrice`, `qunatity`, `subTotal`, `modifiedDate`, `createdDate`, `status`) VALUES
-(1, 1, 2, 'polo tshirt black', 'blackandwhite.jpg,fullsleevetshirt.jpg', 'xl', 'green', '#00ff00', 299, 1, 299, '2022-04-12 15:04:55', '2022-04-12 15:04:55', 0),
-(2, 1, 1, 'Signature T-shirt', 'product_1649754686373.png,product_1649754686824.png', 'l', 'blue', '#0000ff', 599, 2, 1198, '2022-04-12 15:08:10', '2022-04-12 15:08:10', 0),
-(3, 2, 5, 'jeans', 'product_1649827927705.png', 'Xl', 'navy blue', '#031159', 799, 1, 799, '2022-04-13 07:32:39', '2022-04-13 07:32:39', 0);
+INSERT INTO `orderlist` (`id`, `orderId`, `productId`, `productStripeId`, `productName`, `productImage`, `productSize`, `productColor`, `productColorCode`, `unitPrice`, `quantity`, `subTotal`, `modifiedDate`, `createdDate`, `status`) VALUES
+(1, 1, 1, 'prod_LfulhPs8gKBBz4', 'car', 'product_1652533468195.png', '124 x 50', 'blue', '#0000ff', 1299, 1, 1299, NULL, '2022-05-18 13:51:47', 0),
+(2, 1, 2, 'prod_LgJUafLHQeUBJy', 'abc t-shirt', 'product_1652442054348.png', 'm', 'grey', '#7a7a7a', 200, 2, 400, NULL, '2022-05-18 13:51:47', 0),
+(3, 2, 1, 'prod_LfulhPs8gKBBz4', 'car', 'product_1652533468195.png', '124 x 50', 'blue', '#0000ff', 1299, 1, 1299, NULL, '2022-05-18 13:54:29', 0),
+(4, 2, 2, 'prod_LgJUafLHQeUBJy', 'abc t-shirt', 'product_1652442054348.png', 'm', 'grey', '#7a7a7a', 200, 3, 600, NULL, '2022-05-18 13:54:29', 0),
+(5, 3, 1, 'prod_LfulhPs8gKBBz4', 'car', 'product_1652533468195.png', '124 x 50', 'blue', '#0000ff', 1299, 4, 5196, NULL, '2022-05-20 19:27:49', 0),
+(6, 3, 2, 'prod_LgJUafLHQeUBJy', 'abc t-shirt', 'product_1652442054348.png', 'xxxll', 'grey', '#7a7a7a', 200, 1, 200, NULL, '2022-05-20 19:27:49', 0),
+(7, 3, 3, 'prod_LhmP5mgEgxWcBJ', 'cricket bat', 'product_165278027299.png', 'l', 'red', '#ff0000', 20, 3, 60, NULL, '2022-05-20 19:27:49', 0);
 
 -- --------------------------------------------------------
 
@@ -190,9 +283,13 @@ INSERT INTO `orderlist` (`id`, `orderId`, `productId`, `productName`, `productIm
 CREATE TABLE `orders` (
   `id` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
-  `totalPrice` int(11) NOT NULL,
-  `totalQuantity` int(11) NOT NULL,
+  `checkoutId` varchar(150) DEFAULT '',
+  `subTotal` int(11) NOT NULL,
+  `taxStripeId` varchar(150) NOT NULL,
+  `couponStripeId` varchar(150) DEFAULT '',
+  `total` int(11) NOT NULL,
   `orderStatus` tinyint(2) NOT NULL,
+  `payment` tinyint(4) NOT NULL DEFAULT 0,
   `modifiedDate` datetime DEFAULT NULL,
   `createdDate` datetime DEFAULT NULL,
   `status` tinyint(2) NOT NULL DEFAULT 0
@@ -202,9 +299,10 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `userId`, `totalPrice`, `totalQuantity`, `orderStatus`, `modifiedDate`, `createdDate`, `status`) VALUES
-(1, 1, 1497, 3, 1, '2022-04-13 09:44:12', '2022-04-12 15:04:20', 0),
-(2, 1, 799, 1, 2, '2022-04-13 17:54:22', '2022-04-13 07:30:50', 0);
+INSERT INTO `orders` (`id`, `userId`, `checkoutId`, `subTotal`, `taxStripeId`, `couponStripeId`, `total`, `orderStatus`, `payment`, `modifiedDate`, `createdDate`, `status`) VALUES
+(1, 1, 'cs_test_b1kqotkhJA7j254VrXbv5tfTjY7AC2MXMzJPUqkzsL8WljAN9eqmFPlZ1v', 1699, 'txr_1KyyGdSH3d6vW3Ey8RMoDWoi', '', 1784, 1, 1, '2022-05-18 13:52:48', '2022-05-18 13:51:47', 0),
+(2, 1, 'cs_test_b1FUeD177Y99LexKepHghIBLjBBtkRA3OBpgeqDxTsZQJMolAk1NVW06tv', 1899, 'txr_1KyyGVSH3d6vW3EyxLHo7DYm', 'GsiJrFkI', 1326, 0, 1, '2022-05-18 13:54:57', '2022-05-18 13:54:29', 0),
+(3, 1, 'cs_test_b1c9KPSv1OP1wK2ktWCWz855eKCRAPwPD7Ig5WHkYzdNUWeRrVX8w9HUoH', 5456, 'txr_1KyyGdSH3d6vW3Ey8RMoDWoi', 'ZlAElP66', 4678, 0, 1, '2022-05-20 19:28:23', '2022-05-20 19:27:49', 0);
 
 -- --------------------------------------------------------
 
@@ -231,7 +329,10 @@ INSERT INTO `productcolor` (`id`, `colorName`, `colorCode`, `modifiedDate`, `cre
 (4, 'orange', '#ff571f', '2022-04-18 10:25:19', '2022-04-11 15:39:22', 0),
 (5, 'grey', '#7a7a7a', '2022-04-18 10:24:47', '2022-04-12 11:39:24', 0),
 (6, 'pink', '#f500c8', '2022-04-18 10:23:45', '2022-04-12 14:38:55', 0),
-(7, 'blue', '#0000ff', NULL, '2022-04-13 15:51:10', 0);
+(7, 'blue', '#0000ff', NULL, '2022-04-13 15:51:10', 0),
+(8, 'jasmine', '#baf2bb', '2022-04-26 11:04:35', '2022-04-25 18:46:13', 1),
+(9, 'black', '#000000', '2022-04-26 11:05:01', '2022-04-26 11:04:52', 1),
+(10, 'green', '#1fc309', '2022-04-26 11:35:54', '2022-04-26 11:35:30', 0);
 
 -- --------------------------------------------------------
 
@@ -241,13 +342,23 @@ INSERT INTO `productcolor` (`id`, `colorName`, `colorCode`, `modifiedDate`, `cre
 
 CREATE TABLE `productreview` (
   `id` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
   `productId` int(11) NOT NULL,
   `productRate` int(11) NOT NULL,
-  `review` varchar(150) NOT NULL,
+  `review` varchar(255) NOT NULL,
   `modifiedDate` datetime DEFAULT NULL,
   `createdDate` datetime DEFAULT NULL,
   `status` tinyint(2) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `productreview`
+--
+
+INSERT INTO `productreview` (`id`, `userId`, `productId`, `productRate`, `review`, `modifiedDate`, `createdDate`, `status`) VALUES
+(1, 1, 3, 3, 'We offer the following delivery options for 24c ours over the world. Deliveries are not made on Saturdays, Sundays, or on public holidays. A specific time slot cannot be specified with any of our delivery options. Please refer to the Terms and Condition', NULL, '2022-05-20 14:59:46', 0),
+(2, 1, 2, 3, 'not made on Saturdays, Sundays, or on public holidays. A specific time slot cannot be specified with any of our delivery options. Please refer to the Terms and Conditions of Sale.', NULL, '2022-05-20 15:01:32', 0),
+(3, 1, 1, 5, 'We offer the following delivery options for 24c ours over the world. Deliveries are not made on Saturdays, Sundays or on public holidays. A specific time slot cannot be specified with any of our delivery ops', NULL, '2022-05-20 15:28:03', 0);
 
 -- --------------------------------------------------------
 
@@ -257,6 +368,8 @@ CREATE TABLE `productreview` (
 
 CREATE TABLE `products` (
   `id` int(11) NOT NULL,
+  `stripeId` varchar(150) NOT NULL,
+  `stripePriceId` varchar(150) NOT NULL,
   `productName` varchar(50) NOT NULL,
   `productDesc` varchar(150) NOT NULL,
   `productPrice` int(11) NOT NULL,
@@ -277,17 +390,12 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `productName`, `productDesc`, `productPrice`, `productSizeIds`, `productColorIds`, `productImages`, `totalQuantity`, `categoryId`, `subCategoryId`, `isTrending`, `SKU`, `modifiedDate`, `createdDate`, `status`) VALUES
-(1, 't-shirt', 'full sleeve t-shirt', 293, '2,1', '2,1', 'product_1649834498744.png,product_1649834498793.png', 10, 1, 1, 0, 'prod101', '2022-04-13 12:51:38', '2022-04-12 10:59:15', 0),
-(2, 'polo t-shirt', 'for testing', 597, '2', '6,2', 'product_1650275459430.png,product_1650275459824.png,product_1650275459190.png,product_1650275459570.png', 11, 1, 1, 1, 'prod102', '2022-04-20 12:23:34', '2022-04-12 11:38:45', 0),
-(3, 'blacky shine', 'this is for testing', 898, '2', '1', 'product_1650018282149.png', 45, 1, 2, 0, 'prod103', '2022-04-15 15:54:42', '2022-04-12 12:34:42', 0),
-(4, 'abc', 'for testing', 1299, '4,2', '1', 'product_1649754686373.png,product_1649754686824.png', 13, 1, 2, 0, 'prod104', '2022-04-12 14:59:53', '2022-04-12 14:40:36', 1),
-(5, 'sportored mens regular', '100% dustproof', 799, '5,2', '1', 'product_1650435623280.png,product_1650435623240.png', 15, 1, 1, 0, 'prod105', '2022-04-20 12:22:54', '2022-04-13 11:02:07', 0),
-(6, 'remote super car', 'this is a remote car for kids', 3500, '8', '5,2', 'product_1649852044962.png', 15, 3, 3, 0, 'prod106', '2022-04-19 10:28:26', '2022-04-13 17:44:04', 0),
-(7, 'super jeans', 'made in india', 1099, '7,1', '7,6', 'product_1650275499532.png', 399, 1, 2, 1, 'prod107', '2022-04-21 11:29:36', '2022-04-14 11:23:22', 0),
-(8, 'truck', 'remote control truck', 7999, '8', '4,2,1', 'product_1650258044880.png', 14, 3, 3, 1, 'prod108', '2022-04-20 12:20:36', '2022-04-18 10:30:44', 0),
-(9, 'super toy remote control', '2.4ghz cameralism drone f with altitude hold, headless mode and 360-degree flip action, multicolor', 1999, '8', '4', 'product_1650436415635.png', 398, 3, 3, 0, 'prod145', '2022-04-21 18:04:11', '2022-04-20 12:03:35', 0),
-(10, 'skechers women navy go walk lite', 'this product is already at its best price', 4997, '11,10', '1', 'product_1650529597669.png', 15, 2, 4, 1, 'prod113', '2022-04-21 18:07:13', '2022-04-21 13:56:37', 0);
+INSERT INTO `products` (`id`, `stripeId`, `stripePriceId`, `productName`, `productDesc`, `productPrice`, `productSizeIds`, `productColorIds`, `productImages`, `totalQuantity`, `categoryId`, `subCategoryId`, `isTrending`, `SKU`, `modifiedDate`, `createdDate`, `status`) VALUES
+(1, 'prod_LfulhPs8gKBBz4', 'price_1KyYwGSH3d6vW3EypRMJpyi8', 'car', 'car toy for kids', 1299, '8', '7', 'product_1652533468195.png,product_1652533468985.png,product_1652533468316.png,product_1652350085281.png', 2, 3, 3, 1, 'prod1', '2022-05-14 18:34:28', '2022-05-12 15:38:07', 0),
+(2, 'prod_LgJUafLHQeUBJy', 'price_1KywrcSH3d6vW3EynugcWF9O', 'abc t-shirt', 't-shirt for men', 200, '7,5,2', '5', 'product_1652442054348.png,product_1652442054618.png,product_1652442054869.png', 0, 1, 1, 1, 'prod2', '2022-05-13 17:11:13', '2022-05-13 17:10:54', 0),
+(3, 'prod_LhmP5mgEgxWcBJ', 'price_1L0MqiSH3d6vW3EyGnwkrXdZ', 'cricket bat', 'made in india', 20, '2', '2,1', 'product_165278027299.png,product_1652780272891.png,product_1652780272855.png,product_1652780272530.png', 5, 3, 3, 1, 'prod113', NULL, '2022-05-17 15:07:53', 0),
+(4, 'prod_LiyEyVs2HPVx1V', 'price_1L1WHhSH3d6vW3EyKUlGYEYv', 'supreme jeans', 'just for testing', 1099, '2,1', '7,5,1', 'product_1653054867477.png,product_1653054867911.png,product_1653054867297.png', 12, 1, 2, 1, 'prod114', NULL, '2022-05-20 19:24:30', 0),
+(5, 'prod_LiyFlSrHMjQtoH', 'price_1L1WJLSH3d6vW3EyuGfs20JA', 'sneakers', 'special sneakers for women', 1599, '11,10', '7,6,5', 'product_165305496919.png,product_1653054969819.png,product_1653054969180.png', 15, 2, 4, 1, 'prod116', NULL, '2022-05-20 19:26:10', 0);
 
 -- --------------------------------------------------------
 
@@ -317,6 +425,32 @@ INSERT INTO `productsize` (`id`, `size`, `modifiedDate`, `createdDate`, `status`
 (10, '7', NULL, '2022-04-21 13:54:40', 0),
 (11, '8', NULL, '2022-04-21 13:54:47', 0),
 (12, '9', '2022-04-21 13:55:24', '2022-04-21 13:54:54', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `servicetax`
+--
+
+CREATE TABLE `servicetax` (
+  `id` int(11) NOT NULL,
+  `stripeId` varchar(150) NOT NULL,
+  `tax` int(11) NOT NULL,
+  `countryId` int(11) NOT NULL,
+  `stateId` int(11) NOT NULL,
+  `modifiedDate` datetime NOT NULL,
+  `createdDate` datetime NOT NULL,
+  `status` tinyint(2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `servicetax`
+--
+
+INSERT INTO `servicetax` (`id`, `stripeId`, `tax`, `countryId`, `stateId`, `modifiedDate`, `createdDate`, `status`) VALUES
+(2, 'txr_1KyyGVSH3d6vW3EyxLHo7DYm', 2, 1, 1, '0000-00-00 00:00:00', '2022-05-13 18:40:41', 0),
+(3, 'txr_1KyyGdSH3d6vW3Ey8RMoDWoi', 5, 5, 4, '0000-00-00 00:00:00', '2022-05-13 18:40:50', 0),
+(4, 'txr_1KyyIKSH3d6vW3EyBLVYau8S', 1, 1, 2, '0000-00-00 00:00:00', '2022-05-13 18:42:35', 0);
 
 -- --------------------------------------------------------
 
@@ -367,7 +501,34 @@ INSERT INTO `subcategory` (`id`, `categoryId`, `subCatName`, `subCatDesc`, `modi
 (1, 1, 't-shirt', 'made by using 100% quality fabric', '2022-04-11 14:21:09', '2022-04-11 11:06:03', 0),
 (2, 1, 'jeans', '80% fire proof', '2022-04-11 12:01:46', '2022-04-11 11:52:36', 0),
 (3, 3, 'toys', 'plastic toys for kids', NULL, '2022-04-13 15:18:21', 0),
-(4, 2, 'shoes', 'shoes for women', NULL, '2022-04-21 13:53:21', 0);
+(4, 2, 'shoes', 'shoes for women', NULL, '2022-04-21 13:53:21', 0),
+(5, 3, 'jeans', 'testing', NULL, '2022-04-25 18:46:50', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `testimonials`
+--
+
+CREATE TABLE `testimonials` (
+  `id` int(11) NOT NULL,
+  `reviewerName` varchar(100) NOT NULL,
+  `reviewerProfession` varchar(100) NOT NULL,
+  `reviewerImage` text DEFAULT NULL,
+  `review` varchar(250) NOT NULL,
+  `createdDate` datetime NOT NULL,
+  `modifiedDate` datetime NOT NULL,
+  `status` tinyint(2) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `testimonials`
+--
+
+INSERT INTO `testimonials` (`id`, `reviewerName`, `reviewerProfession`, `reviewerImage`, `review`, `createdDate`, `modifiedDate`, `status`) VALUES
+(1, 'John Cley', 'Cyclist', 'testi_1652957507660.png', 'lorem ipsum suffered alteration in aome from, by injected humor\r\n                                , or randomized words which don\'t look even slightly\r\n                                believable.There are many varation of passenger randomized words', '2022-05-19 11:41:45', '2022-05-19 16:21:47', 0),
+(2, 'John Cena', 'Wrestler', 'testi_1652957472931.png', 'lorem ipsum suffered alteration in aome from, by injected humor\r\n                                , or randomized words which don\'t look even slightly\r\n                                believable.There are many varation of passenger randomized words', '2022-05-19 11:43:14', '2022-05-19 16:21:51', 0),
+(3, 'Ratan Tata', 'Businessmen', NULL, 'lorem ipsum suffered alteration in aome from, by injected humor\r\n                                , or randomized words which don\'t look even slightly\r\n                                believable.There are many varation of passenger randomized words\r\n ', '2022-05-19 11:43:59', '2022-05-19 11:44:04', 1);
 
 -- --------------------------------------------------------
 
@@ -388,6 +549,16 @@ CREATE TABLE `useraddress` (
   `status` tinyint(2) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `useraddress`
+--
+
+INSERT INTO `useraddress` (`id`, `userId`, `addressType`, `streetname`, `cityId`, `stateId`, `countryId`, `modifiedDate`, `createdDate`, `status`) VALUES
+(1, 1, 0, 'ganesh', 3, 2, 1, '2022-04-28 09:36:07', '2022-04-22 12:41:08', 0),
+(2, 1, 1, 'ramdev', 1, 1, 1, '2022-04-28 09:36:07', '2022-04-22 12:41:08', 0),
+(5, 5, 0, 'tramba village', 7, 4, 5, '2022-04-25 18:20:39', '2022-04-25 15:51:13', 0),
+(6, 5, 1, 'tramba village', 7, 4, 5, '2022-04-25 16:44:47', '2022-04-25 15:51:26', 0);
+
 -- --------------------------------------------------------
 
 --
@@ -405,6 +576,8 @@ CREATE TABLE `users` (
   `mobile` varchar(12) NOT NULL,
   `phone` varchar(12) NOT NULL,
   `interestList` varchar(100) DEFAULT NULL,
+  `otp` varchar(12) DEFAULT NULL,
+  `otpexpiry` datetime DEFAULT NULL,
   `modifiedDate` datetime DEFAULT NULL,
   `createdDate` datetime DEFAULT NULL,
   `status` tinyint(2) NOT NULL DEFAULT 0
@@ -414,9 +587,31 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `firstname`, `lastname`, `gender`, `mobile`, `phone`, `interestList`, `modifiedDate`, `createdDate`, `status`) VALUES
-(1, 'smit', 'smit@gmail.com', '$2y$10$CR/EiKPtkCfpHovu3JJ/.ea5gL12BkKy2tEc0Ol2bQy9jRvTOOi0W', 'S', 'D', 0, '7096794624', '12345', 'jeans, black', '2022-04-12 16:11:32', '2022-04-12 12:02:14', 0),
-(5, 'smit@123', 'sbhikadiya@gmail.com', '$2y$10$qmac/pmrhREiNVVaUf3Ku.c23YxQ/P.O..AhLvLYQjAgpGFNoq85S', 'S', 'fgf', 0, '6458967456', '65433', NULL, NULL, '2022-04-21 17:14:04', 0);
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `firstname`, `lastname`, `gender`, `mobile`, `phone`, `interestList`, `otp`, `otpexpiry`, `modifiedDate`, `createdDate`, `status`) VALUES
+(1, 'smit@1234', 'sssmit7648@gmail.com', '$2y$10$gPwjJSHoUye4NcGZSbLvKOEoNujIz.2BbgLtSMcGaoW70QQmGdG2S', 'Smit', 'Bhikadiya', 0, '7096794625', '123457', 'jeans, black', '835967', '2022-05-24 18:55:01', '2022-05-24 16:07:31', '2022-04-12 12:02:14', 0),
+(5, 'smit@123', 'sbhikadiya892@rku.ac.in', '$2y$10$UeP7IcxJlOgPFImoQkR4t.D4GWCfN2n63Uada2QwUPanq/grfVxNC', 'Smit', 'Bhikadiya', 0, '6458967456', '654334', NULL, '375269', '2022-05-23 18:11:24', '2022-04-25 16:44:47', '2022-04-21 17:14:04', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `wishlist`
+--
+
+CREATE TABLE `wishlist` (
+  `id` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `productId` int(11) NOT NULL,
+  `modifiedDate` datetime NOT NULL,
+  `createdDate` datetime NOT NULL,
+  `status` tinyint(2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `wishlist`
+--
+
+INSERT INTO `wishlist` (`id`, `userId`, `productId`, `modifiedDate`, `createdDate`, `status`) VALUES
+(2, 1, 5, '2022-05-25 13:08:07', '2022-05-25 13:07:46', 1);
 
 --
 -- Indexes for dumped tables
@@ -427,6 +622,14 @@ INSERT INTO `users` (`id`, `username`, `email`, `password`, `firstname`, `lastna
 --
 ALTER TABLE `adminuser`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `cart`
+--
+ALTER TABLE `cart`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `productId` (`productId`),
+  ADD KEY `userID__` (`userId`);
 
 --
 -- Indexes for table `category`
@@ -449,22 +652,34 @@ ALTER TABLE `countries`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `coupons`
+--
+ALTER TABLE `coupons`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `homebanners`
+--
+ALTER TABLE `homebanners`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `orderaddress`
 --
 ALTER TABLE `orderaddress`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `orderid3` (`orderId`),
   ADD KEY `cityid3` (`cityId`),
   ADD KEY `countryid3` (`countryId`),
-  ADD KEY `stateid3` (`stateId`);
+  ADD KEY `stateid3` (`stateId`),
+  ADD KEY `orderid3` (`orderId`);
 
 --
 -- Indexes for table `orderlist`
 --
 ALTER TABLE `orderlist`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `orderid2` (`orderId`),
-  ADD KEY `productid2` (`productId`);
+  ADD KEY `productid2` (`productId`),
+  ADD KEY `orderid2` (`orderId`);
 
 --
 -- Indexes for table `orders`
@@ -483,7 +698,9 @@ ALTER TABLE `productcolor`
 -- Indexes for table `productreview`
 --
 ALTER TABLE `productreview`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `productId12` (`productId`),
+  ADD KEY `userId12` (`userId`);
 
 --
 -- Indexes for table `products`
@@ -500,6 +717,14 @@ ALTER TABLE `productsize`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `servicetax`
+--
+ALTER TABLE `servicetax`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `countryId___` (`countryId`),
+  ADD KEY `stateId___` (`stateId`);
+
+--
 -- Indexes for table `states`
 --
 ALTER TABLE `states`
@@ -512,6 +737,12 @@ ALTER TABLE `states`
 ALTER TABLE `subcategory`
   ADD PRIMARY KEY (`id`),
   ADD KEY `category` (`categoryId`);
+
+--
+-- Indexes for table `testimonials`
+--
+ALTER TABLE `testimonials`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `useraddress`
@@ -530,6 +761,12 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `wishlist`
+--
+ALTER TABLE `wishlist`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -540,10 +777,16 @@ ALTER TABLE `adminuser`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `cart`
+--
+ALTER TABLE `cart`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+
+--
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `cities`
@@ -558,46 +801,64 @@ ALTER TABLE `countries`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT for table `coupons`
+--
+ALTER TABLE `coupons`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `homebanners`
+--
+ALTER TABLE `homebanners`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `orderaddress`
 --
 ALTER TABLE `orderaddress`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `orderlist`
 --
 ALTER TABLE `orderlist`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `productcolor`
 --
 ALTER TABLE `productcolor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `productreview`
 --
 ALTER TABLE `productreview`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `productsize`
 --
 ALTER TABLE `productsize`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT for table `servicetax`
+--
+ALTER TABLE `servicetax`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `states`
@@ -609,13 +870,19 @@ ALTER TABLE `states`
 -- AUTO_INCREMENT for table `subcategory`
 --
 ALTER TABLE `subcategory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `testimonials`
+--
+ALTER TABLE `testimonials`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `useraddress`
 --
 ALTER TABLE `useraddress`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -624,8 +891,21 @@ ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT for table `wishlist`
+--
+ALTER TABLE `wishlist`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `cart`
+--
+ALTER TABLE `cart`
+  ADD CONSTRAINT `productId` FOREIGN KEY (`productId`) REFERENCES `products` (`id`),
+  ADD CONSTRAINT `userID__` FOREIGN KEY (`userId`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `cities`
@@ -657,11 +937,25 @@ ALTER TABLE `orders`
   ADD CONSTRAINT `userid1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`);
 
 --
+-- Constraints for table `productreview`
+--
+ALTER TABLE `productreview`
+  ADD CONSTRAINT `productId12` FOREIGN KEY (`productId`) REFERENCES `products` (`id`),
+  ADD CONSTRAINT `userId12` FOREIGN KEY (`userId`) REFERENCES `users` (`id`);
+
+--
 -- Constraints for table `products`
 --
 ALTER TABLE `products`
   ADD CONSTRAINT `category1` FOREIGN KEY (`categoryId`) REFERENCES `category` (`id`),
   ADD CONSTRAINT `subcategory` FOREIGN KEY (`subCategoryId`) REFERENCES `subcategory` (`id`);
+
+--
+-- Constraints for table `servicetax`
+--
+ALTER TABLE `servicetax`
+  ADD CONSTRAINT `countryId___` FOREIGN KEY (`countryId`) REFERENCES `countries` (`id`),
+  ADD CONSTRAINT `stateId___` FOREIGN KEY (`stateId`) REFERENCES `states` (`id`);
 
 --
 -- Constraints for table `states`
