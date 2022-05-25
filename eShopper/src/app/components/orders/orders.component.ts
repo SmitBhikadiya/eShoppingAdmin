@@ -12,8 +12,10 @@ import { UserAuthService } from 'src/app/services/user-auth.service';
 export class OrdersComponent implements OnInit {
 
   userId!:any;
-  orderData = null;
+  orderData:any = [];
   currency = 'inr';
+  filter = 'all';
+  search = '';
 
   constructor(
     private userAuth:UserAuthService,
@@ -45,13 +47,23 @@ export class OrdersComponent implements OnInit {
     this.getOrderDetailes();
   }
 
+  filterBy(e:HTMLSelectElement){
+    this.filter = e.value;
+    this.getOrderDetailes();
+  }
+
+  searchBy(e:HTMLInputElement){
+    this.search = e.value;
+    this.getOrderDetailes(); 
+  }
+
   getOrderDetailes(){
-    this.orderService.getAllOrder(this.userId).subscribe({
+    this.orderService.getAllOrder(this.userId, this.filter, this.search).subscribe({
       next: (res) => {
         const result = res.result;
-        if(result.length > 0){
+        if(result.length >= 0){
           this.orderData = result;
-        }
+        } 
       },
       error: (err) => {
         console.log(err.error);

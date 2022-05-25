@@ -1,12 +1,30 @@
-<div class="container" style="margin-top:30px; margin-bottom: 200px;" *ngIf="orderData!=undefined">
-    <div *ngIf="orderData!=null; else dataLoading">
-        <div class="text-center">
-            <h3>Orders Details</h3>
+<div class="container" style="margin-top: 30px; min-height: 100vh;">
+    <div>
+        <div>
+            <h2 class="text-center">Order Details</h2>
+            <div class="" style="display: flex; justify-content: center; align-items: center">
+                <div class="form-group" style="width: 85%">
+                    <input type="text" class="form-control" style="
+              width: 100%;
+              border: none;
+              border-bottom: 0.5px solid black;
+              font-size: 20px;
+            " placeholder="search order by date, id and total" #searchOrder (keyup)="searchBy(searchOrder)" />
+                </div>
+                <div class="form-group" style="width: 15%">
+                    <select class="custom-dropdown" class="form-control" #sortby (change)="filterBy(sortby)">
+                        <option value="all">All</option>
+                        <option value="new">New</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+            </div>
         </div>
         <table class="table orderDetails">
             <thead>
                 <tr>
-                    <th scope="col">SrNo.</th>
+                    <th scope="col">OrdId.</th>
                     <th scope="col">Status</th>
                     <th scope="col">OrderDate</th>
                     <th scope="col">SubTotal</th>
@@ -16,33 +34,58 @@
                     <th scope="col">View</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr *ngFor="let order of orderData; let i=index"  attr.data-toggle="collapse" attr.data-target="#accordion{{ i }}" class="clickable">
-                    <th scope="row">{{ i+1 }}</th>
+            <tbody *ngIf="orderData.length > 0; else dataLoading">
+                <tr *ngFor="let order of orderData; let i = index" attr.data-toggle="collapse"
+                    attr.data-target="#accordion{{ i }}" class="clickable">
+                    <th scope="row">{{ order.id }}</th>
                     <td>
-                        <strong class="arrived" *ngIf="order.orderStatus==0">  Arrived   </strong>
-                        <strong class="delivered" *ngIf="order.orderStatus==1">Delivered </strong>
-                        <strong class="cancelled" *ngIf="order.orderStatus==2">Cancelled </strong>
+                        <strong class="arrived" *ngIf="order.orderStatus == 0">
+                            Arrived
+                        </strong>
+                        <strong class="delivered" *ngIf="order.orderStatus == 1">Delivered
+                        </strong>
+                        <strong class="cancelled" *ngIf="order.orderStatus == 2">Cancelled
+                        </strong>
                     </td>
                     <td>{{ order.createdDate }}</td>
-                    <td>{{ order.subTotal.toString() | setCurr : currency }}</td>
-                    <td>{{ ((order.discountAmount==null) ? 0: order.discountAmount).toString() | setCurr : currency }}</td>
-                    <td>{{ ((order.subTotal-((order.discountAmount==null) ? 0: order.discountAmount)) * (order.tax/100)).toString() | setCurr : currency }}</td>
-                    <td>{{ order.total.toString() | setCurr : currency }}</td>
+                    <td>{{ order.subTotal.toString() | setCurr: currency }}</td>
                     <td>
-                        <a [routerLink]="['/orders/view/'+order.id]" title="Edit item" class="edit-link"
+                        {{
+                        (order.discountAmount == null
+                        ? 0
+                        : order.discountAmount
+                        ).toString() | setCurr: currency
+                        }}
+                    </td>
+                    <td>
+                        {{
+                        (
+                        (order.subTotal -
+                        (order.discountAmount == null ? 0 : order.discountAmount)) *
+                        (order.tax / 100)
+                        ).toString() | setCurr: currency
+                        }}
+                    </td>
+                    <td>{{ order.total.toString() | setCurr: currency }}</td>
+                    <td>
+                        <a [routerLink]="['/orders/view/' + order.id]" title="Edit item" class="edit-link"
                             style="cursor: pointer">
                             <img src="../../../assets/images/eye-solidsvg.svg" alt="edit" />
                         </a>
                     </td>
                 </tr>
             </tbody>
+            <ng-template #dataLoading>
+                <tbody>
+                    <tr>
+                        <td colspan="8">
+                            <div style="text-align: center">
+                                <h3 style="padding-top: 20px">Order Not Found!!!</h3>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </ng-template>
         </table>
     </div>
-    <ng-template #dataLoading>
-        <div style="text-align: center">
-            <h2 style="padding-top: 20px">No Order Found!!!</h2>
-            <a [routerLink]="['/']" title="Continue Shopping" class="btn-tertiary">Continue Shopping</a>
-        </div>
-    </ng-template>
 </div>

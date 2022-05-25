@@ -33,8 +33,8 @@ export class OrdersService {
     return this.http.post<any>(`${environment.API_SERVER_URL}/order.php`, {getOrderDetails, userId}, {headers:this.header_});
   }
 
-  getAllOrder(getAll:number){
-    return this.http.post<any>(`${environment.API_SERVER_URL}/order.php`, {getAll}, {headers:this.header_});
+  getAllOrder(getAll:number, filter:string, search:string){
+    return this.http.post<any>(`${environment.API_SERVER_URL}/order.php`, {getAll, filter, search}, {headers:this.header_});
   }
 
   getOrderById(getBy:number, userId:number){

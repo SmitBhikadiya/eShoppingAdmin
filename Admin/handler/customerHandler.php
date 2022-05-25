@@ -3,6 +3,98 @@ require_once("dbHandler.php");
 
 class CustomerHandler extends DBConnection
 {
+    function updatePasswordByOTP($otp, $email, $newpassword, $repassword){
+        $error = '';
+        $hashPassword = password_hash($newpassword, PASSWORD_DEFAULT);
+        $sql = "UPDATE users SET password='$hashPassword', modifiedDate=now() WHERE email='$email' AND otp='$otp' AND status=0";
+        if($newpassword == $repassword){
+            $res = $this->getConnection() ->query($sql);
+            if(!$res){
+                $error = "Somthing went wrong: ".$this->getConnection()->error;
+            }
+        }else{
+            $error = "Password and repassword is not matched!!";
+        }
+        return $error;
+    }
+
+    function verifyOTP($otp, $email){
+        $userData = $this->getUserByEmailAndOTP($otp, $email);
+        $error = '';
+        if(count($userData) > 0){
+            $current = date('Y-m-d H:i:s');
+            $expiry = date($userData[0]['otpexpiry']);
+            if(strtotime($current) > strtotime($expiry)){
+                $error = 'OTP has been expired!!!';
+            }
+        }else{
+            $error = 'Entered OTP Is Invalid!!';
+        }
+        return ['error'=>$error, 'user'=>$userData];
+    }
+
+    function getUserByEmailAndOTP($otp, $email)
+    {
+        $records = [];
+        $sql = "SELECT * FROM users WHERE otp='$otp' AND email='$email' AND status=0";
+        $res = $this->getConnection()->query($sql);
+        if($res && $res->num_rows > 0){
+            array_push($records, $res->fetch_assoc());
+        }
+        return $records;
+    }
+
+    function updateUserOTP($email, $otp){
+        $error = '';
+        $expiry = '';
+        if($this->isEmailExits($email)){
+            $expiry = date('Y-m-d H:i:s', strtotime("+15 min"));
+            $sql = "UPDATE users SET otp='$otp', otpexpiry='$expiry' WHERE email='$email' AND status=0";
+            $res = $this->getConnection()->query($sql);
+            if(!$res){
+                $error = "Something went wrong with the sql!!";
+            }
+        }else{
+            $error = "Invalid Email!!";
+        }
+        return ['error'=>$error, 'expiry'=>$expiry];
+    }
+
+    function isEmailExits($email){
+        $sql = "SELECT * FROM users WHERE email='$email'";
+        $res = $this->getConnection()->query($sql);
+        if($res && $res->num_rows > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    function checkUserCred($userId, $oldpassword){
+        $error = '';
+        $sql = "SELECT password FROM users WHERE id=$userId";
+        $res = $this->getConnection()->query($sql);
+        if($res && $res->num_rows > 0){
+            $user = $res->fetch_assoc();
+            if(!password_verify($oldpassword, $user['password'])){
+                $error = 'Invalid Old Password';
+            }
+        }else{
+            $error = 'Something went Wrong';
+        }
+        return $error;
+    }
+
+    function changePassword($userId, $newpassword){
+        $error = '';
+        $hashPassword = password_hash($newpassword, PASSWORD_DEFAULT);
+        $sql = "UPDATE users SET password = '$hashPassword', modifiedDate=now() WHERE id=$userId";
+        $result = $this->getConnection()->query($sql);
+        if (!$result) {
+            $error = 'Something went wrong with the $sql';
+        }
+        return $error;
+    }
 
     function TotalCustomers($search = '')
     {

@@ -23,16 +23,6 @@
     </div>
 </div>
 <section class="product_detail content">
-    <!-- <div class="container shopping-wrap">
-        <div class="alert alert-dismissible alert-success" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">×</span>
-            </button>
-            <i><img src="../../../assets/images/success.svg" alt="success" /></i>
-            <span> U.S. Polo Assn. Full Sleeve Plain T-Shirts for Men </span> has been
-            added to your wishlist.
-        </div>
-    </div> -->
     <div class="container">
         <div class="row">
             <div class="col-sm-5">
@@ -110,7 +100,7 @@
                 </form>
                 <div class="email-addto-box clearfix">
                     <ul class="add-to-links">
-                        <li><a href="#" class="link-wishlist">Add to Wishlist</a></li>
+                        <li><a class="link-wishlist" style="cursor: pointer;" (click)="addProductToWishList()">Add to Wishlist</a></li>
                     </ul>
                 </div>
                 <div class="tablist-nav">

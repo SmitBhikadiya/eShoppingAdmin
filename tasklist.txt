@@ -1,0 +1,18 @@
+// completed task
+1. stripe payment integration
+2. currency Dropdown
+3. coupons mangament
+4. product review
+5. Homepage: slider, testimonials
+6. Order History with search bar
+7. Order Invoice
+8. global search bar
+9. Toaster for alert massage
+10. change password
+11. forgot password
+12. wishlist
+
+// remaining task
+1. newsletter - continue
+2. contact us
+3. about us

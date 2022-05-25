@@ -5,7 +5,7 @@ $obj = new ProductHandler();
 
 // for pagination and searching
 $currntPage = 1;
-$showRecords = 2;
+$showRecords = 5;
 $search = '';
 
 $currntPage = (isset($_GET["page"]) && $_GET["page"]!='') ? $_GET["page"] : $currntPage;
@@ -148,7 +148,7 @@ if (isset($_SESSION["result"])) {
 												show&nbsp;
 												<select style="height: 35px; width:60px; border:1px solid #0056b3; color:#0056b3; border-radius:4px" name="" id="show-record">
 													<?php
-													foreach ([2, 10, 25, 50] as $rec) {
+													foreach ([5, 10, 25, 50] as $rec) {
 														$selected = '';
 														if ($rec == $showRecords) {
 															$selected = "selected";

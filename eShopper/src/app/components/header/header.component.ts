@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { debounce, debounceTime } from 'rxjs';
 import { ICategory } from 'src/app/interfaces/category';
 import { ISubCategory } from 'src/app/interfaces/subcategory';
 import { CartService } from 'src/app/services/cart.service';
@@ -37,10 +38,25 @@ export class HeaderComponent implements OnInit {
     private currService:CurrencyService,
     private productService:ProductService,
     private router:Router
-    ) {
+    ) 
+    {
       currService.currSubject.subscribe((curr)=>{
         this.currency = curr;
       });
+
+      userAuth.isUserLoggedIn.subscribe((res)=>{
+        if(res){
+          const token = userAuth.getToken();
+          if(token){
+            const data = JSON.parse(token).user;
+            this.username = data.username;
+            this.isLoggin = true;
+          }else{
+            this.username = '';
+            this.isLoggin = false;
+          }
+        }
+      })
     }
 
   ngOnInit(): void {
@@ -113,8 +129,6 @@ export class HeaderComponent implements OnInit {
   }
 
   removeItemFromCart(cartId: any) {
-    console.log("Removing Cart Item!!!");
-    
     this.cartService.removeItemFromCart(cartId).subscribe((res) => {
       if (res.error == '') {
         this.toast.showSuccess("Item Removed Successfully!!!");
@@ -129,6 +143,6 @@ export class HeaderComponent implements OnInit {
 
   searchGlobal(search:HTMLInputElement){
     this.router.navigate(['search']);
-    this.productService.search.next((search.value).toString().toLowerCase());
+    this.productService.search.next(search.value);
   }
 }

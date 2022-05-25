@@ -39,7 +39,10 @@ import { OrderDetailsComponent } from './components/order-details/order-details.
 import { HomebannerComponent } from './components/homebanner/homebanner.component';
 import { HometestiComponent } from './components/hometesti/hometesti.component';
 import { SearchComponent } from './components/search/search.component';
-
+import { LoginComponent } from './components/login/login.component';
+import { ChangepasswordComponent } from './components/changepassword/changepassword.component';
+import { ForgotpasswordComponent } from './components/forgotpassword/forgotpassword.component';
+import { NewsletterComponent } from './components/newsletter/newsletter.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -64,6 +67,10 @@ import { SearchComponent } from './components/search/search.component';
     HomebannerComponent,
     HometestiComponent,
     SearchComponent,
+    LoginComponent,
+    ChangepasswordComponent,
+    ForgotpasswordComponent,
+    NewsletterComponent,
   ],
   imports: [
     BrowserModule,

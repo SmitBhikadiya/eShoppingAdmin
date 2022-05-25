@@ -1,6 +1,15 @@
 declare let $: any;
 
 export class CustomValidation {
+
+  isPasswordMatched(newId:string, oldId:string){
+    let newpsw = $(newId).val();
+    let oldpsw = $(oldId).val();
+    if(newpsw != oldpsw){
+      $(oldId).after("<span class='spanError'>*New password must be match with re password</span>");
+    } 
+  }
+
   isFieldChecked(id: string) {
     let is = $(id).is(":checked");
     if (!is) {
@@ -8,12 +17,16 @@ export class CustomValidation {
     }
   }
 
-  isNumberValid(id: string, reg: RegExp, range: string) {
+  isNumberValid(id: string, reg: RegExp, range: string = '') {
     let value = $(id).val();
     if (value.length == 0) {
       $(id).after("<span class='spanError'>*Field can't be empty!!</span>");
     } else if (!reg.test(value)) {
-      $(id).after("<span class='spanError'>*Mobile must be " + range + " charcters long</span>");
+      if(range !=''){
+        $(id).after("<span class='spanError'>*Mobile must be " + range + " charcters long</span>");
+      }else{
+        $(id).after("<span class='spanError'>*Invalid length</span>");
+      }
     }
   }
 

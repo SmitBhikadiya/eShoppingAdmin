@@ -1,5 +1,6 @@
 <?php
     require_once("../handler/productHandler.php");
+    require_once("verifyToken.php");
 
     $postdata = file_get_contents("php://input");
 

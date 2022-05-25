@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { BehaviorSubject, debounceTime, map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IColor } from '../interfaces/color';
 import { IProduct } from '../interfaces/product';

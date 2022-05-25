@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 })
 export class UserAuthService {
   logincred!: any;
-  isUserLoggedIn = new Subject();
+  isUserLoggedIn = new Subject<boolean>();
   constructor(private http: HttpClient) { }
 
   userLogin(loginCred: any) {
@@ -42,6 +42,38 @@ export class UserAuthService {
         console.log("Refresh Res " + res["result"]);
         return res["result"];
       }));
+  }
+
+  verifyOTP(verifyotp:string, email:string){
+    return this.http.post<any>(`${environment.API_SERVER_URL}/changepassword.php`, {verifyotp, email}, {headers: {'content-type':'application/json'}});
+  }
+
+  updatePasswordByOTP(otp:string, email:string, newpassword:string, repassword:string){
+    return this.http.post<any>(`${environment.API_SERVER_URL}/changepassword.php`, {otp, email, newpassword, repassword}, {headers: {'content-type':'application/json'}});
+  }
+
+  forgotPassword(forgotPassword:string){
+    return this.http.post<any>(`${environment.API_SERVER_URL}/changepassword.php`, {forgotPassword}, {headers: {'content-type':'application/json'}});
+  }
+
+  changePassword(userId:number, oldpassword:string, newpassword:string, repassword:string){
+    return this.http.post<any>(`${environment.API_SERVER_URL}/changepassword.php`, {userId, oldpassword, newpassword, repassword}, {headers: {'content-type':'application/json'}});
+  }
+
+  getUserDetailesByUsername(username: string | null) {
+    return this.http.get<any>(`${environment.API_SERVER_URL}/users.php?username=${username}`);
+  }
+
+  updateProfile(data: FormData): Observable<any> {
+    return this.http.post<any>(`${environment.API_SERVER_URL}/users.php`, data);
+  }
+
+  isUsernameExits(username: string | null) {
+    return this.http.get<any>(`${environment.API_SERVER_URL}/register.php?username=${username}`);
+  }
+
+  isEmailExits(email: any) {
+    return this.http.get<any>(`${environment.API_SERVER_URL}/register.php?email=${email}`);
   }
 
   private setTokenExpiry(time:any){
@@ -108,22 +140,6 @@ export class UserAuthService {
 
   private stopRefreshToken(){
     clearTimeout(this.refreshTokenTimeOut);
-  }
-
-  getUserDetailesByUsername(username: string | null) {
-    return this.http.get<any>(`${environment.API_SERVER_URL}/users.php?username=${username}`);
-  }
-
-  updateProfile(data: FormData): Observable<any> {
-    return this.http.post<any>(`${environment.API_SERVER_URL}/users.php`, data);
-  }
-
-  isUsernameExits(username: string | null) {
-    return this.http.get<any>(`${environment.API_SERVER_URL}/register.php?username=${username}`);
-  }
-
-  isEmailExits(email: any) {
-    return this.http.get<any>(`${environment.API_SERVER_URL}/register.php?email=${email}`);
   }
 
   setToken(token: string) {

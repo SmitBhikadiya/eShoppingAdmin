@@ -12,6 +12,7 @@ import { CurrencyService } from 'src/app/services/currency.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { ProductService } from 'src/app/services/product.service';
 import { UserAuthService } from 'src/app/services/user-auth.service';
+import { WishlistService } from 'src/app/services/wishlist.service';
 import { environment } from 'src/environments/environment';
 declare let $: any;
 
@@ -32,6 +33,7 @@ export class ProductDetailesComponent implements OnInit {
   productImages!: string[];
   noImageURL = environment.IMAGES_SERVER_URL + "/noimage.jpg";
   cartId:any = null;
+  wishListId:any = null;
   userId:any = null;
   productReviews:any = null;
   btn = "ADD TO CART";
@@ -108,6 +110,7 @@ export class ProductDetailesComponent implements OnInit {
     private cartService: CartService,
     private route: ActivatedRoute,
     private toast: NotificationService,
+    private wishService:WishlistService,
     private currPipe: SetCurrPipe,
     private currService:CurrencyService
   ) {
@@ -167,8 +170,6 @@ export class ProductDetailesComponent implements OnInit {
 
   }
 
-  
-
   setReviewForm(btn:string, rating:number, review:string){
     this.reviewForm = this.formBuilder.group({
       stars: [`${rating}`, Validators.required],
@@ -187,6 +188,40 @@ export class ProductDetailesComponent implements OnInit {
         pqty: [pqty, Validators.min(1)]
       }
     );
+  }
+
+  addProductToWishList(){
+    if (this.userAuth.isLoggedIn()) {
+      this.userId = JSON.parse(this.userAuth.getToken()).user.id;
+      let colorId = this.cartForm.controls["pcolor"].value;
+      let sizeId = this.cartForm.controls["psize"].value;
+      if (this.wishListId != null) {
+        this.toast.showWarning("Product is already added in wishlist");
+      } else {
+        this.addToWishList(this.prdid, this.userId);
+      }
+    } else {
+      $("#Login-popup").modal("show");
+    }
+  }
+
+  addToWishList(prdId:number, userId:number){
+    if(this.prdid!=null && this.userId!=null){
+      this.wishService.addWish(userId, prdId).subscribe({
+        next: (res)=>{
+          if(res.error == ''){
+            this.toast.showSuccess("Product is added to your wishlist!!");
+          }else{
+            this.toast.showError(res.error);
+          }
+        },
+        error: (err)=>{
+          this.toast.showError(err, "ServerError");
+        }
+      });
+    }else{
+      this.toast.showWarning("Product Id or User Id can't be null");
+    }
   }
 
   addTocart() {

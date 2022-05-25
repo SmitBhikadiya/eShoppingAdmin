@@ -2,8 +2,6 @@
 require_once("dbHandler.php");
 class OrderHandler extends DBConnection
 {
-
-
     function updateOrderSession($orderId, $session){
         $error = '';
         $sql = "UPDATE orders SET checkoutId='$session' WHERE id=$orderId";
@@ -75,8 +73,36 @@ class OrderHandler extends DBConnection
         return $error;
     }
 
-    function getAllOrdersBy($userId){
-        $sql = "SELECT orders.*, users.username, oa.streetName, cities.city, states.state, countries.country, servicetax.tax , coupons.discountAmount FROM orders JOIN servicetax ON servicetax.stripeId=orders.taxStripeId LEFT JOIN coupons ON coupons.stripeId = orders.couponStripeId JOIN users ON users.id=orders.userId JOIN orderaddress as oa ON oa.orderId=orders.id JOIN cities ON oa.cityId=cities.id JOIN states ON oa.stateId=states.id JOIN countries ON countries.id=oa.countryId WHERE orders.userId=$userId AND orders.status=0 AND users.status=0 AND oa.status=0 AND oa.addressType=1 AND cities.status=0 AND states.status=0 AND countries.status=0 ORDER BY orders.id DESC";
+    function getAllOrdersBy($userId, $filter='all', $search=''){
+
+        $search_ = ($search=='') ? 1 : "orders.id='$search' OR orders.createdDate LIKE '%".$search."%' OR orders.total='$search'";
+
+        $filter_ = 1;
+        switch($filter){
+            case "new":
+                $filter_ = "orders.orderStatus=0";
+                break;
+            case "delivered":
+                $filter_ = "orders.orderStatus=1";
+                break;
+            case "cancelled":
+                $filter_ = "orders.orderStatus=2";
+                break;
+            default:
+                $filter_ = 1;
+        }
+
+        $sql = "SELECT orders.*, users.username, oa.streetName, cities.city, states.state, countries.country, servicetax.tax , coupons.discountAmount 
+                FROM orders 
+                JOIN servicetax ON servicetax.stripeId=orders.taxStripeId 
+                LEFT JOIN coupons ON coupons.stripeId = orders.couponStripeId 
+                JOIN users ON users.id=orders.userId 
+                JOIN orderaddress as oa ON oa.orderId=orders.id 
+                JOIN cities ON oa.cityId=cities.id 
+                JOIN states ON oa.stateId=states.id 
+                JOIN countries ON countries.id=oa.countryId 
+                WHERE ($search_) AND ($filter_) AND orders.userId=$userId AND orders.status=0 AND users.status=0 AND oa.status=0 AND oa.addressType=1 AND cities.status=0 AND states.status=0 AND countries.status=0 
+                ORDER BY orders.id DESC";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result->num_rows > 0) {

@@ -18,7 +18,7 @@
                           category == '' ||
                           category == cat['catName']
                         ">
-                        <input type="checkbox" class="subcatcheck icheck" name="categories" [value]="cat['id']"
+                        <input type="checkbox" class="catcheck icheck" name="categories" [value]="cat['id']"
                           (change)="onCheckboxChange($event, 'categories')"
                           [checked]="category == cat['catName']" [disabled]="category == cat['catName']" />
                         {{ cat["catName"] }}
@@ -26,7 +26,7 @@
                       </label>
                     </li>
                     <li *ngIf="subcategory == null">
-                      <a (click)="resetFormControl('subcategories')" title="Reset" style="padding-left: 0px"
+                      <a (click)="resetFormControl('categories')" title="Reset" style="padding-left: 0px"
                         class="reset-link">Reset</a>
                     </li>
                   </ul>
@@ -113,7 +113,7 @@
           </h3>
           <div class="toolbar clearfix">
             <div class="pager_right">
-              <div class="sort-by" *ngIf="products.length > 0">
+              <div class="sort-by" *ngIf="products && products.length > 0">
                 <label>Sort By&nbsp;</label>
                 <div class="form-group">
                   <select class="custom-dropdown" #sortby (change)="sortProduct(sortby.value)">
@@ -126,7 +126,7 @@
             </div>
           </div>
           <div class="grid-content">
-            <div class="grid row" *ngIf="products.length > 0; else elseBlockPrd">
+            <div class="grid row" *ngIf="products && products.length > 0; else elseBlockPrd">
               <div class="col-sm-4 col-xs-6" *ngFor="let product of products; trackBy: trackByProduct">
                 <figure class="effect-goliath">
                   <div class="thumb-outer">
@@ -159,7 +159,7 @@
               </div>
             </ng-template>
           </div>
-          <div class="col-sm-12 col-xs-12" *ngIf="products.length >= 9">
+          <div class="col-sm-12 col-xs-12" *ngIf="products && products.length >= 9">
             <span class="button-outer text-center">
               <a class="btn-tertiary" (click)="loadMoreProduct(defaultLoadProduct)" title="More Products">More
                 Products</a>

@@ -24,12 +24,11 @@ if (isset($postdata) && !empty($postdata)) {
         $res = $obj->createOrder($cartItems, $userId, $sessionId, $subTotal, $taxId, $couponId, $total, 0, 0);
         echo json_encode($res);
         exit();
-    }else if(false){
-        
-    }
-    else if (isset($request->getAll)) {
+    }else if (isset($request->getAll)) {
+        $filter = (isset($request->filter) ? $request->filter : 'all');
+        $search = (isset($request->search) ? $request->search : '');
         $userId = (int) $request->getAll;
-        $res = $obj->getAllOrdersBy($userId);
+        $res = $obj->getAllOrdersBy($userId, $filter, $search);
         echo json_encode(["result"=>$res]);
         exit();
     }else if(isset($request->getBy) && isset($request->userId)){

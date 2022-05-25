@@ -61,7 +61,7 @@
                                     <div class="dropdown-content">
                                       <a *ngIf="isLoggin" [routerLink]="['/profile']" title="My Profile">Profile</a>
                                       <a *ngIf="isLoggin" [routerLink]="['/orders']" title="Orders">Orders</a>
-                                      <a >Change Password</a>
+                                      <a *ngIf="isLoggin" data-dismiss="modal" data-toggle="modal" data-target="#changepassword-popup" title="Change Password" style="cursor: pointer;">Change Password</a>
                                       <a [routerLink]="['/coupons']" title="coupons">Coupons</a>
                                       <a *ngIf="isLoggin" [routerLink]="['/wishlist']" title="wishlist">WishList</a>
                                     </div>
