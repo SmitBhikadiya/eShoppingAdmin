@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
@@ -16,12 +16,25 @@ declare let $: any;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
   constructor( ) {
   }
 
+  ngOnDestroy() {
+    document.removeEventListener('click', this.listenSearchBox);
+  }
+
   ngOnInit() {
+    document.addEventListener('click', this.listenSearchBox);
+  }
+
+  listenSearchBox(e:any){
+    const search = <HTMLElement>document.querySelector(".search-link");
+    const myclosest = e.target.closest(".search-link ");
+    if(myclosest==null && search.classList.contains('active')){
+      search.classList.remove('active');
+    }
   }
 
 }

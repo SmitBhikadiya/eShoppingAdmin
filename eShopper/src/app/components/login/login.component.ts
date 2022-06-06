@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CustomValidation } from 'src/app/customValidation';
+import { NotificationService } from 'src/app/services/notification.service';
 import { UserAuthService } from 'src/app/services/user-auth.service';
 declare let $:any;
 
@@ -15,26 +16,43 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   message: { msg: string, isError: boolean, color: string, image: string } = { msg: '', isError: false, color: 'success', image: 'success.svg' };
   validator = new CustomValidation();
+  triggerError = false;
 
   constructor(
     private userAuth: UserAuthService, 
+    private toaster:NotificationService,
     private router: Router,
     private builder: FormBuilder) {
   }
 
   ngOnInit() {
     this.loginForm = this.builder.group({
-      username: ['', Validators.required],
-      password: ['', Validators.maxLength(8)]
+      username: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&])[a-zA-Z\d@$!%*#?&]{6,14}$/)]]
     });    
   }
 
+  toggleEye(event:Event, loginpass:HTMLInputElement){
+    const inputElem = loginpass;
+    const imgElem = <HTMLElement>event.target;
+    if(inputElem.getAttribute('type')=='password'){
+        inputElem.setAttribute('type', 'text');
+        imgElem.setAttribute('src', '../../../assets/images/eye-solid.svg');
+    }else{
+        inputElem.setAttribute('type', 'password');
+        imgElem.setAttribute('src', '../../../assets/images/eye-slash-solid.svg');
+    }
+  }
+
   userLogin() {
-    var formData: any = new FormData();
-    formData.append('username', this.loginForm.get('username')?.value);
-    formData.append('password', this.loginForm.get('password')?.value);
+    this.triggerError = true;
     if (this.formValidate()) {
-      this.userAuth.userLogin(formData).subscribe(res => {
+      this.triggerError = false;
+      var formData: any = new FormData();
+      formData.append('username', this.loginForm.get('username')?.value);
+      formData.append('password', this.loginForm.get('password')?.value);
+      this.userAuth.userLogin(formData).subscribe({
+        next: res => {
         const isLogin = this.userAuth.isLoggedIn();
         if (isLogin) {
           document.getElementById("Login-popup")?.click();
@@ -51,18 +69,25 @@ export class LoginComponent implements OnInit {
             this.message.msg = '';
           }, 5000)
         }
-      });
+      }, error: err =>{
+        this.toaster.showError(err.error.message,"ServerError");
+      }
+    });
     }
   }
 
   formValidate() {
-    $(".spanError").remove();
-    this.validator.isFieldEmpty("#loginuser");
-    this.validator.isPasswordValid("#loginpass");
-    if ($("#loginform").find('.spanError').length == 0) {
-      return true;
-    } else {
-      return false;
-    }
+   Object.keys(this.loginForm.controls).forEach((field)=>{
+     const control = this.loginForm.get(field);
+     control?.markAsTouched({onlySelf:true});
+   });
+   return this.loginForm.valid;
+  }
+
+  get username(){
+    return this.loginForm.get('username');
+  }
+  get mypassword(){
+    return this.loginForm.get('password');
   }
 }

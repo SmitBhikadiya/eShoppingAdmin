@@ -38,15 +38,10 @@
                 <i><img src="images/error.svg" alt="success" /></i>
                 {{ alertMsg.message }}
             </div>
-            <!-- <div class="alert alert-dismissible alert-info" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <i><img src="images/info.svg" alt="success"></i> <span> U.S. Polo Assn. Full Sleeve Plain T-Shirts for Men </span> was added to your shopping cart
-            </div>
-            <div class="alert alert-dismissible alert-warning" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <i><img src="images/warning.svg" alt="success"></i> <span> U.S. Polo Assn. Full Sleeve Plain T-Shirts for Men </span> was added to your shopping cart
-            </div> -->
             <div *ngIf="cartItems != null; else noItem">
+                <ngx-spinner name="sp3" type="ball-fussion" size="medium">
+                    <p style="font-size: 20px; color: white">Processing...</p>
+                </ngx-spinner>
                 <div class="table-responsive">
                     <table class="table shopping-table">
                         <thead>
@@ -97,8 +92,7 @@
                                                     {{ size["size"] }}
                                                 </option>
                                             </select>
-                                            <!-- <div style="margin-top: 5px;"><button class="btn btn-sm" style="background-color: #ea4748; color: white;">Update</button>
-                                        </div> -->
+                                           
                                         </li>
                                     </ul>
                                 </td>
@@ -145,8 +139,7 @@
                                 <td colspan="5" class="btn-right">
                                     <a title="Clear Shopping Cart" class="btn-tertiary" style="cursor: pointer"
                                         (click)="clearCart()">Clear Shopping Cart</a>&nbsp;
-                                    <!-- <a title="Update Shopping Cart" class="btn-tertiary" style="cursor: pointer"
-                                    (click)="updateCart()">Update Shopping Cart</a> -->
+                                    
                                 </td>
                             </tr>
                         </tfoot>
@@ -192,7 +185,7 @@
                                 <tbody>
                                     <tr>
                                         <td>Subtotal</td>
-                                        <td class="subtotal"></td>
+                                        <td class="subtotal">{{ subTotal.toString() | setCurr : currency }}</td>
                                     </tr>
                                     <tr style="padding-bottom: 10px; border-bottom: 1px solid rgba(0, 0, 0, 0.344)">
                                         <td>Discount</td>
@@ -208,19 +201,19 @@
                                     </tr>
                                     <tr>
                                         <td class="summary-total"><strong>Total</strong></td>
-                                        <td class="summary-price"><strong></strong></td>
+                                        <td class="summary-price"><strong>{{ total.toString() | setCurr : currency }}</strong></td>
                                     </tr>
                                     <tr>
                                         <td colspan="2">
-                                            <a title="Update Shopping Cart" class="btn-secondary"
-                                                style="cursor: pointer;" (click)="checkout()">CheckOut</a>
+                                            <button title="Update Shopping Cart" class="btn-secondary"
+                                                style="cursor: pointer;" [ngStyle]="{'pointerEvents':(loader.for=='checkout' && loader.loading==true) ? 'none' : 'auto' }"  (click)="checkout()">Checkout</button>
                                         </td>
                                     </tr>
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <td colspan="2">
-                                            <a href="profile.html" title="Checkout with Multiple Addresses">
+                                            <a [routerLink]="['/profile']" title="Checkout with Multiple Addresses">
                                                 Checkout with Multiple Addresses
                                             </a>
                                         </td>

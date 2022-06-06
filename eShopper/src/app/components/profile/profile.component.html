@@ -1,6 +1,6 @@
 <!-- Content Start-->
 <div class="title-block-outer">
-    <img src="../../../assets/images/inner-banner.jpg" alt="Banner-image" class="img-responsive">
+    <img src="../../../assets/images/inner-banner.jpg" alt="Banner-image" class="img-responsive" />
     <div class="title-block-container">
         <div class="container">
             <h2>Update Profile</h2>
@@ -19,7 +19,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12 register profile">
-                <div class="shopping-wrap" *ngIf="message.msg!=''">
+                <div class="shopping-wrap" *ngIf="message.msg != ''">
                     <div class="alert alert-dismissible alert-{{ message.color }}" role="alert">
                         <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">×</span>
@@ -30,7 +30,8 @@
                         <span>{{ message.msg }}</span>
                     </div>
                 </div>
-                <form class="form-block" id="profileform" *ngIf="loaded | async" [formGroup]="profileForm" (ngSubmit)="profileUpdate()">
+                <form class="form-block" id="profileform" *ngIf="loaded | async" [formGroup]="profileForm"
+                    (ngSubmit)="profileUpdate()">
                     <div class="profileDiv">
                         <div class="row">
                             <div class="col-sm-6">
@@ -40,7 +41,66 @@
                                         id="username" formControlName="username" />
                                 </div>
                             </div>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-9">
+                                        <div class="form-group">
+                                            <label class="form-label">Profile Image</label>
+                                            <input type="file" (change)="onProfileChange($event)" id="profile" class="form-control"
+                                                 #profile />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3" style="padding-top: 10px">
+                                        <img id="profileImg" [src]="imageSrc" [width]="60" [height]="60" [ngStyle]="{border: '1px solid #00000052',borderRadius: '50px'}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Mobile No.</label>
+                                    <input type="text" class="form-control" id="mobile" formControlName="mobile"
+                                        placeholder="Please enter your mobile no." />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Phone</label>
+                                    <input type="text" class="form-control" id="phone" formControlName="phone"
+                                        placeholder="Please enter your phone" />
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="firstname" formControlName="firstname"
+                                        placeholder="Please enter your first name" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="lastname" formControlName="lastname"
+                                        placeholder="Please enter your last name" />
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" formControlName="email"
+                                        placeholder="Please enter valid email" />
+                                </div>
+                            </div>
                             <div class="col-sm-6">
                                 <div class="form-group gender-list">
                                     <label class="form-label">Gender</label>
@@ -48,9 +108,11 @@
                                         <div class="filter-option-inner">
                                             <ul id="gender">
                                                 <li class="custom-check">
-                                                    <label> <input type="radio" formControlName="gender" class="icheck"
+                                                    <label>
+                                                        <input type="radio" formControlName="gender" class="icheck"
                                                             name="gender" value="0" />Male</label>
-                                                </li>&nbsp;
+                                                </li>
+                                                &nbsp;
                                                 <li class="custom-check">
                                                     <label><input type="radio" formControlName="gender" class="icheck"
                                                             name="gender" value="1" />Female</label>
@@ -60,95 +122,15 @@
                                     </div>
                                 </div>
                             </div>
+                            
                         </div>
-
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">Password</label>
-                                    <input type="text" class="form-control" placeholder="Please enter your Password"
-                                        [value]="'*******'" data-placeholder="Enter your Password" readonly>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" formControlName="email"
-                                        placeholder="Please enter valid email">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">First Name</label>
-                                    <input type="text" class="form-control" id="firstname" formControlName="firstname"
-                                        placeholder="Please enter your first name">
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">Mobile No.</label>
-                                    <input type="text" class="form-control" id="mobile" formControlName="mobile"
-                                        placeholder="Please enter your mobile no.">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" id="lastname" formControlName="lastname"
-                                        placeholder="Please enter your last name">
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">Phone</label>
-                                    <input type="text" class="form-control" id="phone" formControlName="phone"
-                                        placeholder="Please enter your phone">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="form-label">Interests</label>
-                                <div class="filter-option">
-                                    <div class="filter-option-inner">
-                                        <ul>
-                                            <li class="custom-check">
-                                                <label><input type="checkbox" class="icheck">Select All</label>
-                                            </li>
-                                            <li class="custom-check">
-                                                <label><input type="checkbox" class="icheck"> Option 1</label>
-                                            </li>
-                                            <li class="custom-check">
-                                                <label><input type="checkbox" class="icheck" checked />Option 2</label>
-                                            </li>
-                                            <li class="custom-check">
-                                                <label><input type="checkbox" class="icheck">Option 3</label>
-                                            </li>
-                                            <li class="custom-check">
-                                                <label><input type="checkbox" class="icheck">Other</label>
-                                                <input type="text" class="form-control" />
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="billing-address-block" formGroupName="billing">
                                 <div class="form-group">
-                                    <a class="btn-tertiary" style="cursor: pointer;" data-toggle="collapse" data-target=".billing-form">Edit
-                                        Billing Address</a>
+                                    <a class="btn-tertiary" style="cursor: pointer" data-toggle="collapse"
+                                        data-target=".billing-form">Edit Billing Address</a>
                                 </div>
 
                                 <div class="billing-form collapse">
@@ -158,7 +140,7 @@
                                                 <label class="form-label">Street</label>
                                                 <input type="text" class="form-control"
                                                     placeholder="Please enter your Street" formControlName="streetname"
-                                                    id="bstreetname" (change)="checksameasbilling()">
+                                                    id="bstreetname" (change)="checksameasbilling()" />
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
@@ -167,8 +149,9 @@
                                                 <select class="form-control" id="bcountry" formControlName="country"
                                                     (change)="countryChange($event, 0)" (change)="checksameasbilling()">
                                                     <option value="0" selected>-Select Country-</option>
-                                                    <option [value]="country.id" *ngFor="let country of countries">{{
-                                                        country.country }}</option>
+                                                    <option [value]="country.id" *ngFor="let country of countries">
+                                                        {{ country.country }}
+                                                    </option>
                                                 </select>
                                             </div>
                                         </div>
@@ -178,8 +161,9 @@
                                                 <select class="form-control" id="bstate" formControlName="state"
                                                     (change)="stateChange($event, 0)" (change)="checksameasbilling()">
                                                     <option value="0" selected>-Select State-</option>
-                                                    <option [value]="bstate.id" *ngFor="let bstate of bstates">{{
-                                                        bstate.state }}</option>
+                                                    <option [value]="bstate.id" *ngFor="let bstate of bstates">
+                                                        {{ bstate.state }}
+                                                    </option>
                                                 </select>
                                             </div>
                                         </div>
@@ -189,8 +173,9 @@
                                                 <select class="form-control" formControlName="city" id="bcity"
                                                     (change)="checksameasbilling()">
                                                     <option value="0" selected>-Select City-</option>
-                                                    <option [value]="bcity.id" *ngFor="let bcity of bcities">{{
-                                                        bcity.city }}</option>
+                                                    <option [value]="bcity.id" *ngFor="let bcity of bcities">
+                                                        {{ bcity.city }}
+                                                    </option>
                                                 </select>
                                             </div>
                                         </div>
@@ -201,10 +186,10 @@
                         <div class="col-sm-6">
                             <div class="shipping-address-block" formGroupName="shipping">
                                 <div class="form-group">
-                                    <a class="btn-tertiary" style="cursor: pointer;" data-toggle="collapse" data-target=".shipping-form">Edit
-                                        Shipping Address</a>&nbsp;
+                                    <a class="btn-tertiary" style="cursor: pointer" data-toggle="collapse"
+                                        data-target=".shipping-form">Edit Shipping Address</a>&nbsp;
                                     <label class="billing-label"><input type="checkbox" id="sameasbilling"
-                                            (change)="sameasbilling($event)" class="icheck">&nbsp;Same as Billing
+                                            (change)="sameasbilling($event)" class="icheck" />&nbsp;Same as Billing
                                         Address</label>
                                 </div>
                                 <div class="shipping-form collapse">
@@ -213,7 +198,8 @@
                                             <div class="form-group">
                                                 <label class="form-label">Street</label>
                                                 <input type="text" formControlName="streetname" class="form-control"
-                                                    placeholder="Please enter your Street" (change)="checksameasbilling()" id="sstreetname">
+                                                    placeholder="Please enter your Street"
+                                                    (change)="checksameasbilling()" id="sstreetname" />
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
@@ -222,8 +208,9 @@
                                                 <select class="form-control" formControlName="country" id="scountry"
                                                     (change)="countryChange($event, 1)" (change)="checksameasbilling()">
                                                     <option value="0" selected>-Select Country-</option>
-                                                    <option [value]="country.id" *ngFor="let country of countries">{{
-                                                        country.country }}</option>
+                                                    <option [value]="country.id" *ngFor="let country of countries">
+                                                        {{ country.country }}
+                                                    </option>
                                                 </select>
                                             </div>
                                         </div>
@@ -233,18 +220,21 @@
                                                 <select class="form-control" formControlName="state" id="sstate"
                                                     (change)="stateChange($event, 1)" (change)="checksameasbilling()">
                                                     <option value="0" selected>-Select State-</option>
-                                                    <option [value]="sstate.id" *ngFor="let sstate of sstates">{{
-                                                        sstate.state }}</option>
+                                                    <option [value]="sstate.id" *ngFor="let sstate of sstates">
+                                                        {{ sstate.state }}
+                                                    </option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
                                             <div class="form-group">
                                                 <label class="form-label">City</label>
-                                                <select class="form-control" formControlName="city" id="scity" (change)="checksameasbilling()">
+                                                <select class="form-control" formControlName="city" id="scity"
+                                                    (change)="checksameasbilling()">
                                                     <option value="0" selected>-Select City-</option>
-                                                    <option [value]="scity.id" *ngFor="let scity of scities">{{
-                                                        scity.city }}</option>
+                                                    <option [value]="scity.id" *ngFor="let scity of scities">
+                                                        {{ scity.city }}
+                                                    </option>
                                                 </select>
                                             </div>
                                         </div>
@@ -254,10 +244,9 @@
                         </div>
                     </div>
 
-                    <div class="bottom-group ">
-                        <div class=" row">
-
-                            <div class=" col-sm-12 text-right">
+                    <div class="bottom-group">
+                        <div class="row">
+                            <div class="col-sm-12 text-right">
                                 <div class="form-group clearfix submit-outer">
                                     <button type="submit" class="btn-secondary">Update</button>
                                 </div>
@@ -266,7 +255,6 @@
                     </div>
                 </form>
             </div>
-
         </div>
     </div>
 </section>

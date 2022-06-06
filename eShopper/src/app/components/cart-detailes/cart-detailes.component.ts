@@ -12,6 +12,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CouponService } from 'src/app/services/coupon.service';
 import { CheckoutService } from 'src/app/services/checkout.service';
 import { OrdersService } from 'src/app/services/orders.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 declare let $: any;
 
 @Component({
@@ -24,7 +25,7 @@ export class CartDetailesComponent implements OnInit {
 
   cartItems = null;
   imgServerURL = environment.IMAGES_SERVER_URL;
-  subTotal!: any;
+  subTotal: any = 0;
   userId!: any;
   countries = [];
   states = [];
@@ -38,6 +39,8 @@ export class CartDetailesComponent implements OnInit {
   currency = 'INR';
   flag: boolean = true;
   checkoutData = null;
+  loader:{for:string, loading:boolean} = {for:'',loading:false};
+  total = this.subTotal - this.discount + this.tax;
   alertMsg: { error: boolean, message: string } = { error: false, message: '' };
   updateItem_: { isEditable: boolean, itemId: any } = { isEditable: false, itemId: 0 }
   constructor(
@@ -53,6 +56,7 @@ export class CartDetailesComponent implements OnInit {
     private couponService: CouponService,
     private stripeService: CheckoutService,
     private orderService: OrdersService,
+    private spinnerService: NgxSpinnerService,
     private router: Router
   ) {
 
@@ -96,7 +100,6 @@ export class CartDetailesComponent implements OnInit {
   checkOrderAvailablity(ordId:number){
     this.orderService.getOrderById(ordId, this.userId).subscribe({
       next: (res) => {
-        console.log(res, res.result.length===undefined, res.result.payment=='0');
         if(res.result.length===undefined && res.result.payment=='0'){
           this.updatePaymentStatus(ordId);
         }else{
@@ -104,7 +107,7 @@ export class CartDetailesComponent implements OnInit {
         }
       },
       error: (err) => {
-        this.toast.showError(err, 'Error');
+        this.toast.showError(err.error.message, 'Error');
       }
     });
   }
@@ -118,7 +121,7 @@ export class CartDetailesComponent implements OnInit {
         }
       },
       error: (err) => {
-        this.toast.showError(err,"Error");
+        this.toast.showError(err.error.message,"Error");
       }
     });
   }
@@ -126,26 +129,25 @@ export class CartDetailesComponent implements OnInit {
   updatePaymentStatus(ordId:number){
     this.orderService.setPaymentDone(ordId, this.userId, this.couponData).subscribe({
       next: (res) => {
-        console.log(res);
         if(res.error == ''){
           this.toast.showSuccess("Payment Done Successfully!!!");
-          this.clearCart();
+          this.clearCart(false);
           this.router.navigate(['/cart']);
         }
       },
       error: (err) => {
-        console.log(err);
-        this.toast.showError(err,"Error");
+        this.toast.showError(err.error.message,"Error");
       }
     });
   }
 
   checkout(){
-    this.stripeService.getCheckOutSession(this.cartItems, this.couponData, this.taxData, this.userId).subscribe({
+    this.loader = {for:'checkout',loading:true};
+    this.spinnerService.show('sp3');
+    this.stripeService.getCheckOutSession(this.cartItems, this.couponData, this.taxData, this.userId, this.currency).subscribe({
       next: (res: any)=>{
         const responce = res;
         const errors = responce.errors;
-        console.log("Erros: ",Object.keys(errors).length, errors);
         if(Object.keys(errors).length === 0){
           const sessionObj = responce.session;
           if(sessionObj.id && sessionObj.url ){
@@ -163,9 +165,13 @@ export class CartDetailesComponent implements OnInit {
             }   
           }
         }
+        this.loader = {for:'checkout',loading:false};
+        this.spinnerService.hide('sp3');
       },
       error: (err)=>{
-        
+        this.toast.showError(err.error.message, "ServerError");
+        this.loader = {for:'checkout',loading:false};
+        this.spinnerService.hide('sp3');
       }
     });
   }
@@ -180,9 +186,11 @@ export class CartDetailesComponent implements OnInit {
             this.checkCouponAvailablityAndSet(this.couponData)
           },
           error: (err)=>{
-            this.toast.showError("Error: "+err);
+            this.toast.showError("Error: "+err.error.message);
           }
         });
+    }else{
+      this.unsetCoupon();
     }
   }
 
@@ -223,47 +231,30 @@ export class CartDetailesComponent implements OnInit {
     }
   }
 
-  toggleItemUpdate(itemId: number, sizeIds: string, colorIds: string) {
-    $(".colorName").removeClass("hide");
-    $(".sizeName").removeClass("hide");
-    $(".colorList").removeClass("show");
-    $(".sizeList").removeClass("show");
-    $(".colorLi1_" + itemId).toggleClass("hide");
-    $(".colorLi2_" + itemId).toggleClass("show");
-    $(".sizeLi1_" + itemId).toggleClass("hide");
-    $(".sizeLi2_" + itemId).toggleClass("show");
-    if (this.updateItem_.isEditable == false) {
-      this.getColorByIds(colorIds);
-      this.getSizeByIds(sizeIds);
-    }
-  }
-
   getCountries() {
-    this.addressService.getCountry().subscribe((res) => {
+    this.taxservice.getCountry().subscribe((res) => {
       this.countries = res["result"];
     });
   }
 
   getSizeByIds(ids: string) {
-    console.log(ids);
     this.productService.getSizeByIds(ids).subscribe((res) => {
       this.sizes = res["result"];
     }, (err) => {
-      console.log(err);
+      this.toast.showError(err.error.message,"ServerError")
     });
   }
 
   getColorByIds(ids: string) {
-    console.log(ids);
     this.productService.getColorByIds(ids).subscribe((res) => {
       this.colors = res["result"];
     }, (err) => {
-      console.log(err);
+      this.toast.showError(err.error.message,"ServerError")
     });
   }
 
   getStatesByCountryId(id: any) {
-    this.addressService.getStatesByCountryId(id).subscribe((res) => {
+    this.taxservice.getStatesByCountryId(id).subscribe((res) => {
       this.states = res["result"];
       this.unsetTax();
     });
@@ -280,6 +271,7 @@ export class CartDetailesComponent implements OnInit {
         this.unsetTax();
       }
     }, (err) => {
+      this.toast.showError(err.error.message, "ServerError");
       this.unsetTax();
     });
   }
@@ -302,7 +294,7 @@ export class CartDetailesComponent implements OnInit {
         }, 1000);
       }
     }, (err) => {
-      console.log(err);
+      this.toast.showError(err.error.message,"ServerError")
     });
   }
 
@@ -313,7 +305,7 @@ export class CartDetailesComponent implements OnInit {
         this.toast.showSuccess("Item removed Successfully!!");
       }
     }, (err) => {
-      this.toast.showError(`Error : ${err}`);
+      this.toast.showError(`Error : ${err.error.message}`);
     });
   }
 
@@ -326,7 +318,7 @@ export class CartDetailesComponent implements OnInit {
         }
       }
     }, (err) => {
-      this.toast.showError(`Error : ${err}`);
+      this.toast.showError(`Error : ${err.error.message}`);
     });
   }
 
@@ -345,11 +337,11 @@ export class CartDetailesComponent implements OnInit {
             this.getCartItems();
             this.flag = true;
           } else {
-            this.toast.showError(`Error : ${res.error}`);
+            this.toast.showError(`Error : ${res.error.message}`);
             this.flag = false;
           }
         }, error: (err) => {
-          this.toast.showError(`Error : ${err}`);
+          this.toast.showError(`Error : ${err.error.message}`);
           this.flag = false;
         }
       });
@@ -384,12 +376,11 @@ export class CartDetailesComponent implements OnInit {
       subTotal += (unitprice * qty);
     });
     this.subTotal = subTotal;
-    $(".summary-table tbody .subtotal").html(this.cuurencyPipe.transform(subTotal.toString(), this.currency));
     if(this.couponData!=undefined && (this.subTotal < this.couponData.requireAmountForApplicable)){
       this.removedCoupon();
     }
     this.tax = (subTotal - Number(this.discount)) * (Number(this.taxPercentage)/100);
-    $(".summary-table tbody .summary-price strong").html(this.cuurencyPipe.transform((subTotal + Number(this.tax) - Number(this.discount)).toString(), this.currency));
+    this.total = (subTotal + Number(this.tax) - Number(this.discount));
   }
 
   removedCoupon(){
@@ -404,7 +395,22 @@ export class CartDetailesComponent implements OnInit {
       (<HTMLInputElement>document.getElementById("couponInput")).value = '';
     }
     this.tax = (this.subTotal - Number(this.discount)) * (Number(this.taxPercentage)/100);
-    $(".summary-table tbody .summary-price strong").html(this.cuurencyPipe.transform((this.subTotal + Number(this.tax) - Number(this.discount)).toString(), this.currency));
+    this.total = (this.subTotal + Number(this.tax) - Number(this.discount));
+  }
+
+  toggleItemUpdate(itemId: number, sizeIds: string, colorIds: string) {
+    $(".colorName").removeClass("hide");
+    $(".sizeName").removeClass("hide");
+    $(".colorList").removeClass("show");
+    $(".sizeList").removeClass("show");
+    $(".colorLi1_" + itemId).toggleClass("hide");
+    $(".colorLi2_" + itemId).toggleClass("show");
+    $(".sizeLi1_" + itemId).toggleClass("hide");
+    $(".sizeLi2_" + itemId).toggleClass("show");
+    if (this.updateItem_.isEditable == false) {
+      this.getColorByIds(colorIds);
+      this.getSizeByIds(sizeIds);
+    }
   }
 
 }

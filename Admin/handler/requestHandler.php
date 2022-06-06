@@ -10,6 +10,9 @@ require_once("taxHandler.php");
 require_once("couponHandler.php");
 require_once("bannerHandler.php");
 require_once("testimonialHandler.php");
+require_once("newsletterHandler.php");
+require_once("aboutusHandler.php");
+require_once("contactusHandler.php");
 
 $addressH = new AddressHandler();
 $adminuserH = new AdminUser();
@@ -21,6 +24,9 @@ $taxH = new TaxHandler();
 $couponH = new CouponHandler();
 $bannerH = new BannerHandler();
 $testiH = new TestimonialHandler();
+$newsH = new NewsletterHandler();
+$aboutH = new AboutusHandler();
+$contactH = new ContactUsHandler();
 $error = '';
 $success = '';
 
@@ -56,6 +62,121 @@ if (isset($_POST["signin"])) {
         $_SESSION["error"] = $error;
         header("Location: ../signin.php");
     }
+}
+
+/*------------- Delete Contact -------------*/
+if(isset($_GET['dContact'])){
+    $id = (int) $_GET["dContact"];
+    if ($contactH->deleteContactUs($id)) {
+        $_SESSION["result"] = ["msg" => "Deleted Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => "Somthing went wrong!!!", "error" => true];
+    }
+    header("Location: ../contactus.php");
+}
+
+/*------------- Submit About Us -------------*/
+if(isset($_POST['SubmitAboutUs'])){
+    $content = $_POST["aboutus"];
+    $error = $aboutH->addContent($content);
+    if ($error == "") {
+        $_SESSION["result"] = ["msg" => "About Us Content Added Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => $error, "error" => true];
+    }
+    header("Location: ../aboutus.php");
+
+}
+/*------------- Update About Us -------------*/
+if(isset($_POST['UpdateAboutUs'])){
+    $content = $_POST["aboutus"];
+    $aboutId = $_POST["aboutId"];
+    $error = $aboutH->updateContent($aboutId, $content);
+    if ($error == "") {
+        $_SESSION["result"] = ["msg" => "Content Updated Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => $error, "error" => true];
+    }
+    header("Location: ../aboutus.php");
+}
+
+/*------------- Add NewsLetter -------------*/
+if(isset($_POST["AddNewsletter"])){
+    $title = $_POST["title"];
+    $desc = $_POST["description"];
+    $send = isset($_POST["send"]) ? $_POST["send"] : '';
+    $error = $newsH->AddNewsletter($title, $desc);
+    if ($error == "") {
+        if($send=='send'){
+            $emails = $newsH->getAllSubscriberEmail();
+            if(count($emails)>0){
+                $error = sendNewsLetterMail($emails, $title, $desc);
+                if($error==''){
+                    $_SESSION["result"] = ["msg" => "Newsletter sent successfully to all subscriber", "error" => false];
+                }else{
+                    $_SESSION["result"] = ["msg" => $error, "error" => true];
+                }
+            }else{
+                $_SESSION["result"] = ["msg" => "Newsletter Added successfully, But no subscriber found!!", "error" => false];
+            }
+        }else{
+            $_SESSION["result"] = ["msg" => "Newsletter Added successfully", "error" => false]; 
+        }
+    } else {
+        $_SESSION["result"] = ["msg" => $error, "error" => true];
+    }
+    header("Location: ../newsletters.php");
+}
+
+/*------------- Edit Newsletter -------------*/
+if(isset($_POST["EditNewsletter"])){
+    $newsId = $_POST["newsId"];
+    $title = $_POST["title"];
+    $desc = $_POST["description"];
+    $send = isset($_POST["send"]) ? $_POST["send"] : '';
+    $error = $newsH->UpdateNewsletter($newsId, $title, $desc);
+    if ($error == "") {
+        if($send=='send'){
+            $emails = $newsH->getAllSubscriberEmail();
+            if(count($emails)>0){
+                $error = sendNewsLetterMail($emails, $title, $desc);
+                if($error==''){
+                    $_SESSION["result"] = ["msg" => "Newsletter sent successfully to all subscriber", "error" => false];
+                }else{
+                    $_SESSION["result"] = ["msg" => $error, "error" => true];
+                }
+            }else{
+                $_SESSION["result"] = ["msg" => "Newsletter Updated successfully, But no subscriber found!!", "error" => false];
+            }
+        }else{
+            $_SESSION["result"] = ["msg" => "Newsletter Updated successfully", "error" => false]; 
+        }
+    } else {
+        $_SESSION["result"] = ["msg" => $error, "error" => true];
+    }
+    header("Location: ../newsletters.php");
+}
+
+/*------------- Delete Newsletter-------------*/
+if(isset($_GET["dNewsletter"])){
+    $id = (int) $_GET["dNewsletter"];
+    if ($newsH->deleteNewsletter($id)) {
+        $_SESSION["result"] = ["msg" => "Deleted Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => "Somthing went wrong!!!", "error" => true];
+    }
+    header("Location: ../newsletters.php");
+}
+
+/*------------- Delete Newsletter Subscriber-------------*/
+if(isset($_GET["dSubscriber"])){
+    $id = (int) $_GET["dSubscriber"];
+    if ($newsH->deleteSubscriber($id)) {
+        $_SESSION["result"] = ["msg" => "Deleted Successfully", "error" => false];
+    } else {
+        $_SESSION["result"] = ["msg" => "Somthing went wrong!!!", "error" => true];
+    }
+    header("Location: ../subscribers.php");
 }
 
 /*------------- For changing Order status -------------*/
@@ -723,4 +844,26 @@ if(isset($_GET["dImage"]) && isset($_GET["prdId"])){
         $_SESSION["result"] = ["msg" => "Somthing went wrong!!!", "error" => true];
     }
     header("Location: ../../add_product.php?edit=$prdid"); 
+}
+
+function sendNewsLetterMail($emails, $title, $description){
+
+    require("../phpmailer/PHPMailerAutoload.php");
+    require("../phpmailer/config.php");
+    require_once("../phpmailer/mail.php");
+    $error = '';
+
+    $body = "
+        <h2>$title</h3>
+        <div style='font-size:17px;'>
+            <pre>$description</pre>
+        </div>
+    ";
+
+    $res = sendmail($emails, 'EShopper: NewsLetter', $body);
+
+    if($res['isError']){
+        $error = $res['message'];
+    }
+    return $error;
 }

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { debounce, timer } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -20,9 +21,9 @@ export class OrdersService {
     return this.http.post<any>(`${environment.API_SERVER_URL}/order.php`, {orderData}, {headers:this.header_});
   }
 
-  setPaymentDone(setPayment:number, userId:number, couponData:any){
-    couponData = (couponData==undefined) ? '' : couponData;
-    return this.http.post<any>(`${environment.API_SERVER_URL}/order.php`, {setPayment, userId, couponData}, {headers:this.header_});
+  setPaymentDone(setPayment:number, userId:number, couponId:any){
+    couponId = (couponId==undefined) ? '' : couponId;
+    return this.http.post<any>(`${environment.API_SERVER_URL}/order.php`, {setPayment, userId, couponId}, {headers:this.header_});
   }
 
   removeOrderIfPaymentNotDone(removeOrder:number, userId:number, ifpayment:number){

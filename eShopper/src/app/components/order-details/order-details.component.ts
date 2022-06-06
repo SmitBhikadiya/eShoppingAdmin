@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Route, Router } from '@angular/router';
 import { CurrencyService } from 'src/app/services/currency.service';
+import { NotificationService } from 'src/app/services/notification.service';
 import { OrdersService } from 'src/app/services/orders.service';
 import { UserAuthService } from 'src/app/services/user-auth.service';
 
@@ -22,6 +23,7 @@ export class OrderDetailsComponent implements OnInit {
     private userAuth:UserAuthService,
     private orderService:OrdersService,
     private currService:CurrencyService,
+    private toaster:NotificationService,
     private router: Router,
     private activatedRoute:ActivatedRoute,
   ) {
@@ -57,8 +59,6 @@ export class OrderDetailsComponent implements OnInit {
     if(this.orderId!=undefined){
       this.orderService.getOrderDetailsBy(this.orderId, this.userId).subscribe({
         next:(res) => {
-          console.log(res);
-          
           const data = res.result;
           if(data.orderListData.length>0){
             this.orderData = data;
@@ -67,7 +67,7 @@ export class OrderDetailsComponent implements OnInit {
           }
         },
         error: (err) => {
-          console.log(err,err.error);
+          this.toaster.showError(err.error.message,"ServerError");
         }
       });
     }
@@ -81,8 +81,8 @@ export class OrderDetailsComponent implements OnInit {
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-  };
-  html2pdf().from(invoice).set(opt).save();  
+    };
+    html2pdf().from(invoice).set(opt).save();  
   }
 
 }

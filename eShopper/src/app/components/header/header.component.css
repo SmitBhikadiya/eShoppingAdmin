@@ -40,6 +40,17 @@
   display: block;
 }
 
-/* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropbtn {
+.dropdown-content a.active, .nav-menu a.active{
+  color: #ea4748;
+  font-weight: 300;
+}
+
+.cart-wrap{
+  display: none;
+}
+.cart-wrap.active{
+  display: block;
+}
+.dropdown-content.currency a{
+  cursor: pointer;
 }

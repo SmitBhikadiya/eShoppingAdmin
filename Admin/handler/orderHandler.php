@@ -107,12 +107,37 @@ class OrderHandler extends DBConnection
         $records = [];
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                array_push($records, $row);
+                if($row['payment']==0){
+                    $this->updateOrderIfPaymentNotDone($row['id']);
+                }else{
+                    array_push($records, $row);
+                }
             }
         } else {
             $records = [];
         }
         return $records;
+    }
+
+    function updateOrderIfPaymentNotDone($ordId){
+        $error = '';
+        $sql = "UPDATE orders SET status=1, modifiedDate=now() WHERE id=$ordId AND payment=0";
+        $res = $this->getConnection()->query($sql);
+        if(!$res){
+            $error = "Somthing went wrong!!!";
+        }else{
+            $error = $this->updateOrderListIfPaymentNotDone($ordId);
+        }
+    }
+
+    function updateOrderListIfPaymentNotDone($ordId){
+        $error = '';
+        $sql = "UPDATE orderlist SET status=1, modifiedDate=now() WHERE orderId=$ordId";
+        $res = $this->getConnection()->query($sql);
+        if(!$res){
+            $error = "Somthing went wrong!!!";
+        }
+        return $error;
     }
 
     function getAllOrders($search, $page, $show)
@@ -192,7 +217,7 @@ class OrderHandler extends DBConnection
         return $records;
     }
 
-    function setOrderPayment($userId, $ordId, $couponData){
+    function setOrderPayment($userId, $ordId, $couponStripeId){
         $error = "";
         $sql = "UPDATE orders SET payment=1, modifiedDate=now() WHERE id=$ordId AND userId=$userId";
         $result = $this->getConnection()->query($sql);
@@ -204,8 +229,8 @@ class OrderHandler extends DBConnection
                 $error = "Cart Items not found!!!";
             }else{
                 $error = $this->updateAllProductAfterOrdered($cartItems);
-                if($error=='' && $couponData!=''){
-                    $error = $this->updateCouponData($couponData);
+                if($error=='' && $couponStripeId!=''){
+                    $error = $this->updateCouponData($couponStripeId);
                 }
             }
         }
@@ -227,11 +252,9 @@ class OrderHandler extends DBConnection
         return $records;
     }
 
-    function updateCouponData($couponData){
+    function updateCouponData($stripeId){
         $error = '';
-        $couponData = (array) $couponData;
-        $couponId = $couponData['id'];
-        $sql = "UPDATE coupons SET maximumTotalUsage = maximumTotalUsage - 1 WHERE maximumTotalUsage >= 1 AND id=$couponId";
+        $sql = "UPDATE coupons SET maximumTotalUsage = maximumTotalUsage - 1 WHERE maximumTotalUsage >= 1 AND stripeId='$stripeId' AND status=0";
         $res = $this->getConnection()->query($sql);
         if(!$res){
             $error = 'Somthing went wrong with the $sql';

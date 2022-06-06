@@ -376,7 +376,7 @@ class ProductHandler extends DBConnection
     function getReviewsByProduct($prdId){
         $records = [];
         $prdId = (int) $prdId;
-        $sql = "SELECT pr.*, users.username FROM productreview AS pr JOIN users ON users.id = pr.userId WHERE pr.productId=$prdId AND pr.status = 0";
+        $sql = "SELECT pr.*, users.username FROM productreview AS pr JOIN users ON users.id = pr.userId WHERE pr.productId=$prdId AND pr.status = 0 ORDER BY pr.id DESC";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result && $result->num_rows > 0) {
@@ -605,16 +605,12 @@ class ProductHandler extends DBConnection
         $review = mysqli_real_escape_string($this->getConnection(), $review);
         $error = "";
         $result = [];
-        if (!$this->isReviewGiven($userId, $productId)) {
-            $sql = "INSERT INTO productreview (userId, productId, productRate, review, createdDate) VALUES ($userId, $productId, $productRate, '$review' , now())";
-            $result = $this->getConnection()->query($sql);
-            if (!$result) {
-                $error = "Somthing went wrong with the sql";
-            }else{
-                $result = $this->getReviewByIds($productId, $userId);
-            }
-        } else {
-            $error = "Review is already given by you for this product!!";
+        $sql = "INSERT INTO productreview (userId, productId, productRate, review, createdDate) VALUES ($userId, $productId, $productRate, '$review' , now())";
+        $result = $this->getConnection()->query($sql);
+        if (!$result) {
+            $error = "Somthing went wrong with the sql";
+        }else{
+            $result = $this->getReviewByIds($productId, $userId);
         }
         return ['error'=>$error, 'result'=>$result];
     }

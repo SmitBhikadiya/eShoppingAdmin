@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	viewBox="0 0 72 72" style="enable-background:new 0 0 72 72;" xml:space="preserve">
+	<style type="text/css">
+		.st0{fill-rule:evenodd;clip-rule:evenodd;fill:none;}
+		.st1{fill-rule:evenodd;clip-rule:evenodd;fill:#FFFFFF;}
+		.st2{clip-path:url(#XMLID_15_);}
+		.st3{opacity:0.31;clip-path:url(#XMLID_23_);fill:none;stroke:#FFFFFF;stroke-width:4;stroke-miterlimit:10;}
+	</style>
+	<circle id="XMLID_17_" class="st0" cx="36" cy="36" r="36"/>
+	<polygon id="XMLID_16_" class="st1" points="54,34.8 26.1,34.8 35.3,25.4 33.9,24 22,36.2 23.4,37.6 23.5,37.5 33.7,48 35.1,46.6 
+		25.6,36.9 54,36.9 "/>
+		<g id="XMLID_18_">
+			<defs>
+				<circle id="XMLID_19_" cx="36" cy="36" r="36"/>
+			</defs>
+			<clipPath id="XMLID_15_">
+				<use xlink:href="#XMLID_19_"  style="overflow:visible;"/>
+			</clipPath>
+			<g id="XMLID_20_" class="st2">
+				<defs>
+					<rect id="XMLID_21_" x="-110" y="-210" width="1200" height="500"/>
+				</defs>
+				<clipPath id="XMLID_23_">
+					<use xlink:href="#XMLID_21_"  style="overflow:visible;"/>
+				</clipPath>
+				<circle id="XMLID_22_" class="st3" cx="36" cy="36" r="36"/>
+			</g>
+		</g>
+	</svg>

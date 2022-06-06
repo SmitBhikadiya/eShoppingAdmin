@@ -40,7 +40,7 @@
                     <owl-carousel-o [options]="customOptions2" (changed)="getData($event, synk1)" #synk2>
                         <ng-container *ngFor="let slide of productImages; let id_ = index">
                             <ng-template class="slide" carouselSlide [width]="155" [id]="id_.toString()">
-                                <a target="blank_" style="cursor: pointer;" (click)="synk1.to(id_.toString())"><img
+                                <a target="blank_" style="cursor: pointer" (click)="synk1.to(id_.toString())"><img
                                         [src]="slide" height="150px" [alt]="id_" [title]="slide" /></a>
                             </ng-template>
                         </ng-container>
@@ -63,7 +63,9 @@
                         stock</span>
                     <ng-template #notinstock><span class="not-in-stock">Not Available</span></ng-template>
                 </p>
-                <div class="price-box">{{ product['productPrice'] | setCurr : currency }}</div>
+                <div class="price-box">
+                    {{ product["productPrice"] | setCurr: currency }}
+                </div>
                 <form [formGroup]="cartForm" id="cartForm" (ngSubmit)="addTocart()">
                     <div class="product-options">
                         <label class="required"><em>*</em> Size</label>
@@ -89,10 +91,10 @@
                             </select>
                         </div>
                     </div>
-                    <div class="add-to-cart-btn clearfix" style="display: flex;">
+                    <div class="add-to-cart-btn clearfix" style="display: flex">
                         <label>Qty:</label>
-                        <input class="form-control" id="pqty" formControlName="pqty" style="width: 70px;" [min]="1"
-                            [max]="product['totalQuantity']" [value]="1" type="number">&nbsp;&nbsp;
+                        <input class="form-control" id="pqty" formControlName="pqty" style="width: 70px" [min]="1"
+                            [max]="product['totalQuantity']" [value]="1" type="number" />&nbsp;&nbsp;
                         <button type="submit" title="Add to Cart" class="button btn-cart">
                             <span>{{ btn }}</span>
                         </button>
@@ -100,7 +102,10 @@
                 </form>
                 <div class="email-addto-box clearfix">
                     <ul class="add-to-links">
-                        <li><a class="link-wishlist" style="cursor: pointer;" (click)="addProductToWishList()">Add to Wishlist</a></li>
+                        <li>
+                            <a class="link-wishlist" style="cursor: pointer" (click)="addProductToWishList()">Add to
+                                Wishlist</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="tablist-nav">
@@ -169,29 +174,33 @@
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active">
-                    <a href="#product-des" aria-controls="product-des" role="tab" data-toggle="tab">Product
-                        Description</a>
-                </li>
-                <li role="presentation">
-                    <a href="#product-review" aria-controls="product-review" role="tab" data-toggle="tab">Product's
-                        Review</a>
-                </li>
-                <li role="presentation">
-                    <a href="#cms-tab" aria-controls="cms-tab" role="tab" data-toggle="tab">CMS tab</a>
+                    <a href="#product-review" aria-controls="product-review" role="tab" data-toggle="tab"
+                        aria-expanded="true">Product's Review</a>
                 </li>
             </ul>
             <!-- Tab panes -->
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="product-des">
-                    <p>
-                        <strong>{{ product["productDesc"] }}</strong>
-                    </p>
-                </div>
-                <div role="tabpanel" class="tab-pane" id="product-review">
-                    <p class="write-review">
-                        <a title="Write a review" (click)="toggleReview()" style="cursor: pointer;">Write a review</a>
-                    </p>
-                    <form class="review-open" [formGroup]="reviewForm" id="reviewForm" (ngSubmit)="reviewSubmit()">
+                <div role="tabpanel" class="tab-pane active" id="product-review">
+                    <div class="write-review">
+                        
+                        <div class="review-detail total">
+                            <a title="Write a review" (click)="isReviewToggle = !isReviewToggle" style="cursor: pointer">
+                                Write a review
+                            </a>
+                            <div>
+                            Total: <span style="font-weight: 200">
+                                <span style="font-size: 18px">
+                                    <span *ngFor="let i of [1,2,3,4,5]" class="fa fa-star"
+                                        [ngClass]="{'checked': i<=avgRating}">
+                                    </span>
+                                </span> ({{ avgRating }}/5)
+                            </span>
+                        </div>
+                        </div>
+
+                    </div>
+                    <form class="review-open" [formGroup]="reviewForm" [ngClass]="{ active: isReviewToggle }"
+                        id="reviewForm" (ngSubmit)="reviewSubmit()">
                         <div class="rating">
                             <label>
                                 <input type="radio" name="stars" class="star-input" value="1" formControlName="stars" />
@@ -203,7 +212,7 @@
                                 <span class="icon">★</span>
                             </label>
                             <label>
-                                <input type="radio" name="stars" class="star-input" value="3" formControlName="stars"/>
+                                <input type="radio" name="stars" class="star-input" value="3" formControlName="stars" />
                                 <span class="icon">★</span>
                                 <span class="icon">★</span>
                                 <span class="icon">★</span>
@@ -216,7 +225,7 @@
                                 <span class="icon">★</span>
                             </label>
                             <label>
-                                <input type="radio" name="stars" class="star-input" value="5" formControlName="stars"/>
+                                <input type="radio" name="stars" class="star-input" value="5" formControlName="stars" />
                                 <span class="icon">★</span>
                                 <span class="icon">★</span>
                                 <span class="icon">★</span>
@@ -224,36 +233,43 @@
                                 <span class="icon">★</span>
                             </label>
                         </div>
-                        <div class="form-group" style="margin-top: 5px;">
-                            <textarea id="review" class="form-control" placeholder="Write a review" formControlName="review"></textarea>
+                        <div class="form-group" style="margin-top: 5px">
+                            <textarea id="review" class="form-control" placeholder="Write a review"
+                                formControlName="review"></textarea>
                         </div>
-                        <input type="submit" class="btn-secondary" name="submit" formControlName="button" />
+                        <input type="submit" id="productReviewBtn" class="btn-secondary" name="submit"
+                            value="Submit" />
                     </form>
-                    <div class="review-detail" *ngFor="let review of productReviews; trackBy:trackByReview">
-                        <span>{{ review['username'] }}, {{ review['createdDate'] | date }} writes:</span>
-                        <p style="font-weight: 200;">
-                           {{ review['review'] }}
+                </div>
+                <div *ngIf="productReviews!=null; else noReview">
+                    <div class="review-detail" *ngFor="let review of productReviews; trackBy: trackByReview">
+                        <div style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                ">
+                            <span style="display: flex;">
+                                {{ review["username"] }},
+                                <span style="font-size: 10px; font-weight: 200; margin-right: 5px;">({{ review["createdDate"] | date}})</span>
+                                <span *ngIf="reviewByUser!=null && review['isMyReview']" title="Remove item" (click)="deleteReview(review['id'])" class="remove-link" style="cursor: pointer;"><img src="../../../assets/images/trash.png" alt="delete" /></span>
+                            </span>
+                            <span style="font-weight: 200">
+                                <span style="font-size: 16px">
+                                    <span *ngFor="let i of [1,2,3,4,5]" class="fa fa-star"
+                                        [ngClass]="{'checked': i<=review['productRate']}"></span>
+                                </span> ({{ review['productRate'] }}/5)
+                            </span>
+                        </div>
+                        <p style="font-weight: 200">
+                            {{ review["review"] }}
                         </p>
-                    </div> 
+                    </div>
                 </div>
-                <div role="tabpanel" class="tab-pane" id="cms-tab">
-                    <p>
-                        Custom Variants and Options let you create product customization
-                        options and fields quickly and easily. Any product can have custom
-                        variants and options – this can be configured in its product
-                        configuration. Custom variants and options can be created for
-                        products as required or non-required options. They can affect the
-                        total price of the product by a fixed amount or percentage.
-                    </p>
-                    <p>
-                        Custom Variants and Options let you create product customization
-                        options and fields quickly and easily. Any product can have custom
-                        variants and options – this can be configured in its product
-                        configuration. Custom variants and options can be created for
-                        products as required or non-required options. They can affect the
-                        total price of the product by a fixed amount or percentage.
-                    </p>
-                </div>
+                <ng-template #noReview>
+                    <div style="text-align: center;">
+                        <h3>No Review Found!!</h3>
+                    </div>
+                </ng-template>
             </div>
         </div>
     </div>

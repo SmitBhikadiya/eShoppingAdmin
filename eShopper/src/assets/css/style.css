@@ -85,7 +85,7 @@ ol,ul{list-style-type:none;}
 .header-right-block > li a:hover,.header-right-block > li a:focus{color: #ea4748;}
 .header-right-block > li.login-link a:hover,.header-right-block > li.login-link a:focus{color:#414141;}
 .form-control{height:45px;border-color: #ccc;box-shadow: none;-moz-box-shadow: none;-webkit-box-shadow: none; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px;}
-.form-control:focus{box-shadow: none;border-color: #ea4748;}
+.form-control:focus{box-shadow: none;}
 
 .header-right-block .form-control{border-radius: 0; height:40px;}
 
@@ -112,6 +112,8 @@ ol,ul{list-style-type:none;}
 .header-right-block > li.search-link-wrap{padding:20px 27px}
 .add-to-cart{width:40px; height:40px;background: rgba(0, 0, 0, 0) url("../images/sprite.png") no-repeat scroll 1px -58px; display:block; transition:all 0s}
 .add-to-cart:hover{background:#ea4848 url("../images/sprite.png") no-repeat scroll -220px -58px}
+/* .user-profile{width:40px; height:40px;background: rgba(0, 0, 0, 0) url("../images/sprite.png") no-repeat scroll 1px -523px; display:block; transition:all 0s}
+.user-profile:hover{background:#fff url("../images/sprite.png") no-repeat scroll -213px -523px} */
 
 /* Socail Icons
 --------------------------------------------------------------------------------------------------------*/

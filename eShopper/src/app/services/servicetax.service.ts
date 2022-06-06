@@ -12,4 +12,12 @@ export class ServicetaxService {
   getTaxByState(countryId:any, stateId:any){
     return this.http.get<any>(`${environment.API_SERVER_URL}/servicetax.php?countryId=${countryId}&stateId=${stateId}`);
   }
+
+  getCountry(){
+    return this.http.get<any>(`${environment.API_SERVER_URL}/servicetax.php?getcountries=getcountries`);
+  }
+
+  getStatesByCountryId(countryId:any){
+    return this.http.get<any>(`${environment.API_SERVER_URL}/servicetax.php?getstates=getstates&countryId=${countryId}`);
+  }
 }

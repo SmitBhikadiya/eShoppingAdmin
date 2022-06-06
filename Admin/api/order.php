@@ -37,11 +37,11 @@ if (isset($postdata) && !empty($postdata)) {
         $res = $obj->getOrderByIds($userId, $ordId);
         echo json_encode(["result"=>$res]);
         exit();
-    }else if(isset($request->setPayment) && isset($request->userId) && isset($request->couponData)){
+    }else if(isset($request->setPayment) && isset($request->userId) && isset($request->couponId)){
         $ordId = (int) $request->setPayment;
         $userId = (int) $request->userId;
-        $couponData = $request->couponData;
-        $error = $obj->setOrderPayment($userId, $ordId, $couponData);
+        $couponId = $request->couponId;
+        $error = $obj->setOrderPayment($userId, $ordId, $couponId);
         echo json_encode(["error"=>$error]);
         exit();
     }else if(isset($request->removeOrder) && isset($request->userId) && isset($request->ifpayment)){

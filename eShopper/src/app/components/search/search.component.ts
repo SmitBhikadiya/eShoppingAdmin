@@ -8,6 +8,7 @@ import { ISize } from 'src/app/interfaces/size';
 import { ISubCategory } from 'src/app/interfaces/subcategory';
 import { CategoryService } from 'src/app/services/category.service';
 import { CurrencyService } from 'src/app/services/currency.service';
+import { NotificationService } from 'src/app/services/notification.service';
 import { ProductService } from 'src/app/services/product.service';
 import { environment } from 'src/environments/environment';
 
@@ -42,7 +43,8 @@ export class SearchComponent implements OnInit {
     private builder:FormBuilder,
     private productService: ProductService,
     private categoryService:CategoryService,
-    private currService: CurrencyService
+    private currService: CurrencyService,
+    private toaster:NotificationService
   ) {
     
     this.router.events.subscribe((ev) => {
@@ -56,9 +58,11 @@ export class SearchComponent implements OnInit {
       this.search = res;
       this.getProductsBySearch();
     });
+
     currService.currSubject.subscribe((curr)=>{
       this.currency = curr;
     });
+    
   }
 
   ngOnInit(): void {
@@ -86,16 +90,15 @@ export class SearchComponent implements OnInit {
     this.productService.getProductsBySearch(load, formvalues, this.sortby, search).subscribe((res)=>{
       this.products = res["result"];
     }, (err)=>{
-      this.error=err;
+      this.toaster.showError(err.error.message,"ServerError");
     });
   }
 
   getColors(){
     this.productService.getColorsByCat(this.category).subscribe((res)=>{
       this.colors = res["result"];
-      console.log('colors',  this.colors);
     },(err)=>{
-      this.error = err;      
+      this.toaster.showError(err.error.message,"ServerError");    
     });
   }
 
@@ -103,7 +106,7 @@ export class SearchComponent implements OnInit {
     this.categoryService.getCategory().subscribe((res)=>{
       this.categories = res["result"];
     },(err)=>{
-      this.error = err;      
+      this.toaster.showError(err.error.message,"ServerError");     
     });
   }
 
@@ -111,7 +114,7 @@ export class SearchComponent implements OnInit {
     this.productService.getSizesByCat(this.category).subscribe((res)=>{
       this.sizes = res["result"];
     },(err)=>{
-      this.error = err;      
+      this.toaster.showError(err.error.message,"ServerError");   
     });
   }
 

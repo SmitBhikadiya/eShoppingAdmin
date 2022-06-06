@@ -15,8 +15,30 @@ if(isset($_POST["id"])){
     $mobile = trim($_POST["mobile"]);
     $phone = trim($_POST["phone"]);
     $email = trim($_POST["email"]);
+    $oldprofile = trim($_POST['oldprofile']);
+    $image = '';
+
+    if(isset($_FILES['newprofile']) && isset($_FILES['newprofile']['tmp_name'])){
+        $targetDir = "../images/profile/";
+        $files = $_FILES["newprofile"];
+        $image = "profile_" . time() . rand(0, 1000) . '.png';
+        $target = $targetDir . $image;
+        $error = '';
+        if (!move_uploaded_file($files["tmp_name"], $target)) {
+            $error = "Error while file is uploading!!";
+            $image = $oldprofile;
+        }else{
+            if($oldprofile!='' && $oldprofile!=null){
+                if(is_file($targetDir.$oldprofile)){
+                    unlink($targetDir.$oldprofile);
+                }
+            }
+        }
+    }else{
+        $image = $oldprofile;
+    }
     $error = '';
-    $error = $obj->updateUser($userid, $username, $firstname, $lastname, $gender, $mobile, $phone, $email);
+    $error = $obj->updateUser($userid, $username, $firstname, $lastname, $gender, $mobile, $phone, $email, $image);
     
     if(isset($_POST["bstreetname"]) && $_POST["bstreetname"]!=''){
         $type = 0;
@@ -64,7 +86,7 @@ if(isset($_POST["username"]) && isset($_POST["password"])){
     $mobile = trim($_POST["mobile"]);
     $phone = trim($_POST["phone"]);
     $email = trim($_POST["email"]);
-    $res = $obj->userRegister($username, $password, $firstname, $lastname, $gender, $mobile, $phone, $email);
+    $res = $obj->userRegister($username, $password, $firstname, $lastname, $gender, $mobile, $phone, $email, $image='');
     echo json_encode($res);
 }else{
     echo json_encode("somthing went wrong");

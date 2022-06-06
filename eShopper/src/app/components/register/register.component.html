@@ -16,17 +16,9 @@
     </div>
 </div>
 <section class="content register">
-    <div class="container shopping-wrap" *ngIf="isAnyError">
-        <div class="alert alert-dismissible alert-success" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">×</span>
-            </button>
-            <i><img src="../../../assets/images/success.svg" alt="success" /></i>
-            <span>{{ message }}</span>
-        </div>
-    </div>
     <div class="container">
-
+        <ngx-spinner name="register" type="ball-spin-clockwise" template="<img src='../../../assets/images/spinner.gif' />" size="medium">
+        </ngx-spinner>
         <h2>New Customers</h2>
         <p>
             By creating an account with our store, you will be able to move through the checkout process faster, store
@@ -39,7 +31,10 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label class="form-label">Username</label>
-                                <input type="text" id="username" class="form-control" placeholder="Please enter yor username" (keyup)="isUserNameExits(username)" formControlName="username">
+                                <input type="text" id="username" class="form-control" placeholder="Please enter yor username" (keyup)="isUserNameExits(username?.value)" formControlName="username">
+                                <span *ngIf="!username?.valid && username?.touched && triggerError">
+                                    <span class="spanError" *ngIf="username?.errors?.['required']">*Field Can't be empty</span>
+                                </span>
                             </div>
                         </div>
 
@@ -57,6 +52,9 @@
                                             </li>
                                         </ul>
                                     </div>
+                                    <span *ngIf="!gender?.valid && gender?.touched && triggerError">
+                                        <span class="spanError" *ngIf="gender?.errors?.['required']">*Field can't be empty!!</span>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -64,15 +62,24 @@
                     <div class="row">
 
                         <div class="col-sm-6">
-                            <div class="form-group">
+                            <div class="form-group password">
                                 <label class="form-label">Password</label>
-                                <input type="text" class="form-control" id="password" placeholder="Please enter your Password" formControlName="password">
+                                <input type="password" class="form-control" id="password" placeholder="Please enter your Password" #password formControlName="password">
+                                <img class="eye" src="../../../assets/images/eye-slash-solid.svg" (click)="toggleEye($event, password)" alt="">
+                                <span *ngIf="!newpassword?.valid && newpassword?.touched && triggerError">
+                                    <span class="spanError" *ngIf="newpassword?.errors?.['pattern']">*At least one uppercase, lowercase, special char, numbers and 6 to 14 characters longer!!</span>
+                                    <span class="spanError" *ngIf="newpassword?.errors?.['required']">*Field can't be empty!!</span>
+                                </span>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label class="form-label">Email</label>
-                                <input type="email" id="email" class="form-control" (keyup)="isEmailExits(email)" placeholder="Please enter valid email" formControlName="email">
+                                <input type="email" id="email" class="form-control" (keyup)="isEmailExits(email?.value)" placeholder="Please enter valid email" formControlName="email">
+                                <span *ngIf="!email?.valid && email?.touched && triggerError">
+                                    <span class="spanError" *ngIf="email?.errors?.['email']">*Enter a valid email!!</span>
+                                    <span class="spanError" *ngIf="email?.errors?.['required']">*Field can't be empty!!</span>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -83,12 +90,19 @@
                             <div class="form-group">
                                 <label class="form-label">First Name</label>
                                 <input type="text" id="firstname" class="form-control" placeholder="Please enter yor first name" formControlName="firstname">
+                                <span *ngIf="!firstname?.valid && firstname?.touched && triggerError">
+                                    <span class="spanError" *ngIf="firstname?.errors?.['required']">*Field can't be empty!!</span>
+                                </span>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label class="form-label">Mobile No.</label>
                                 <input type="text" id="mobile" class="form-control" placeholder="Please enter yor mobile no." formControlName="mobile">
+                                <span *ngIf="!mobile?.valid && mobile?.touched && triggerError">
+                                    <span class="spanError" *ngIf="mobile?.errors?.['required']">*Field can't be empty!!</span>
+                                    <span class="spanError" *ngIf="mobile?.errors?.['pattern']">*Mobile must be 10 to 12 characters long!!</span>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -98,56 +112,52 @@
                             <div class="form-group">
                                 <label class="form-label">Last Name</label>
                                 <input type="text" id="lastname" class="form-control" placeholder="Please enter yor last name" formControlName="lastname">
+                                <span *ngIf="!lastname?.valid && lastname?.touched && triggerError">
+                                    <span class="spanError" *ngIf="lastname?.errors?.['required']">*Field can't be empty!!</span>
+                                </span>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label class="form-label">Phone</label>
                                 <input type="text" id="phone" class="form-control" placeholder="Please enter yor phone" formControlName="phone">
+                                <span *ngIf="!phone?.valid && phone?.touched && triggerError">
+                                    <span class="spanError" *ngIf="phone?.errors?.['required']">*Field can't be empty!!</span>
+                                    <span class="spanError" *ngIf="phone?.errors?.['pattern']">*Phone must be 6 to 8 characters long!!</span>
+                                </span>
                             </div>
                         </div>
 
 
                     </div>
 
-                    <!-- <div class="row">
-                        <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-4">
                             <div class="form-group">
-                                <label class="form-label">Interests</label>
-                                <div class="filter-option">
-                                    <div class="filter-option-inner">
-                                        <ul>
-                                            <li class="custom-check">
-                                                <label> <input type="checkbox" class="icheck">Select All</label>
-                                            </li>
-                                            <li class="custom-check">
-                                                <label> <input type="checkbox" class="icheck"> Option 1 </label>
-                                            </li>
-                                            <li class="custom-check">
-                                                <label> <input type="checkbox" class="icheck">Option 2 </label>
-                                            </li>
-                                            <li class="custom-check">
-                                                <label> <input type="checkbox" class="icheck"> Option 3</label>
-                                            </li>
-                                            <li class="custom-check">
-                                                <label> <input type="checkbox" class="icheck">Other</label> <input
-                                                    type="text" class="form-control">
-                                            </li>
-
-                                        </ul>
-
-                                    </div>
-                                </div>
+                                <label class="form-label">Profile Image</label>
+                                <input type="file" (change)="onChangeFile($event)" id="profile" class="form-control" placeholder="Please enter yor phone" formControlName="profile">
+                                <span *ngIf="!profile?.valid && profile?.touched && triggerError">
+                                    <span class="spanError" *ngIf="profile?.errors?.['required']">*Profile is required!!</span>
+                                </span>
                             </div>
                         </div>
-
-                    </div> -->
+                        <div class="col-sm-2" style="padding-top: 10px;">
+                            <img [src]="imageSrc" [width]="60" [height]="60" [ngStyle]="{border:'1px solid #00000052', borderRadius:'50px'}">
+                        </div>
+                    </div>
 
                     <div class="bottom-group ">
                         <div class=" row">
                             <div class="term-condition col-sm-8">
                                 <div class="checkbox">
-                                    <label class="chklbl"><input type="checkbox" id="privacy" value="">&nbsp;&nbsp;I Agree with <a>Terms &amp; Conditions.</a></label>
+                                    <label class="chklbl">
+                                        <input type="checkbox" id="privacy" formControlName="policy">
+                                        &nbsp;&nbsp;I Agree with <a>Terms &amp; Conditions.
+                                        </a>
+                                    </label>
+                                    <span *ngIf="!policy?.valid && policy?.touched && triggerError">
+                                        <span class="spanError" *ngIf="policy?.errors">*Must need to agree policy!!</span>
+                                    </span>
                                 </div>
                             </div>
 

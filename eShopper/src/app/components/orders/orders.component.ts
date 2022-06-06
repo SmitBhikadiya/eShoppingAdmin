@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { CurrencyService } from 'src/app/services/currency.service';
+import { NotificationService } from 'src/app/services/notification.service';
 import { OrdersService } from 'src/app/services/orders.service';
 import { UserAuthService } from 'src/app/services/user-auth.service';
 
@@ -19,6 +20,7 @@ export class OrdersComponent implements OnInit {
 
   constructor(
     private userAuth:UserAuthService,
+    private toaster:NotificationService,
     private orderService:OrdersService,
     private currService:CurrencyService,
     private router: Router
@@ -54,7 +56,7 @@ export class OrdersComponent implements OnInit {
 
   searchBy(e:HTMLInputElement){
     this.search = e.value;
-    this.getOrderDetailes(); 
+    this.getOrderDetailes();
   }
 
   getOrderDetailes(){
@@ -66,7 +68,7 @@ export class OrdersComponent implements OnInit {
         } 
       },
       error: (err) => {
-        console.log(err.error);
+        this.toaster.showError(err.error.message,"ServerError");
       }
     });
   }

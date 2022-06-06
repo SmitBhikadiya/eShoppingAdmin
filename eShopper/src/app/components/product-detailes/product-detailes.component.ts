@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { OwlOptions, SlidesOutputData } from 'ngx-owl-carousel-o';
+import { Toast } from 'ngx-toastr';
 import { CustomValidation } from 'src/app/customValidation';
 import { IColor } from 'src/app/interfaces/color';
 import { IProduct } from 'src/app/interfaces/product';
@@ -39,9 +40,11 @@ export class ProductDetailesComponent implements OnInit {
   btn = "ADD TO CART";
   cartItems!: any;
   subTotal!: any;
-  reviewByUser = null;
+  reviewByUser:any = null;
   cartForm!: FormGroup;
   reviewForm!:FormGroup;
+  isReviewToggle = false;
+  avgRating = 0;
 
   limit: number = 10; // <==== Edit this number to limit API results
 
@@ -109,7 +112,7 @@ export class ProductDetailesComponent implements OnInit {
     private userAuth: UserAuthService,
     private cartService: CartService,
     private route: ActivatedRoute,
-    private toast: NotificationService,
+    private toaster: NotificationService,
     private wishService:WishlistService,
     private currPipe: SetCurrPipe,
     private currService:CurrencyService
@@ -127,15 +130,8 @@ export class ProductDetailesComponent implements OnInit {
     });
 
     userAuth.isUserLoggedIn.subscribe((res)=>{
-      if(res){
-        this.isLoggin = true;
-      }else{
-        this.isLoggin = false;
-      }
-      this.setAddToCartForm("ADD TO CART",0,0,1);
-      this.setReviewForm("Submit", 0, '');
-      this.productReviews = null;
-      this.cartId = null;
+      this.isLoggin = res;
+      this.setAndgetDefault();
     });
 
     cartService.cartItemSubject.subscribe(data => {
@@ -148,16 +144,19 @@ export class ProductDetailesComponent implements OnInit {
         this.setAddToCartForm("ADD TO CART",0,0,1);
       }
     });
-
-    this.setAddToCartForm("ADD TO CART",0,0,1);
-    this.setReviewForm("Submit", 0, '');
   }
 
   ngOnInit(): void {
+    this.setAndgetDefault();
+  }
 
-    const token = JSON.parse(this.userAuth.getToken());
-    
+  setAndgetDefault(){
+    this.setAddToCartForm("ADD TO CART",0,0,1);
+    this.setReviewForm(0, '');
+
+    let token = this.userAuth.getToken();
     if(token!=null){
+      token = JSON.parse(token);
       this.isLoggin = true;
       this.userId = token.user.id;
     }
@@ -167,14 +166,13 @@ export class ProductDetailesComponent implements OnInit {
     });
 
     this.getProductById();
-
+    this.getAllReviewBy(this.prdid);
   }
 
-  setReviewForm(btn:string, rating:number, review:string){
+  setReviewForm(rating:number, review:string){
     this.reviewForm = this.formBuilder.group({
       stars: [`${rating}`, Validators.required],
       review: [`${review}`, [Validators.required, Validators.maxLength(255)]],
-      button: [`${btn}`]
     })
   }
 
@@ -193,10 +191,8 @@ export class ProductDetailesComponent implements OnInit {
   addProductToWishList(){
     if (this.userAuth.isLoggedIn()) {
       this.userId = JSON.parse(this.userAuth.getToken()).user.id;
-      let colorId = this.cartForm.controls["pcolor"].value;
-      let sizeId = this.cartForm.controls["psize"].value;
       if (this.wishListId != null) {
-        this.toast.showWarning("Product is already added in wishlist");
+        this.toaster.showWarning("Product is already added in wishlist");
       } else {
         this.addToWishList(this.prdid, this.userId);
       }
@@ -210,17 +206,17 @@ export class ProductDetailesComponent implements OnInit {
       this.wishService.addWish(userId, prdId).subscribe({
         next: (res)=>{
           if(res.error == ''){
-            this.toast.showSuccess("Product is added to your wishlist!!");
+            this.toaster.showSuccess("Product is added to your wishlist!!");
           }else{
-            this.toast.showError(res.error);
+            this.toaster.showError(res.error);
           }
         },
         error: (err)=>{
-          this.toast.showError(err, "ServerError");
+          this.toaster.showError(err.error.message,"ServerError");
         }
       });
     }else{
-      this.toast.showWarning("Product Id or User Id can't be null");
+      this.toaster.showWarning("Product Id or User Id can't be null");
     }
   }
 
@@ -245,67 +241,38 @@ export class ProductDetailesComponent implements OnInit {
 
   reviewSubmit(){
     if (this.validateReview()) {
-      console.log(this.reviewForm.value, this.reviewByUser); 
-      if(this.reviewByUser==null){
         this.addReview(this.reviewForm.value);
-      }else{
-        this.updateReview(this.reviewForm.value);
-      }
-      this.getAllReviewBy(this.prdid);
+        this.getAllReviewBy(this.prdid);
+        this.reviewForm.reset();
     }
   }
 
   addReview(formValue:any){
-    if(this.isLoggin){
+    if(this.isLoggin && this.userId != null){
       this.productService.insertReview(this.prdid, this.userId, formValue.stars, formValue.review).subscribe({
         next: (res) => {
           if(res.error==''){
-            this.reviewByUser = res.result[0];
-            this.setReviewForm('Update', formValue.stars, formValue.review);
+            this.reviewByUser = res.result;
+            this.isReviewToggle = false;
             this.getAllReviewBy(this.prdid);
-            this.toast.showSuccess("Review Added Successfully!!");
+            this.toaster.showSuccess("Review Added Successfully!!");
           }else{
-            this.toast.showError(res.error, 'ServerError');
+            this.toaster.showError(res.error, 'ServerError');
           }
         },
         error: (err) => {
-          this.toast.showError(err.error, 'HttpResponceError');
+          this.toaster.showError(err.error.message,"ServerError");
         },
       });
     }else{
-      this.toast.showError('Login is must required!!!');
-    }
-  }
-
-  updateReview(formValue:any){
-    if(this.isLoggin){
-      if(this.reviewByUser!=null){
-        const reviewId = this.reviewByUser['id'];
-        this.productService.updateReview(reviewId, formValue.stars, formValue.review).subscribe({
-          next: (res) => {
-            if(res.error==''){
-              this.toast.showSuccess("Review Updated Successfully!!");
-              this.getAllReviewBy(this.prdid);
-            }else{
-              this.toast.showError(res.error, 'ServerError');
-            }
-          },
-          error: (err) => {
-            this.toast.showError(err.error, 'HttpResponceError');
-          },
-        });
-      }
-    }else{
-      this.toast.showError('Login is must required!!!');
+      this.toaster.showError('Login is must required!!!');
     }
   }
 
   getCartItems() {
-    console.log(this.isLoggin);
     
-    if(this.isLoggin){
-      const data = JSON.parse(this.userAuth.getToken());
-    this.cartService.getCartItems(data.user.id).subscribe((res) => {
+    if(this.isLoggin && this.userId!=null){
+    this.cartService.getCartItems(this.userId).subscribe((res) => {
       this.cartItems = res["result"];
       this.subTotal = this.cartService.getSubTotal();
       if (this.cartItems == '') {
@@ -313,7 +280,7 @@ export class ProductDetailesComponent implements OnInit {
         this.subTotal = 0;
       }
       this.subTotal = this.currPipe.transform(this.subTotal, this.currency);
-      if(this.cartItems!=null || this.prdid!=null || this.prdid!=undefined){
+      if(this.cartItems!=null && (this.prdid!=null || this.prdid!=undefined)){
         const res = this.cartItems.filter((item:any)=>{
           if(item.productId==this.prdid){
             return item;
@@ -330,85 +297,73 @@ export class ProductDetailesComponent implements OnInit {
         }
       }
     }, (err) => {
-      this.toast.showError("Error: " + err);
+      this.toaster.showError(err.error.message,"ServerError");
     });
     }
   }
 
   updateCartItem(colorId: number, sizeId: number, qty: number, subtotal: number) {
-    console.log("Updating...");
     if(this.isLoggin){
       this.cartService.updateCartItem(this.cartId, this.userId, colorId, sizeId, qty, subtotal).subscribe({
         next: (res) => {
           if (res.error == '') {
             this.getCartItems();
-            this.toast.showSuccess("Item Updated Successfully!!!");
+            this.toaster.showSuccess("Item Updated Successfully!!!");
           } else {
-            this.toast.showError(res.error);
+            this.toaster.showError(res.error);
           }
         }, error: (err) => {
-          this.toast.showError("Error: " + err);
+          this.toaster.showError(err.error.message,"ServerError");
         }
       });
     }else{
-      this.toast.showError('Login is must required!!!');
+      this.toaster.showError('Login is must required!!!');
     }
   }
 
   addItemToCart(colorId: number, sizeId: number, qty: number, subtotal: number) {
-    console.log("Adding...");
     if(this.isLoggin){
       this.cartService.addItemToCart(this.product, this.userId, colorId, sizeId, qty, subtotal).subscribe({
         next: (res) => {
           if (res.error == '') {
             this.getCartItems();
-            this.toast.showSuccess("Item Added Successfully!!!");
+            this.toaster.showSuccess("Item Added Successfully!!!");
           } else {
-            this.toast.showError(res.error);
+            this.toaster.showError(res.error);
           }
         }, error: (err) => {
-          this.toast.showError("Error: " + err);
+          this.toaster.showError(err.error.message,"ServerError");
         }
       });
     }else{
-      this.toast.showError('Login is must required!!!');
+      this.toaster.showError('Login is must required!!!');
     }
   }
 
-  toggleReview() {
-    const reviewForm = <HTMLElement>document.getElementById('reviewForm');
-    if(reviewForm?.style.getPropertyValue('display') == 'block'){
-      reviewForm.style.display = 'none';
-    }else{
-      const getReviewDetails = () => {
-        console.log("Fetching.. Reviews", new Date().getSeconds());
-        this.getAllReviewBy(this.prdid);
-        this.getReviewByUser(this.userId, this.prdid);
-        console.log("Fetched", new Date().getSeconds());
-        reviewForm.style.display = 'block';
-      }
-      getReviewDetails();
-    }
-  }
-
-  getReviewByUser(userId:number, productId:number){
+  getAllReviewByUser(userId:number, productId:number, data:any){
     if(this.isLoggin){
-      this.productService.getReviewByIds(productId, userId).subscribe({
+      this.productService.getAllReviewByIds(productId, userId).subscribe({
         next: (res)=>{
           const result = res.result;
-          console.log(result);
-          if(result.length == 1){
-            this.reviewByUser = result[0];
-            this.setReviewForm("Update", result[0].productRate, result[0].review);
+          if(result.length > 0){
+            this.reviewByUser = result;
+            let totalRating = 0;
+            this.productReviews = data.map((review:any)=>{
+              totalRating += Number(review['productRate']);
+              review['isMyReview'] = (this.isIdExitsInReviewByUser(review['id']) > 0);
+              return review;
+            });  
+            this.avgRating = Math.floor((totalRating)/this.productReviews.length);      
           }else{
             this.reviewByUser = null;
-            this.setReviewForm("Submit", 0, '');
           }
         },
-        error(err) {
-          console.log(err);
+        error: (err) => {
+          this.toaster.showError(err.error.message,"ServerError");
         },
       });
+    }else{
+      this.reviewByUser = null;
     }
   }
 
@@ -417,11 +372,14 @@ export class ProductDetailesComponent implements OnInit {
       next: (res)=>{
         const result = res.result;
         if(result.length > 0){
-          this.productReviews = result;
+          this.getAllReviewByUser(this.userId, this.prdid, result);
+        }else{
+          this.productReviews = null;
+          this.avgRating = 0;
         }
       },
-      error(err) {
-        console.log(err);
+      error: (err) => {
+        this.toaster.showError(err.error.message,"ServerError");
       },
     });
   }
@@ -451,28 +409,52 @@ export class ProductDetailesComponent implements OnInit {
       this.getSizeByIds(this.product["productSizeIds"]);
       
     }, (err) => {
-      this.error = err;
+      this.toaster.showError(err.error.message,"ServerError");
     });
   }
 
   getSizeByIds(ids: string) {
-    console.log(ids);
     this.productService.getSizeByIds(ids).subscribe((res) => {
       this.sizes = res["result"];
       this.getColorByIds(this.product["productColorIds"]);
     }, (err) => {
-      this.error = err;
+      this.toaster.showError(err.error.message,"ServerError");
     });
   }
 
   getColorByIds(ids: string) {
-    console.log(ids);
     this.productService.getColorByIds(ids).subscribe((res) => {
       this.colors = res["result"];
       this.getCartItems();
     }, (err) => {
-      this.error = err;
+      this.toaster.showError(err.error.message,"ServerError");
     });
+  }
+
+  isIdExitsInReviewByUser(reviewId:number){
+    const reviews = this.reviewByUser?.filter((review:any)=>review.id==reviewId);
+    return reviews.length;
+  }
+
+  deleteReview(reviewId:number){
+    if(this.reviewByUser!=null && this.isIdExitsInReviewByUser(reviewId) > 0){
+      this.productService.deleteReview(reviewId).subscribe({
+        next: (res)=>{
+          if(res.error==''){
+            this.getAllReviewBy(this.prdid);
+            this.reviewForm.reset();
+            this.toaster.showSuccess("Your Review Deleted Successfully!!");
+          }else{
+            this.toaster.showError(res.error);
+          }
+        },
+        error: (err)=>{
+          this.toaster.showError(err.error.message,"ServerError");
+        }
+      });
+    }else{
+      this.toaster.showError("Invalid Request");
+    }
   }
 
   validateReview(){

@@ -40,8 +40,8 @@
             exit();
         }else if(isset($request->deleteReview) && isset($request->reviewId)){
             $id = (int) $request->reviewId;
-            $deleted = $obj->deleteReview($id);
-            echo json_encode(["isDelete"=>$deleted]);
+            $error = $obj->deleteReview($id) ? '' : 'Somthing went wrong while deleting!!';
+            echo json_encode(["error"=>$error]);
             exit();
         }else{
             http_response_code(404);

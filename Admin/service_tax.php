@@ -118,7 +118,6 @@ if (isset($_SESSION["result"])) {
                                                             <td><?= $tax["modifiedDate"] ?></td>
                                                             <td><?= $tax["createdDate"] ?></td>
                                                             <td class="action-btns">
-                                                                <a href="add_tax.php?edit=<?= $tax["id"] ?>" style="cursor: pointer;" class="edit-btn"><i class="fas fa-edit"></i></a>&nbsp;
                                                                 <a href="./handler/requestHandler.php?dTax=<?= $tax["id"] ?>" style="cursor: pointer;" class="edit-btn deleteRow"><i class="fas fa-trash"></i></a>
                                                             </td>
                                                         </tr>

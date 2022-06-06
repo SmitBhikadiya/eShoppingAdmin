@@ -11,8 +11,6 @@
 10. change password
 11. forgot password
 12. wishlist
-
-// remaining task
-1. newsletter - continue
-2. contact us
-3. about us
+13. newsletter
+14. contact us
+15. about us

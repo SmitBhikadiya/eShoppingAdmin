@@ -66,7 +66,7 @@ export class WishlistComponent implements OnInit {
           }
         },
         error: (err) => {
-          this.toaster.showError("Error: " + err, "ServerError");
+          this.toaster.showError(err.error.message,"ServerError");
         }
       });
     } else {
@@ -85,7 +85,7 @@ export class WishlistComponent implements OnInit {
         this.toaster.showError(res.error);
       }
     }, (err) => {
-      this.toaster.showError("Error: " + err, "ServerError");
+      this.toaster.showError(err.error.message,"ServerError");
     });
   }
 
@@ -99,7 +99,7 @@ export class WishlistComponent implements OnInit {
           this.toaster.showError(res.error);
         }
       }, (err) => {
-        this.toaster.showError("Error: " + err);
+        this.toaster.showError(err.error.message,"ServerError");
       });
     } else {
       $("#Login-popup").modal("show");
@@ -120,7 +120,7 @@ export class WishlistComponent implements OnInit {
         this.getWishList();
       },
       error: (err) => {
-        this.toaster.showError(err,"ServerError");
+        this.toaster.showError(err.error.message,"ServerError");
       }
     });
   }
@@ -136,7 +136,7 @@ export class WishlistComponent implements OnInit {
         }
       },
       error: (err) => {
-        this.toaster.showError(err, "ServerError");
+        this.toaster.showError(err.error.message,"ServerError");
       }
     });
   }

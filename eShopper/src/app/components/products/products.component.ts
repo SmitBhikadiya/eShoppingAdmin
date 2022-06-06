@@ -7,6 +7,7 @@ import { ISize } from 'src/app/interfaces/size';
 import { ISubCategory } from 'src/app/interfaces/subcategory';
 import { CategoryService } from 'src/app/services/category.service';
 import { CurrencyService } from 'src/app/services/currency.service';
+import { NotificationService } from 'src/app/services/notification.service';
 import { ProductService } from 'src/app/services/product.service';
 import { environment } from 'src/environments/environment';
 
@@ -41,6 +42,7 @@ export class ProductsComponent implements OnInit {
     private productService:ProductService, 
     private categoryService:CategoryService, 
     private router:Router,private route:ActivatedRoute,
+    private toaster:NotificationService,
     private currService:CurrencyService) {
     this.router.events.subscribe((ev) => {
       if (ev instanceof NavigationEnd) {
@@ -157,21 +159,19 @@ export class ProductsComponent implements OnInit {
       this.productService.getProducts(load, formvalues, this.sortby).subscribe((res)=>{
         this.products = res["result"];
       }, (err)=>{
-        this.error=err;
+        this.toaster.showError(err.error.message,"ServerError");
       });
     }else if(subcat==null){
       this.productService.getProductsByCatName(load, cat, formvalues, this.sortby).subscribe((res)=>{
         this.products = res["result"];
-        console.log(this.products);
       }, (err)=>{
-        this.error=err;
+        this.toaster.showError(err.error.message,"ServerError");
       });
     }else{
       this.productService.getProductsBySubCatName(load, cat, subcat, formvalues, this.sortby).subscribe((res)=>{
         this.products = res["result"];
-        console.log(this.products);
       }, (err)=>{
-        this.error=err;
+        this.toaster.showError(err.error.message,"ServerError");
       });
     }
   }
@@ -180,7 +180,7 @@ export class ProductsComponent implements OnInit {
     this.categoryService.getSubCategoryByCatName(this.category).subscribe((res)=>{
       this.subcategories = res["result"];
     }, (err)=>{
-      this.error = err;
+      this.toaster.showError(err.error.message,"ServerError");
     });
   }
 
@@ -188,7 +188,7 @@ export class ProductsComponent implements OnInit {
     this.productService.getColorsBy(this.category, this.subcategory).subscribe((res)=>{
       this.colors = res["result"];
     },(err)=>{
-      this.error = err;      
+      this.toaster.showError(err.error.message,"ServerError");    
     })
   }
 
@@ -196,7 +196,7 @@ export class ProductsComponent implements OnInit {
     this.productService.getSizesBy(this.category, this.subcategory).subscribe((res)=>{
       this.sizes = res["result"];
     },(err)=>{
-      this.error = err;      
+      this.toaster.showError(err.error.message,"ServerError");    
     })
   }
 

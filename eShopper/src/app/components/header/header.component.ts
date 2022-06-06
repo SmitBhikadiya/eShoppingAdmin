@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { debounce, debounceTime } from 'rxjs';
 import { ICategory } from 'src/app/interfaces/category';
 import { ISubCategory } from 'src/app/interfaces/subcategory';
 import { CartService } from 'src/app/services/cart.service';
@@ -17,17 +16,20 @@ declare let $: any;
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
 
   categories!: ICategory[];
   subcategories!: ISubCategory[];
   error!: string;
   username: any = '';
+  noImg:string = environment.IMAGES_SERVER_URL+"/noimage.jpg";
+  profileImg:string = this.noImg;
   isLoggin: boolean = false;
   cartItems = null;
   isCartVisisble: boolean = true;
   subTotal: any;
   currency = 'inr';
+  toggleCart = false;
   imgServerURL = environment.IMAGES_SERVER_URL;
 
   constructor(
@@ -44,6 +46,16 @@ export class HeaderComponent implements OnInit {
         this.currency = curr;
       });
 
+      userAuth.userData.subscribe((userData)=>{
+        const user = userData;
+        if(user.profile_image=='' || user.profile_image==undefined){
+          this.profileImg = this.noImg
+        }else{
+          this.profileImg = environment.IMAGES_SERVER_URL+"/profile/"+user.profile_image;
+        }
+        this.username = user.username;
+      });
+
       userAuth.isUserLoggedIn.subscribe((res)=>{
         if(res){
           const token = userAuth.getToken();
@@ -55,9 +67,15 @@ export class HeaderComponent implements OnInit {
             this.username = '';
             this.isLoggin = false;
           }
+        }else{
+          this.username = '';
+          this.isLoggin = false;
         }
       })
     }
+  ngOnDestroy() {
+    document.removeEventListener('click', this.listenCartPopup);
+  }
 
   ngOnInit(): void {
 
@@ -69,13 +87,25 @@ export class HeaderComponent implements OnInit {
     this.getCategory();
     this.isLoggin = this.userAuth.isLoggedIn();
     if (this.isLoggin) {
-      this.username = JSON.parse(this.userAuth.getToken()).user.username;
+      const user = JSON.parse(this.userAuth.getToken()).user;
+      this.username = user.username;
+      if(user.profile_image!=''){
+        this.profileImg = environment.IMAGES_SERVER_URL+"/profile/"+user.profile_image;
+      }
     } else {
       this.cartItems = null;
     }
+
+    document.addEventListener('click', this.listenCartPopup);
   }
 
-  currencyChange(val:string){
+  currencyChange(event:Event, val:string){
+    const anchor  = <HTMLElement>event.target;
+    const anchors = document.querySelectorAll(".dropdown-content.currency a");
+    anchors.forEach((anchor)=>{
+      anchor.classList.remove("active");
+    });
+    anchor.classList.add("active");
     if(val==='' || val==='inr'){
       this.currService.changeCurrency('inr');
     }else if(val==='usd'){
@@ -110,21 +140,24 @@ export class HeaderComponent implements OnInit {
 
   getCartItems() {
     const data = JSON.parse(this.userAuth.getToken());
-    if(data!=null){
-      this.cartService.getCartItems(data.user.id).subscribe((res) => {
-        this.cartItems = res["result"];        
-        this.subTotal = this.cartService.getSubTotal();
-        if (this.cartItems == '') {
-          this.cartItems = null;
-          this.subTotal = 0;
-        }
-        $(this).toggleClass("active");
-        $(".cart-wrap").slideToggle(500);
-      }, (err) => {
-        this.toast.showError("Error: "+err);
-      });
+    if(!this.toggleCart){
+      if(data!=null){
+        this.cartService.getCartItems(data.user.id).subscribe((res) => {
+          this.cartItems = res["result"];        
+          this.subTotal = this.cartService.getSubTotal();
+          if (this.cartItems == '') {
+            this.cartItems = null;
+            this.subTotal = 0;
+          }
+          this.toggleCart = !this.toggleCart;
+        }, (err) => {
+          this.toast.showError("Error: "+err);
+        });
+      }else{
+        $("#Login-popup").modal("show");
+      }
     }else{
-      $("#Login-popup").modal("show");
+      this.toggleCart = false;
     }
   }
 
@@ -144,5 +177,11 @@ export class HeaderComponent implements OnInit {
   searchGlobal(search:HTMLInputElement){
     this.router.navigate(['search']);
     this.productService.search.next(search.value);
+  }
+
+  listenCartPopup = (e:any)=>{
+    if(this.toggleCart){
+      this.toggleCart = false;
+    }
   }
 }

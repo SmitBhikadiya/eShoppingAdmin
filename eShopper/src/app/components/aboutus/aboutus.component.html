@@ -1,0 +1,36 @@
+<div class="title-block-outer">
+    <img src="../assets/images/inner-banner.jpg" alt="Banner-image" class="img-responsive" />
+    <div class="container title-block-container">
+        <h2>{{ 'AboutUs' }}</h2>
+    </div>
+</div>
+<div class="breadcrumb-panel">
+    <div class="container">
+        <ol class="breadcrumb">
+            <li><a [routerLink]="['/']" title="Home">Home</a></li>
+            <li class="active">About Us</li>
+        </ol>
+    </div>
+</div>
+
+    <section class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-9 about-us">
+                    <div [innerHTML]="content"></div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="promo-block">
+                        <a [routerLink]="['/product']" title="Promotion">
+                            <img src="../../../assets/images/promo1.jpg" class="img-responsive" alt="promo1.jpg">
+                        </a>
+                    </div>
+                    <div class="promo-block">
+                        <a [routerLink]="['/product']" title="Promotion">
+                            <img src="../../../assets/images/promo2.jpg" class="img-responsive" alt="promo1.jpg">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>

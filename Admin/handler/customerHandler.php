@@ -140,19 +140,26 @@ class CustomerHandler extends DBConnection
         return $records;
     }
 
-    function userRegister($username, $password, $firstname, $lastname, $gender, $mobile, $phone, $email){
+    function userRegister($username, $password, $firstname, $lastname, $gender, $mobile, $phone, $email, $image){
         $password = password_hash($password, PASSWORD_DEFAULT);
-        $sql = "INSERT INTO users (username, email, password, firstname, lastname, gender, mobile, phone, createdDate) VALUES ('$username', '$email', '$password', '$firstname', '$lastname', $gender, '$mobile', '$phone', now())";
-        $result = $this->getConnection()->query($sql);
-        if($result){
-            return [
-                    'id' => mysqli_insert_id($this->getConnection()),
-                    'username' => $username,
-                    'error' => ''
-            ];
+        $error = '';
+        if(count($this->getUserByUsername($username)) > 0){
+            $error = 'User is already exits with username "'.$username.'"';
+        }else if(count($this->getUserByEmail($email)) > 0){
+            $error = 'User is already exits with email "'.$email.'"';
+        }else{
+            $sql = "INSERT INTO users (username, email, password, firstname, lastname, gender, mobile, phone, profile_image, createdDate) VALUES ('$username', '$email', '$password', '$firstname', '$lastname', $gender, '$mobile', '$phone', '$image', now())";
+            $result = $this->getConnection()->query($sql);
+            if($result){
+                return [
+                        'id' => mysqli_insert_id($this->getConnection()),
+                        'username' => $username,
+                        'error' => $error
+                ];
+            }
         }
         return [
-            'error' => ''
+            'error' => $error
         ];
     }
 
@@ -275,9 +282,9 @@ class CustomerHandler extends DBConnection
         return false;
     }
 
-    function updateUser($id, $username, $firstname, $lastname, $gender, $mobile, $phone, $email){
+    function updateUser($id, $username, $firstname, $lastname, $gender, $mobile, $phone, $email, $image){
         $error = '';
-        $sql = "UPDATE users SET username='$username', firstname='$firstname', lastname='$lastname', email='$email', gender=$gender, mobile='$mobile', phone='$phone', modifiedDate=now() WHERE id=$id";
+        $sql = "UPDATE users SET username='$username', firstname='$firstname', lastname='$lastname', email='$email', gender=$gender, mobile='$mobile', phone='$phone', profile_image='$image', modifiedDate=now() WHERE id=$id";
         $result = $this->getConnection()->query($sql);
         if(!$result){
             $error = "Somthing went wrong with the $sql";

@@ -35,19 +35,17 @@ export class AddToCartBtnComponent implements OnInit {
         next: (res)=>{
           const data = res.result; 
           if(data.id!=undefined){
-            console.log("Increment Qty");
             this.increaseItemQty(data.id);
           }else{
-            console.log("New Add");
             this.addNewItemToCart(user.id);
           }
         },
         error: (err)=>{
-          this.toast.showError("Error: "+err);
+          this.toast.showError("Error: "+err.error.message);
         }
       });
     }else{
-      $("#Login-popup").modal("show");
+      this.toast.showWarning("You are not loggin!! do login first");
     }
   }
   
@@ -62,7 +60,7 @@ export class AddToCartBtnComponent implements OnInit {
           this.toast.showError(res.error);
         }
       },(err)=>{
-        this.toast.showError("Error: "+err);
+        this.toast.showError("Error: "+err.error.message);
       });
   }
 
@@ -76,11 +74,10 @@ export class AddToCartBtnComponent implements OnInit {
           this.toast.showError(res.error);
         }
       },(err)=>{
-        console.log(err);
-        this.toast.showError("Error: "+err);
+        this.toast.showError("Error: "+err.error.message);
       });
     }else{
-      $("#Login-popup").modal("show");
+      this.toast.showWarning("You are not loggin!! do login first");
     }
   }
 
@@ -96,7 +93,7 @@ export class AddToCartBtnComponent implements OnInit {
        }
        this.subTotal = this.currPipe.transform(this.subTotal, 'USD');
      }, (err) => {
-       console.log(err);
+        this.toast.showError(err.error.message, "ServerError");
      });
    }
 }

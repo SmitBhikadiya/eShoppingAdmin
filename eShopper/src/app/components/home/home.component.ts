@@ -5,6 +5,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { IProduct } from 'src/app/interfaces/product';
 import { ApplicationService } from 'src/app/services/application.service';
 import { CurrencyService } from 'src/app/services/currency.service';
+import { NotificationService } from 'src/app/services/notification.service';
 import { ProductService } from 'src/app/services/product.service';
 import { environment } from 'src/environments/environment';
 
@@ -17,7 +18,6 @@ export class HomeComponent implements OnInit {
 
   products!: IProduct[];
   ActProducts!: IProduct[];
-  error: string = '';
   imageURL = environment.IMAGES_SERVER_URL;
   defaultLoadProduct = 8;
   noImageURL = environment.IMAGES_SERVER_URL + "/noimage.jpg";
@@ -30,6 +30,7 @@ export class HomeComponent implements OnInit {
     private router: Router,
     private currService: CurrencyService,
     private appService:ApplicationService,
+    private toaster:NotificationService,
     private currPipe: CurrencyPipe
   ) {
 
@@ -53,7 +54,7 @@ export class HomeComponent implements OnInit {
     this.productService.getProducts(this.defaultLoadProduct, '', 'latest', '1').subscribe((res) => {
       this.products = res["result"];
     }, (err) => {
-      this.error = err;
+      this.toaster.showError(err.error.message,"ServerError");
     });
   }
 

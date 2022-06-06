@@ -12,4 +12,5 @@ export interface IUser{
     modifiedDate:string
     createdDate:string
     status:number
+    profile_image:string
 }

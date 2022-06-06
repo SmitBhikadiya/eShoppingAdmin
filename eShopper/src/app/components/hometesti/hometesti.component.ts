@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { OwlOptions } from 'ngx-owl-carousel-o';
 import { ApplicationService } from 'src/app/services/application.service';
+import { NotificationService } from 'src/app/services/notification.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -43,7 +44,8 @@ export class HometestiComponent implements OnInit {
   }
 
   constructor(
-    private appService:ApplicationService
+    private appService:ApplicationService,
+    private toaster:NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -62,10 +64,9 @@ export class HometestiComponent implements OnInit {
             }
           });
         }
-        console.log(this.testimonialData);
       },
       error: (err) =>{
-        console.log(123,err);
+        this.toaster.showError(err.error.message,"ServerError");
       }
     });
   }

@@ -4,7 +4,7 @@ $(document).ready(function(){
         if(!confirm("Are you sure you want to Delete?")){
             e.preventDefault();
         }
-    })
+    });
 
     $("#formSignin").on("submit", function(e){
         window.isValid = true;
@@ -12,6 +12,17 @@ $(document).ready(function(){
         $('.alert').remove();
         validateEmail("#email");
         validatePassword("#password");
+        if(!window.isValid){
+            e.preventDefault();
+        }
+    });
+
+    $("#formAddNewsletter").on("submit", function(e){
+        window.isValid = true;
+        $('.error').remove();
+        $('.alert').remove();
+        isFieldEmpty("#addTitle");
+        isFieldEmpty("#addDesc");
         if(!window.isValid){
             e.preventDefault();
         }

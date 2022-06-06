@@ -1,8 +1,7 @@
-<form>
+<form id="newsletterForm" [formGroup]='newsletterForm' (ngSubmit)="subscribeNewsletter()">
     <div class="form-group">
         <label>Subscribe for Newsletter</label>
-        <p class="thankyou-msg">Thank you for your subscription.</p>
-        <input type="text" class="form-control" placeholder="Enter your email address">
+        <input type="text" class="form-control" id="newsletter_email" placeholder="Enter your email address" formControlName="email">
     </div>
-    <button type="button" class="sign-up">sign up</button>
+    <button type="submit" class="sign-up">sign up</button>
 </form>

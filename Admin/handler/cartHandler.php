@@ -66,15 +66,28 @@ class CartHandler extends DBConnection
     function addToCart($prdId, $userId, $prdName, $colorId, $sizeId, $image, $unitPrize, $quantity, $subTotal){
         $error = "";
         if (!$this->isItemAddedAlready($prdId, $userId)) {
-            $sql = "INSERT INTO cart (productId, userId, productName, productColorId, productSizeId, productImage, unitPrize, quantity, subTotal, createdDate) VALUES ($prdId, $userId, '$prdName', $colorId, $sizeId, '$image', $unitPrize, $quantity, $subTotal , now())";
-            $result = $this->getConnection()->query($sql);
-            if (!$result) {
-                $error = "Somthing went wrong with the $sql";
+            if($this->checkProductStock($prdId, $userId)>0){
+                $sql = "INSERT INTO cart (productId, userId, productName, productColorId, productSizeId, productImage, unitPrize, quantity, subTotal, createdDate) VALUES ($prdId, $userId, '$prdName', $colorId, $sizeId, '$image', $unitPrize, $quantity, $subTotal , now())";
+                $result = $this->getConnection()->query($sql);
+                if (!$result) {
+                    $error = "Somthing went wrong with the $sql";
+                }
+            }else{
+                $error = 'Product is out of stock!!';
             }
         } else {
             $error = "Already added to cart!!";
         }
         return ["error"=>$error, "cartId"=>$this->getConnection()->insert_id];
+    }
+
+    function checkProductStock($prdId){
+        $sql = "SELECT products.totalQuantity FROM products WHERE products.id=$prdId AND products.status=0";
+        $result = $this->getConnection()->query($sql);
+        if ($result && $result->num_rows > 0) {
+            return $result->fetch_assoc()['totalQuantity'];
+        }
+        return 0;   
     }
 
     function updateCart($cartId, $colorId, $sizeId, $quantity, $subTotal){

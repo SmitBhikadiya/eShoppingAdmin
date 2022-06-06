@@ -103,10 +103,10 @@ export class ProductService {
 
   getReviewByProductId(productId:number){
     const getProReview = 'getProReview';
-    return this.http.post<any>(`${environment.API_SERVER_URL}/review.php`, {getProReview, productId}, {headers: this.header})
+    return this.http.post<any>(`${environment.API_SERVER_URL}/review.php`, {getProReview, productId}, {headers: this.header});
   }
 
-  getReviewByIds(productId:number, userId:number){
+  getAllReviewByIds(productId:number, userId:number){
     const getReview = 'getReview';
     return this.http.post<any>(`${environment.API_SERVER_URL}/review.php`, {getReview, productId, userId}, {headers: this.header})
   }

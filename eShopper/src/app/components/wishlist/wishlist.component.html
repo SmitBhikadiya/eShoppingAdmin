@@ -1,8 +1,19 @@
+<div class="title-block-outer">
+    <img src="../assets/images/inner-banner.jpg" alt="Banner-image" class="img-responsive" />
+    <div class="container title-block-container">
+      <h2>{{ 'WishList' }}</h2>
+    </div>
+  </div>
+  <div class="breadcrumb-panel">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li><a [routerLink]="['/']" title="Home">Home</a></li>
+        <li class="active">{{ 'WishList' }}</li>
+      </ol>
+    </div>
+  </div>
 <div class="container" style="margin-top: 35px; min-height: 100vh;">
     <div>
-        <div>
-            <h2 class="text-center">WishList Details</h2>
-        </div>
         <table class="table orderDetails">
             <thead>
                 <tr>
@@ -17,13 +28,13 @@
                 <tr *ngFor="let wish of wishlistData; let i = index" attr.data-toggle="collapse"
                     attr.data-target="#accordion{{ i }}" class="clickable">
                     <td>{{ i+1 }}</td>
-                    <th scope="row"><img src="{{ productBaseURL+'/product/'+((wish[0].productImages | strtoarray: ',')[0]) }}" width="80" height="80" alt=""></th>
+                    <th scope="row"><img src="{{ productBaseURL+'/product/'+((wish[0].productImages | strtoarray: ',')[0]) }}" width="60" height="60" alt=""></th>
                     <td><a [routerLink]="['/productInfo/' + wish[0]['productId']]" title="{{ wish[0].productName }}"
-                        class="heading" style="font-size: 18px;"><strong>{{ wish[0].productName }}</strong></a></td>
+                        class="heading">{{ wish[0].productName }}</a></td>
                     <td>{{ wish[0].productPrice | setCurr : currency }}</td>
                     <td>
-                        <a (click)="addToCart(wish[1])" style="cursor: pointer;"><img height="28" src="../../../assets/images/add-cart.png" alt=""></a>&nbsp;
-                        <a (click)="removeWish(wish[0].id)" style="cursor: pointer;"><img height="20" src="../../../assets/images/trash.png" alt=""></a>
+                        <a (click)="addToCart(wish[1])" style="cursor: pointer;"><img height="24" src="../../../assets/images/add-cart.png" alt=""></a>&nbsp;
+                        <a (click)="removeWish(wish[0].id)" style="cursor: pointer;"><img height="16" src="../../../assets/images/trash.png" alt=""></a>
                     </td>
                 </tr>
             </tbody>

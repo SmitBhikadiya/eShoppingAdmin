@@ -23,10 +23,10 @@
                             <div class="nav-container clearfix">
                                 <ul class="nav-menu menu clearfix">
                                     <li class="menu-item">
-                                        <a [routerLink]="['product/']" class="menu-link" title="Home">Home</a>
+                                        <a [routerLink]="['/']" class="menu-link" title="Home">Home</a>
                                     </li>
                                     <li class="menu-item" *ngFor="let cat of categories">
-                                        <a [routerLink]="['product/' + cat.catName]" class="menu-link"
+                                        <a [routerLink]="['product/' + cat.catName]" [routerLinkActive]="'active'" class="menu-link"
                                             (mouseover)="getSubCategory(cat.id)" title="{{ cat.catName }}">{{
                                             cat.catName }}</a>
                                         <ul class="sub-menu" *ngIf="subcategories?.length">
@@ -52,35 +52,49 @@
                             <li class="hidden-xs" *ngIf="isLoggin">
                                 <span><em>Welcome</em>, {{ username | filterString }}</span>
                             </li>
-                            <li *ngIf="isLoggin" class="login-link">
-                                <a title="Logout" style="cursor: pointer" (click)="userLogout()">Logout</a>
+                            <li>
+                                <div class="dropdown">
+                                    <button class="dropbtn">Manage&nbsp;<img width="14" style="padding-bottom: 2px"
+                                            src="../../../assets/images/angle-dwon.png" /></button>
+                                    <div class="dropdown-content">
+                                        <a *ngIf="isLoggin" [routerLink]="['/orders']" [routerLinkActive]="'active'" title="Orders History">Orders History</a>
+                                        <a [routerLink]="['/coupons']" title="coupons" [routerLinkActive]="'active'">Coupons</a>
+                                        <a *ngIf="isLoggin" [routerLink]="['/wishlist']" [routerLinkActive]="'active'" title="wishlist">WishList</a>
+                                    </div>
+                                </div>
                             </li>
                             <li>
                                 <div class="dropdown">
-                                    <button class="dropbtn">Manage&nbsp;<img width="14" style="padding-bottom: 2px" src="../../../assets/images/angle-dwon.png" /></button>
-                                    <div class="dropdown-content">
-                                      <a *ngIf="isLoggin" [routerLink]="['/profile']" title="My Profile">Profile</a>
-                                      <a *ngIf="isLoggin" [routerLink]="['/orders']" title="Orders">Orders</a>
-                                      <a *ngIf="isLoggin" data-dismiss="modal" data-toggle="modal" data-target="#changepassword-popup" title="Change Password" style="cursor: pointer;">Change Password</a>
-                                      <a [routerLink]="['/coupons']" title="coupons">Coupons</a>
-                                      <a *ngIf="isLoggin" [routerLink]="['/wishlist']" title="wishlist">WishList</a>
+                                    <button class="dropbtn">Currencies&nbsp;<img width="14" style="padding-bottom: 2px"
+                                            src="../../../assets/images/angle-dwon.png" /></button>
+                                    <div class="dropdown-content currency">
+                                        <a (click)="currencyChange($event,'inr')" class="active">INR</a>
+                                        <a (click)="currencyChange($event,'usd')">USD</a>
+                                        <a (click)="currencyChange($event,'eur')">EUR</a>
                                     </div>
-                                  </div>
+                                </div>
                             </li>
-                            <li>
+                            <li *ngIf="isLoggin" style="padding: 0;">
                                 <div class="dropdown">
-                                    <button class="dropbtn">Currencies&nbsp;<img width="14" style="padding-bottom: 2px" src="../../../assets/images/angle-dwon.png" /></button>
+                                    <button class="dropbtn" style="padding: 0; width: 70px; height: 40px;">
+                                        <!-- <div class="user-profile"></div> -->
+                                        <img [src]="profileImg" width="40" height="40" style="border: 1px solid rgba(0, 0, 0, 0.276); border-radius: 50px;">
+                                        <img width="14" style="padding-bottom: 2px; margin-left:2px;"
+                                            src="../../../assets/images/angle-dwon.png" />
+                                    </button>
                                     <div class="dropdown-content">
-                                        <a style="cursor: pointer" (click)="currencyChange('inr')">INR</a>
-                                        <a style="cursor: pointer" (click)="currencyChange('usd')">USD</a>
-                                        <a style="cursor: pointer" (click)="currencyChange('eur')">EUR</a>
+                                        <a *ngIf="isLoggin" [routerLink]="['/profile']" [routerLinkActive]="'active'" title="My Profile">Profile</a>
+                                        <a *ngIf="isLoggin" data-dismiss="modal" data-toggle="modal"
+                                            data-target="#changepassword-popup" title="Change Password"
+                                            style="cursor: pointer;">Change Password</a>
+                                        <a title="Logout" style="cursor: pointer" (click)="userLogout()">Logout</a>
                                     </div>
-                                  </div>
+                                </div>
                             </li>
                             <li *ngIf="isCartVisisble" class="cart-outer" id="cart-outer">
                                 <a title="Add to Cart" style="cursor: pointer" class="add-to-cart"
                                     (click)="getCartItems()"></a>
-                                <div class="cart-wrap">
+                                <div class="cart-wrap" [ngClass]="{'active':toggleCart}">
                                     <p>Recently added item(s)</p>
                                     <ul *ngIf="cartItems != null; else noitem">
                                         <li *ngFor="let item of cartItems">
@@ -138,7 +152,9 @@
                             <li class="search-link-wrap">
                                 <div class="search-link-outer">
                                     <div class="search-link clearfix">
-                                        <input type="text" class="form-control" placeholder="Search Products by name, category, subcategory" #search (keyup)="searchGlobal(search)" />
+                                        <input type="text" class="form-control"
+                                            placeholder="Search Products by name, category, subcategory" #search
+                                            (keyup)="searchGlobal(search)" />
                                         <a href="#" title="Search"><i><img src="../assets/images/search.svg"
                                                     alt="Search" /></i></a>
                                     </div>

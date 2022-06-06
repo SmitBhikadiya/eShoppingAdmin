@@ -5,9 +5,9 @@ class AdminUser extends DBConnection
     public $error = '';
     function signIn($email, $pass)
     {
-        $sql = "SELECT * FROM adminuser WHERE email='$email'";
+        $sql = "SELECT * FROM adminuser WHERE email='$email' AND status=0";
         $result = $this->getConnection()->query($sql);
-        if ($result->num_rows > 0) {
+        if ($result && $result->num_rows > 0) {
             $user = $result->fetch_assoc();
             if (password_verify($pass, $user["password"])) {
                 if (isset($_POST["remember"])) {
@@ -23,6 +23,18 @@ class AdminUser extends DBConnection
             $this->error = "User is not exits!!!";
         }
         return $this->error;
+    }
+
+    function getAdminEmails(){
+        $emails = [];
+        $sql = "SELECT email FROM adminuser WHERE status=0";
+        $res = $this->getConnection()->query($sql);
+        if($res && $res->num_rows > 0){
+            while($row = $res->fetch_assoc()){
+                array_push($emails, $row['email']);
+            }
+        }
+        return $emails;
     }
 
     function setUserCookie($email, $pass)

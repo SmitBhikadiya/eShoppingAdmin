@@ -1,3 +1,19 @@
+
+<div class="title-block-outer">
+    <img src="../assets/images/inner-banner.jpg" alt="Banner-image" class="img-responsive" />
+    <div class="container title-block-container">
+      <h2>{{ 'Order Invoice' }}</h2>
+    </div>
+  </div>
+  <div class="breadcrumb-panel">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li><a [routerLink]="['/']" title="Home">Home</a></li>
+        <li><a [routerLink]="['/orders']" title="Home">Orders History</a></li>
+        <li class="active">{{ 'Order Invoice' }}</li>
+      </ol>
+    </div>
+  </div>
 <div class="container" style="margin-top: 3%">
     <div class="row" id="invoice">
         <div class="col-xl-12 col-md-12">
@@ -11,7 +27,7 @@
                             <div class="ordr-date">
                                 <i style="font-size: 18px; font-weight: 500;">Order Details :</i><br />
                                 <span>OrderId : {{ orderData.orderData.id }}</span> <br />
-                                <span>OrderStatus : <strong>{{ (orderData.orderData.orderStatus==0) ? 'New' : (orderData.orderData.id==1 ? 'Delivered' : (orderData.orderData.id==2 ? 'Cancelled' : 'Not Found')) }}</strong></span> <br />
+                                <span>OrderStatus : <strong>{{ (orderData.orderData.orderStatus==0) ? 'New' : (orderData.orderData.orderStatus==1 ? 'Delivered' : (orderData.orderData.orderStatus==2 ? 'Cancelled' : 'Not Found')) }}</strong></span> <br />
                                 <span>Order Date : {{ orderData.orderData.createdDate }}</span><br />
                                 <span>User Name : {{ orderData.orderData.username }}</span><br />
                                 <span>User Mobile : {{ orderData.orderData.mobile }}</span><br />

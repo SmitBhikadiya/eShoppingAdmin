@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { IUser } from '../interfaces/user';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,7 @@ import { environment } from 'src/environments/environment';
 export class UserAuthService {
   logincred!: any;
   isUserLoggedIn = new Subject<boolean>();
+  userData = new Subject<IUser>();
   constructor(private http: HttpClient) { }
 
   userLogin(loginCred: any) {
@@ -155,9 +157,9 @@ export class UserAuthService {
   }
 
   logout() {
-    this.isUserLoggedIn.next(false);
     this.deleteToken();
     this.stopRefreshToken();
+    this.isUserLoggedIn.next(false);
   }
 
   isLoggedIn() {

@@ -92,6 +92,7 @@ if (isset($_SESSION["result"])) {
 											<thead>
 												<tr>
 													<th style="width:60px">ID</th>
+													<th>Profile</th>
 													<th>UserName</th>
 													<th>Email</th>
 													<th>Created Date</th>
@@ -107,6 +108,17 @@ if (isset($_SESSION["result"])) {
 												?>
 														<tr>
 															<td><?= $cust["id"] ?></td>
+															<td>
+																<div class="shop_img">
+																	<?php
+																		$image = './images/noimage.jpg';
+																		if($cust['profile_image']!=''){
+																			$image = './images/profile/'.$cust['profile_image'];
+																		}
+																	?>
+                                            						<img src="<?=$image?>" width='88' height='88' alt="">
+                                        						</div>
+															</td>
 															<td><?= $cust["username"] ?></a></td>
 															<td><?= $cust["email"] ?></td>
 															<td><?= $cust["modifiedDate"] ?></td>

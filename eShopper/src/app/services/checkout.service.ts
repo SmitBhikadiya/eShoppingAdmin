@@ -13,8 +13,8 @@ export class CheckoutService {
     private http:HttpClient
   ) { }
 
-  getCheckOutSession(cartData:any, couponData:any, taxData:any, userId:any){
-    let cartDetailes = {cartData, couponData, taxData, userId};
+  getCheckOutSession(cartData:any, couponData:any, taxData:any, userId:any, currency:string){
+    let cartDetailes = {cartData, couponData, taxData, userId, currency};
     return this.http.post<any>(`${environment.API_STRIPE_PAYMENT_URL}/checkout_session.php`, {cartDetailes}, {headers:this.header_});
   }
 }

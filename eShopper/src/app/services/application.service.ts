@@ -20,4 +20,12 @@ export class ApplicationService {
   getBanners(){
     return this.http.post<any>(`${environment.API_SERVER_URL}/banner.php`, { getBanners:'getBanners'}, {headers: this.header});
   }
+
+  getAboutUs(){
+    return this.http.post<any>(`${environment.API_SERVER_URL}/aboutus.php`, { aboutus:'aboutus'}, {headers: this.header});
+  }
+
+  contactUs(name:string, subject:string, email:string, message:string){
+    return this.http.post<any>(`${environment.API_SERVER_URL}/contactus.php`, { contactus:'contactus', name, email, subject, message}, {headers: this.header});
+  }
 }

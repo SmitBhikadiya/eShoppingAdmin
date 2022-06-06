@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { CustomValidation } from 'src/app/customValidation';
 import { NotificationService } from 'src/app/services/notification.service';
 import { UserAuthService } from 'src/app/services/user-auth.service';
@@ -20,12 +21,15 @@ export class ForgotpasswordComponent implements OnInit, OnDestroy {
   email = '';
   otpVerify = false;
   spinnerDisplay = false;
+  otpVerifyTitle = 'OTP Verify';
 
   constructor(
     private userAuth: UserAuthService,
     private toaster: NotificationService,
+    private spinnerService: NgxSpinnerService,
     private router: Router,
-    private builder: FormBuilder) {
+    private builder: FormBuilder
+    ) {
 
     this.isLoggin = userAuth.isLoggedIn();
 
@@ -54,26 +58,29 @@ export class ForgotpasswordComponent implements OnInit, OnDestroy {
   }
 
   validateOTP(){
-    $("#otp").css("pointer-events", "auto");
+    this.spinnerService.show("otpverify");
     const email = this.validateOTPForm.controls['email'].value;
     const otp = this.validateOTPForm.controls['otp'].value;
     const newpassword = this.validateOTPForm.controls['newpassword'].value;
     const repassword = this.validateOTPForm.controls['repassword'].value;
-    if( this.validateOTPVerifyForm() && otp!='' && email!='' && !this.otpVerify && newpassword=='' && repassword==''){
+    if( !this.otpVerify && this.validateOTPVerifyForm() && otp!='' && email!='' && newpassword=='' && repassword==''){
       this.userAuth.verifyOTP(otp, email).subscribe({
         next: (res) => {
           if(res.error == ''){
             this.otpVerify = true;
-            $("#otp").css("pointer-events", "none");
+            this.otpVerifyTitle = 'Change Password';
+            this.clearOTPInterval();
             this.setOTPForm(this.email, otp, '', '', 'Submit');
           }else{
             this.otpVerify = false;
-            $("#otp").css("pointer-events", "auto");
             this.toaster.showError(res.error);
           }
+          this.spinnerService.hide("otpverify");
         }, 
         error: (err) => {
+          this.toaster.showError(err.error.message,"ServerError");
           this.otpVerify = false;
+          this.spinnerService.hide("otpverify");
         }
       });
     }else if( this.validatePassowrdUpdateForm() && otp!='' && email!='' && this.otpVerify && newpassword!='' && repassword!=''){
@@ -81,17 +88,21 @@ export class ForgotpasswordComponent implements OnInit, OnDestroy {
         next: (res)=>{
           if(res.error==''){
             this.setAllDefault();
-            $("#newpassword-popup").modal("hide");
-            $("#Login-popup").modal("show");
+            document.getElementById("newpassword-popup")?.click();
+            document.getElementById("Login-popup")?.click();
             this.toaster.showSuccess("Password has been changed successfully!!!");
           }else{
             this.toaster.showError(res.error);
           }
+          this.spinnerService.hide("otpverify");
         },
         error: (err)=>{
-          this.toaster.showError(err,"ServerError");
+          this.spinnerService.hide("otpverify");
+          this.toaster.showError(err.error.message,"ServerError");
         }
       });
+    }else{
+      this.spinnerService.hide("otpverify");
     }
   }
 
@@ -99,8 +110,7 @@ export class ForgotpasswordComponent implements OnInit, OnDestroy {
    this.clearOTPInterval();
    this.otpVerify = false;
    this.validateOTPForm.reset();
-   $("#btn_otpgenerator").css('pointer-events', 'none');
-   $("#otp").css('pointer-events', 'auto');
+   this.spinnerService.show("btn_otpgenerator");
    let email = this.generateOTPForm.controls['email'].value;
     if(this.validateGenerateOTPForm()){
       this.userAuth.forgotPassword(email).subscribe({
@@ -109,22 +119,23 @@ export class ForgotpasswordComponent implements OnInit, OnDestroy {
            this.email = email;
            this.setTimer(res.expiry);
            this.setOTPForm(this.email, '', '', '', 'Verify');
-           $("#forgotpassword-popup").modal('hide');
-           $("#newpassword-popup").modal('show');
-           $("#btn_otpgenerator").css('pointer-events', 'auto');
+            document.getElementById("forgotpassword-popup")?.click();
+            document.getElementById("newpassword-popup")?.click();
            this.toaster.showSuccess("OTP has been send to your mail successfully!!");
          }else{
            this.email = '';
            this.toaster.showError(res.error);
-           $("#btn_otpgenerator").css('pointer-events', 'auto');
          }
+         this.spinnerService.hide("btn_otpgenerator");
         },
         error: (err)=>{
          this.email = '';
-         this.toaster.showError(err, 'ServerError');
-         $("#btn_otpgenerator").css('pointer-events', 'auto');
+         this.toaster.showError(err.error.message,"ServerError");
+         this.spinnerService.hide("btn_otpgenerator");
         }
       });
+    }else{
+      this.spinnerService.hide("btn_otpgenerator");
     }
   }
 
@@ -142,8 +153,8 @@ export class ForgotpasswordComponent implements OnInit, OnDestroy {
         $("#expiryIn").html( ("0"+parseInt((diff_in_seconds/60).toString())).slice(-2) + ':' + ("0"+parseInt((diff_in_seconds%60).toString())).slice(-2) );
       }else{
         this.toaster.showWarning("OTP has been expired!!!");
-        $("#newpassword-popup").modal("hide");
-        $("#forgotpassword-popup").modal("show");
+        document.getElementById("newpassword-popup")?.click();
+        document.getElementById("forgotpassword-popup")?.click();
         this.setAllDefault();
       }
     }, 1000);
@@ -160,8 +171,19 @@ export class ForgotpasswordComponent implements OnInit, OnDestroy {
     this.otpVerify = false;
     this.spinnerDisplay = false;
     this.clearOTPInterval();
-    $("#btn_otpgenerator").css('pointer-events', 'auto');
-    $("#otp").css('pointer-events', 'auto');
+    this.otpVerifyTitle = 'OTP Verify';
+  }
+
+  toggleEye(event:Event, loginpass:HTMLInputElement){
+    const inputElem = loginpass;
+    const imgElem = <HTMLElement>event.target;
+    if(inputElem.getAttribute('type')=='password'){
+        inputElem.setAttribute('type', 'text');
+        imgElem.setAttribute('src', '../../../assets/images/eye-solid.svg');
+    }else{
+        inputElem.setAttribute('type', 'password');
+        imgElem.setAttribute('src', '../../../assets/images/eye-slash-solid.svg');
+    }
   }
 
   validateGenerateOTPForm(){
@@ -186,7 +208,6 @@ export class ForgotpasswordComponent implements OnInit, OnDestroy {
 
   validatePassowrdUpdateForm(){
     $(".spanError").remove();
-    this.validator.isNumberValid("#otp", /^[0-9]{6}$/);
     this.validator.isPasswordValid("#otpnewpassword");
     this.validator.isPasswordValid("#otprepassword");
     this.validator.isPasswordMatched("#otpnewpassword", "#otprepassword");
@@ -198,7 +219,6 @@ export class ForgotpasswordComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() : void{
-    //console.log("Ng Destroy Called");
     this.setAllDefault();
   }
 

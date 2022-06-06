@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CustomValidation } from 'src/app/customValidation';
@@ -7,7 +7,9 @@ import { ICountry } from 'src/app/interfaces/country';
 import { IState } from 'src/app/interfaces/state';
 import { IUser } from 'src/app/interfaces/user';
 import { AddressService } from 'src/app/services/address.service';
+import { NotificationService } from 'src/app/services/notification.service';
 import { UserAuthService } from 'src/app/services/user-auth.service';
+import { environment } from 'src/environments/environment';
 declare let $: any;
 
 @Component({
@@ -22,6 +24,7 @@ export class ProfileComponent implements OnInit {
   tempShipping!: any;
   shipDisabled = false;
   loaded!: Promise<Boolean>;
+  @ViewChild('profile') profileElem!: HTMLInputElement;
   message: { msg: string, isError: boolean, color: string, image: string } = { msg: '', isError: false, color: 'success', image: 'success.svg' };
   user!: IUser;
   bcities!: ICity[];
@@ -29,12 +32,15 @@ export class ProfileComponent implements OnInit {
   bstates!: IState[];
   sstates!: IState[];
   countries!: ICountry[];
+  noImg:string = environment.IMAGES_SERVER_URL+"/noimage.jpg";
+  imageSrc:string = this.noImg;
   profileForm!: FormGroup;
   validator = new CustomValidation();
   constructor(
     private userAuth: UserAuthService,
     private router:Router, 
     private builder: FormBuilder, 
+    private toaster: NotificationService,
     private addressService: AddressService
   ) {
     userAuth.isUserLoggedIn.subscribe((res)=>{
@@ -54,6 +60,8 @@ export class ProfileComponent implements OnInit {
       lastname: [''],
       mobile: [''],
       phone: [''],
+      oldprofile: [''],
+      newprofile: [''],
       shipping: this.builder.group({
         streetname: [''],
         country: [0],
@@ -82,6 +90,8 @@ export class ProfileComponent implements OnInit {
       formData.append("mobile", this.profileForm.controls["mobile"].value);
       formData.append("gender", this.profileForm.controls["gender"].value);
       formData.append("phone", this.profileForm.controls["phone"].value);
+      formData.append("oldprofile", this.profileForm.controls["oldprofile"].value);
+      formData.append("newprofile", this.profileForm.controls["newprofile"].value);
       formData.append("bstreetname", this.profileForm.get(["billing", "streetname"])?.value);
       formData.append("bcountry", this.profileForm.get(["billing", "country"])?.value);
       formData.append("bstate", this.profileForm.get(["billing", "state"])?.value);
@@ -114,6 +124,7 @@ export class ProfileComponent implements OnInit {
     let token = JSON.parse(this.userAuth.getToken());
     let userToken = token.user;
     let user = userdetailes["user"];
+    this.userAuth.userData.next(user);
     userToken.username = user["username"];
     userToken.gender = user["gender"];
     userToken.email = user["email"];
@@ -122,6 +133,7 @@ export class ProfileComponent implements OnInit {
     userToken.mobile = user["mobile"];
     userToken.phone = user["phone"];
     token.user = userToken;
+    userToken.profile_image = user["profile_image"];
     this.userAuth.setToken(JSON.stringify(token));
   }
 
@@ -153,14 +165,38 @@ export class ProfileComponent implements OnInit {
 
   getUserDetailes() {
     const token = JSON.parse(this.userAuth.getToken());
-    this.userAuth.getUserDetailesByUsername(token.user.username).subscribe((res) => {
+    this.userAuth.getUserDetailesByUsername(token.user.username).subscribe({
+      next: (res) => {
       console.log(res["result"]);
       this.user = res["result"].user;
       this.billing = res["result"].billing;
       this.shipping = res["result"].shipping;
       this.setDefaultResponce();
       this.loaded = Promise.resolve(true);
+    }, error: (err) => {
+      this.toaster.showError(err.error.message,"ServerError");
+    }
     });
+  }
+
+  onProfileChange(e:any){
+    if(e.target.files.length > 0){
+      const file = e.target.files[0];
+      const reader:any = new FileReader();
+      reader.onload = (e:any) => {
+        this.imageSrc = e.target.result;
+      };
+      reader.readAsDataURL(file);
+      this.profileForm.patchValue({
+        newprofile: file,
+        oldprofile: this.user.profile_image
+      });
+    }else{
+      this.profileForm.patchValue({
+        profile: ''
+      });
+      this.imageSrc = this.noImg;
+    }
   }
 
   setDefaultResponce() {
@@ -172,6 +208,12 @@ export class ProfileComponent implements OnInit {
     this.profileForm.controls["lastname"].setValue(this.user.lastname);
     this.profileForm.controls["phone"].setValue(this.user.phone);
     this.profileForm.controls["mobile"].setValue(this.user.mobile);
+    this.profileForm.controls["oldprofile"].setValue(this.user.profile_image);
+    if(this.user.profile_image=='' || this.user.profile_image==undefined){
+      this.imageSrc = this.noImg;
+    }else{
+      this.imageSrc = environment.IMAGES_SERVER_URL+'/profile/'+this.user.profile_image;
+    }
     if (Object.entries(this.billing).length != 0) {
       this.getStatesByCountryId(this.billing.countryId, 0);
       this.getCitiesByStateId(this.billing.stateId, 0);
@@ -191,8 +233,13 @@ export class ProfileComponent implements OnInit {
   }
 
   getCountries() {
-    this.addressService.getCountry().subscribe((res) => {
+    this.addressService.getCountry().subscribe({
+      next: (res) => {
       this.countries = res["result"];
+      },
+      error: (err) => {
+        this.toaster.showError(err.error.message,"ServerError");
+      }
     });
   }
 
@@ -212,7 +259,8 @@ export class ProfileComponent implements OnInit {
   }
 
   getStatesByCountryId(id: number, type: number) {
-    this.addressService.getStatesByCountryId(id).subscribe((res) => {
+    this.addressService.getStatesByCountryId(id).subscribe({
+      next: (res) => {
       if (type == 0) {
         this.bstates = res["result"];
         this.bcities = [];
@@ -220,19 +268,23 @@ export class ProfileComponent implements OnInit {
         this.sstates = res["result"];
         this.scities = [];
       }
-      console.log(res["result"]);
-    });
+    },error: (err) => {
+      this.toaster.showError(err.error.message,"ServerError");
+    }
+  });
   }
 
   getCitiesByStateId(id: number, type: number) {
-    this.addressService.getCitiesByStateId(id).subscribe((res) => {
+    this.addressService.getCitiesByStateId(id).subscribe({
+      next: (res) => {
       if (type == 0) {
         this.bcities = res["result"];
       } else {
         this.scities = res["result"];
       }
-      console.log(res["result"]);
-    });
+    }, error: (err) => {
+      this.toaster.showError(err.error.message,"ServerError");
+    }});
   }
 
   checkBillingFormValidate() {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { CouponService } from 'src/app/services/coupon.service';
 import { CurrencyService } from 'src/app/services/currency.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-coupons',
@@ -18,6 +19,7 @@ export class CouponsComponent implements OnInit {
   constructor(
     private currService:CurrencyService,
     private couponService:CouponService,
+    private toaster:NotificationService,
     private router:Router
   ) {
 
@@ -45,10 +47,9 @@ export class CouponsComponent implements OnInit {
         if(result.length > 0){
           this.availableCoupons = result;
         }
-        console.log(123, this.availableCoupons); 
       },
       error: (err)=>{
-        console.log(err.error);
+        this.toaster.showError(err.error.message,"ServerError");
       }
     });
   }
@@ -58,11 +59,10 @@ export class CouponsComponent implements OnInit {
         const result = res.result;
         if(result.length > 0){
           this.expiredCoupons = result;
-        }
-        console.log(123, this.expiredCoupons); 
+        } 
       },
       error: (err)=>{
-        console.log(err.error);
+        this.toaster.showError(err.error.message,"ServerError");
       }
     });
   }

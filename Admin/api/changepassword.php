@@ -60,7 +60,7 @@
         </div>
         ";
 
-        $res = sendmail($email, 'Reset Password', $body);
+        $res = sendmail([$email], 'Reset Password', $body);
 
         if($res['isError']){
             $error = $res['message'];

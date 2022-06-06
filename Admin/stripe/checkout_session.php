@@ -26,6 +26,7 @@ if (isset($postdata) && !empty($postdata)) {
     $stripe = new \Stripe\StripeClient(
       'sk_test_51KwIFNSH3d6vW3Ey12LxVuoYreQZgsLcOsLCUqtOttx6XZxqStyLyUw8fytC7yZixdd9ST8oZRG2hFMJxMCcY32r00OIDPZLYI'
     );
+    $currency = 'inr';
     if(isset($request->cartDetailes->cartData)){
       $cartData = (array) $request->cartDetailes->cartData;
       $cartErrors = checkItemAvailablity($cartData);
@@ -49,6 +50,10 @@ if (isset($postdata) && !empty($postdata)) {
             $couponStripeId = $couponData["stripeId"];
           }
         }
+
+        if(isset($request->cartDetailes->currency)){
+          $currency = strtolower($request->cartDetailes->currency);
+        }
       }
     }
     if(count($cartErrors) > 0 || count($taxErrors) > 0 || count($taxErrors) > 0){
@@ -59,7 +64,6 @@ if (isset($postdata) && !empty($postdata)) {
       ];
     }else if(isset($request->cartDetailes->userId)){
       $userId = $request->cartDetailes->userId;
-      $currency = 'INR';
       $subTotal = countSubTotal($cartData);
       $tax = ($subTotal - $discount) * ($taxPercentage/100);
       $total = $subTotal + $tax - $discount;
@@ -72,8 +76,6 @@ if (isset($postdata) && !empty($postdata)) {
         try{
           $session = getCheckoutSession($stripe, $cartData, $subTotal, $total, $userId, $currency, $domain, $couponStripeId, $taxStripeId, $orderId );
           $err = $orderH->updateOrderSession($orderId, $session['id']);
-          // echo json_encode([$session, $err]);
-          // exit();
           if($err!=''){
             $errors["orderErrors"] = ["order"=>$err];
           }
@@ -168,9 +170,11 @@ function getLineItems($cartItems, $taxStripeId){
 }
 
 function getCheckoutSession($stripe, $cartItems, $subTotal, $total, $customerId, $currency, $domain, $couponStripeId, $taxStripeId, $orderId){
+  $sucessURL = $domain . "/success/order_" . $orderId . "/user_" . $customerId;
+  $cancelledURL = $domain . "/cancelled/order_". $orderId. "/user_" . $customerId;
   $config = [
-    'success_url' => $domain . "/success/" . $orderId,
-    'cancel_url' => $domain . "/cancelled/" . $orderId,
+    'success_url' => $sucessURL,
+    'cancel_url' => $cancelledURL,
     'line_items' => getLineItems($cartItems, $taxStripeId),
     'mode' => 'payment',
     'metadata' => [
@@ -184,6 +188,7 @@ function getCheckoutSession($stripe, $cartItems, $subTotal, $total, $customerId,
   ];
 
   if($couponStripeId!=''){
+    $config['success_url'] = $sucessURL . "/coupon_" . $couponStripeId;
     $config['discounts'] =  [['coupon' => $couponStripeId]];
   }
 

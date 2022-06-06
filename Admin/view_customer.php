@@ -78,7 +78,7 @@ if (isset($_SESSION["result"])) {
                                 <div class="card-body-table">
                                     <div class="shopowner-content-left text-center pd-20">
                                         <div class="shop_img mb-3">
-                                            <img src="images/avatar/img-1.jpg" alt="">
+                                            <img src="./images/profile/<?=$cust['profile_image']?>" width='88' height='88' alt="">
                                         </div>
                                         <div class="shopowner-dt-left">
                                             <h4>Customer View</h4>

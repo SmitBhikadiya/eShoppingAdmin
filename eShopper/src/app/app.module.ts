@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -43,6 +43,11 @@ import { LoginComponent } from './components/login/login.component';
 import { ChangepasswordComponent } from './components/changepassword/changepassword.component';
 import { ForgotpasswordComponent } from './components/forgotpassword/forgotpassword.component';
 import { NewsletterComponent } from './components/newsletter/newsletter.component';
+import { AboutusComponent } from './components/aboutus/aboutus.component';
+import { ContactusComponent } from './components/contactus/contactus.component';
+import { PaymentSuccessComponent } from './components/payment-success/payment-success.component';
+import { NgImageSliderModule } from 'ng-image-slider';
+import { NgxSpinnerModule } from 'ngx-spinner';
 @NgModule({
   declarations: [
     AppComponent,
@@ -71,6 +76,9 @@ import { NewsletterComponent } from './components/newsletter/newsletter.componen
     ChangepasswordComponent,
     ForgotpasswordComponent,
     NewsletterComponent,
+    AboutusComponent,
+    ContactusComponent,
+    PaymentSuccessComponent,
   ],
   imports: [
     BrowserModule,
@@ -80,6 +88,8 @@ import { NewsletterComponent } from './components/newsletter/newsletter.componen
     ReactiveFormsModule,
     CarouselModule,
     BrowserAnimationsModule,
+    NgImageSliderModule,
+    NgxSpinnerModule,
     ToastrModule.forRoot()
   ],
   providers: [
@@ -94,6 +104,7 @@ import { NewsletterComponent } from './components/newsletter/newsletter.componen
       provide: HTTP_INTERCEPTORS,useClass: AuthInterceptorService, multi: true 
     },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

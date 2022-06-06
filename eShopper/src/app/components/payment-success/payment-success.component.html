@@ -1,0 +1,19 @@
+
+<div class="success-div">
+  <div class="card">
+  <div style="border-radius:200px; height:200px; width:200px; background: #F8FAF5; margin:0 auto;">
+    <i class="checkmark" *ngIf="isSuccess">✓</i>
+    <i class="checkmark" *ngIf="!isSuccess">X</i>
+  </div>
+    <h1 *ngIf="isSuccess">Success</h1> 
+    <h1 *ngIf="!isSuccess">Order Cancelled</h1> 
+    <p *ngIf="isSuccess">Your payment done successfully!!!</p>
+    <p *ngIf="!isSuccess">Your payment has been cancelled!!!</p>
+    <div class="visitlink">
+        <a [routerLink]="['/']" title="Continue Shopping" class="btn-tertiary">Continue
+            Shopping</a>
+        <a [routerLink]="['/orders']" title="Orders History" class="btn-tertiary" style="margin-left: 5px;">Order's History</a>
+    </div>
+  </div>
+ <ngx-spinner name="payment" template="<img src='../../../assets/images/spinner.gif' />" type="ball-spin-clockwise" size="medium"></ngx-spinner>
+</div>

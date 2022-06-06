@@ -22,7 +22,6 @@ export class CartService {
     const data = {userId};
     return this.http.post<any>(`${this.api_url}/cart.php`, data, {headers:this.header_}).pipe(map((res: any) => {
       if(res!=undefined && res.result!=''){
-        console.log("Getting Cart Items");
         this.calculateSubTotal(res.result);
         this.cartItemSubject.next({cartItems:res.result, subTotal: this.subtotal});
       }

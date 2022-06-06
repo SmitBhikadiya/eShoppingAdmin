@@ -35,22 +35,6 @@ class TaxHandler extends DBConnection
         );
     }
 
-    function updateTaxAPI($tax, $taxStripeId, $country, $state){
-        include '../vendor/autoload.php';
-        $stripe = new \Stripe\StripeClient('sk_test_51KwIFNSH3d6vW3Ey12LxVuoYreQZgsLcOsLCUqtOttx6XZxqStyLyUw8fytC7yZixdd9ST8oZRG2hFMJxMCcY32r00OIDPZLYI');
-        $stripe->taxRates->update(
-          $taxStripeId,
-          [
-              'active' => true,
-              'percentage' => $tax,
-              'metadata' => [
-                'country'=>$country,
-                'state'=>$state
-            ]
-        ]
-        );
-    }
-
     function TotalTaxRecords($search)
     {
         $search_ = ($search == '') ? 1 : "(states.state LIKE '%" . $search . "%' OR countries.country LIKE '%" .$search. "%')";
@@ -100,11 +84,11 @@ class TaxHandler extends DBConnection
         return $records;
     }
 
-    function getTaxById($id)
+    function getTaxById($id, $status=0)
     {
         $records = [];
         $taxid = (int) $id;
-        $sql = "SELECT servicetax.*, countries.country, states.state FROM servicetax JOIN countries ON countries.id=servicetax.countryId JOIN states ON states.id=servicetax.stateId WHERE servicetax.id=$taxid AND servicetax.status = 0";
+        $sql = "SELECT servicetax.*, countries.country, states.state FROM servicetax JOIN countries ON countries.id=servicetax.countryId JOIN states ON states.id=servicetax.stateId WHERE servicetax.id=$taxid AND servicetax.status = $status";
         $result = $this->getConnection()->query($sql);
         $records = [];
         if ($result && $result->num_rows > 0) {
@@ -153,12 +137,40 @@ class TaxHandler extends DBConnection
         return $error;
     }
 
+    function getTaxRegistredCountry(){
+        $sql = "SELECT countries.* FROM countries JOIN servicetax ON servicetax.countryId=countries.id WHERE servicetax.status=0 AND countries.status = 0 GROUP BY servicetax.countryId ORDER BY countries.id DESC";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
+    function getTaxRegistredStateByCoutry($id){
+        $sql = "SELECT states.* FROM states JOIN servicetax ON servicetax.stateId=states.id WHERE states.countryId=$id AND servicetax.status=0 AND states.status = 0 GROUP BY servicetax.stateId";
+        $result = $this->getConnection()->query($sql);
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($records, $row);
+            }
+        } else {
+            $records = [];
+        }
+        return $records;
+    }
+
     function deleteTaxRecords($id)
     {
-        $sql = "DELETE FROM servicetax WHERE id=$id";
+        $sql = "UPDATE servicetax SET status=1, modifiedDate=now() WHERE id=$id";
         $result = $this->getConnection()->query($sql);
         if ($result) {
-            $taxData = $this->getTaxById($id);
+            $taxData = $this->getTaxById($id, 1);
             if(count($taxData) > 0){
                 $this->deleteTaxAPI($taxData["stripeId"]);
             }
